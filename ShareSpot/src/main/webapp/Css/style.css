@@ -150,6 +150,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 /* 필터 및 목록 영역 */
