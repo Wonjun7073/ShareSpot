@@ -79,8 +79,8 @@ body {
   background-color: #f3f4f6;
 }
 .menu-item.active {
-  background-color: #fff7ed;
-  color: #85b3f8;
+  background-color: #cedef7;
+  color: #6c8cbb;
   font-weight: bold;
 }
 .menu-icon {
