@@ -1,0 +1,205 @@
+@charset "UTF-8";
+
+/* --- 내 근처 (Near Me) 페이지 전용 스타일 --- */
+
+/* 1. 지도 섹션 */
+.near-me-map-section {
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+  position: relative;
+  overflow: hidden;
+  /* 지도 이미지가 있다면 여기에 background-image로 넣으세요 */
+}
+
+/* 지도 중앙 내 위치 정보 */
+.map-center-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+/* 중앙 핀 디자인 */
+.location-pin-group {
+  width: 64px;
+  height: 64px;
+  position: relative;
+  margin-bottom: 8px;
+}
+.pin-outer {
+  width: 42px;
+  height: 53px;
+  border: 5px solid #85b3f8;
+  position: absolute;
+  left: 10px;
+  top: 5px;
+}
+.pin-inner {
+  width: 16px;
+  height: 16px;
+  background: #85b3f8;
+  position: absolute;
+  left: 24px;
+  top: 18px;
+}
+
+/* 텍스트 라벨 */
+.map-text-main {
+  font-size: 16px;
+  color: #4a5565;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+.map-text-sub {
+  font-size: 14px;
+  color: #99a1af;
+}
+
+/* 주변 마커 (공통) */
+.map-marker {
+  width: 32px;
+  height: 32px;
+  background: #85b3f8;
+  border-radius: 50%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.map-marker-icon {
+  width: 16px;
+  height: 16px;
+  /* 간단한 흰색 네모 아이콘 표현 */
+  border: 2px solid white;
+  border-radius: 2px;
+}
+
+/* 마커 위치 (반응형을 위해 % 사용) */
+.marker-pos-1 {
+  top: 25%;
+  left: 25%;
+}
+.marker-pos-2 {
+  top: 40%;
+  left: 65%;
+}
+.marker-pos-3 {
+  top: 60%;
+  left: 50%;
+}
+
+/* 2. 필터 버튼 (이 페이지 전용) */
+.near-me-filter-bar {
+  padding: 24px 32px 0 32px;
+  display: flex;
+  gap: 8px;
+}
+.chip-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+.chip-btn.active {
+  background-color: #101828;
+  color: white;
+}
+.chip-btn.inactive {
+  background-color: #f3f4f6;
+  color: #364153;
+}
+.chip-btn.inactive:hover {
+  background-color: #e5e7eb;
+}
+
+/* 3. 리스트 섹션 */
+.near-me-list-container {
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+  color: #6a7282;
+  margin-bottom: 8px;
+}
+
+/* 가로형 카드 (Horizontal Card) */
+.horizontal-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.horizontal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.h-card-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  background-color: #f3f4f6;
+  object-fit: cover;
+  flex-shrink: 0; /* 이미지 찌그러짐 방지 */
+}
+
+.h-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80px; /* 이미지 높이와 맞춤 */
+}
+
+.h-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* 상태 점 (주황/파랑) */
+.status-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 4px solid #85b3f8;
+}
+.status-dot.blue {
+  border-color: #2b7fff;
+}
+
+.h-card-title {
+  font-size: 16px;
+  color: #0a0a0a;
+}
+
+.h-card-desc {
+  font-size: 14px;
+  color: #6a7282;
+  margin-top: 2px;
+}
+
+/* 하단 메타 정보 (거리, 주소) */
+.h-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #99a1af;
+  margin-top: auto;
+}

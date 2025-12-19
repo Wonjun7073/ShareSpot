@@ -1,4 +1,9 @@
+C:\ShareSpot\ShareSpot\src\main\java\com\example\config\SecurityConfig.java
 C:\ShareSpot\ShareSpot\src\main\java\com\example\controller\UserController.java
+C:\ShareSpot\ShareSpot\src\main\java\com\example\dto\LoginRequest.java
+C:\ShareSpot\ShareSpot\src\main\java\com\example\entity\User.java
 C:\ShareSpot\ShareSpot\src\main\java\com\example\model\package-info.java
 C:\ShareSpot\ShareSpot\src\main\java\com\example\model\Post.java
+C:\ShareSpot\ShareSpot\src\main\java\com\example\repository\UserRepository.java
+C:\ShareSpot\ShareSpot\src\main\java\com\example\service\UserService.java
 C:\ShareSpot\ShareSpot\src\main\java\com\example\ShareSpotApplication.java

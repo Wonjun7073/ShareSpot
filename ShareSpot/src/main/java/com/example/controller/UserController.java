@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import com.example.dto.LoginRequest;
+import com.example.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -9,33 +11,43 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
 
-    private static final String USER_ID = "admin";
-    private static final String USER_PW = "1234";
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> req) {
-
+    public Map<String, Object> login(@RequestBody LoginRequest req) {
         Map<String, Object> res = new HashMap<>();
 
-        String id = req.get("id");
-        String pw = req.get("pw");
+        boolean success = userService.login(req.getId(), req.getPw());
 
-        if (USER_ID.equals(id) && USER_PW.equals(pw)) {
+        if (success) {
             res.put("success", true);
             res.put("message", "로그인 성공");
         } else {
             res.put("success", false);
             res.put("message", "아이디 또는 비밀번호가 잘못되었습니다.");
         }
-
         return res;
     }
 
-    @PostMapping("/logout")
-    public Map<String, Object> logout() {
+    @PostMapping("/register")
+    public Map<String, Object> register(@RequestBody LoginRequest req) {
         Map<String, Object> res = new HashMap<>();
-        res.put("success", true);
-        res.put("message", "로그아웃 완료");
+        try {
+            userService.register(req.getId(), req.getPw());
+            res.put("success", true);
+            res.put("message", "회원가입 성공");
+        } catch (IllegalArgumentException e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+        } catch (Exception e) {
+        res.put("success", false);
+        res.put("message", "서버 오류");
+        }
+
         return res;
     }
 }
