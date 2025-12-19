@@ -34,17 +34,16 @@ body {
   gap: 8px;
   margin-bottom: 20px;
 }
-.brand-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #85b3f8, #64a0fb);
-  border-radius: 14px;
-  color: white;
-  font-size: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: fill; /* 이미지가 꽉 차도록 */
+  border: 2px solid #6c8cbb; /* 파란색 테두리 (#6c8cbb) */
+  background-color: #ffffff;
+  padding: 4px; /* 테두리와 이미지 간 여백 */
+  margin-right: 10px;
+  box-shadow: 0 2px 6px rgba(108, 140, 187, 0.25);
 }
 .brand-text h1 {
   font-size: 18px;
@@ -79,8 +78,8 @@ body {
   background-color: #f3f4f6;
 }
 .menu-item.active {
-  background-color: #fff7ed;
-  color: #85b3f8;
+  background-color: #cedef7;
+  color: #6c8cbb;
   font-weight: bold;
 }
 .menu-icon {
@@ -96,7 +95,7 @@ body {
   margin-left: auto;
 }
 
-.logout {
+.login {
   padding: 24px;
   border-top: 1px solid #e5e7eb;
   color: #4a5565;
@@ -105,6 +104,7 @@ body {
   gap: 12px;
   align-items: center;
   padding-left: 28px;
+  text-decoration: none;
 }
 
 /* 2. 오른쪽 메인 컨텐츠 */
@@ -167,6 +167,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 /* 필터 및 목록 영역 */
