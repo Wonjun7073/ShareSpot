@@ -48,9 +48,16 @@
       </div>
 
       <div class="chat-container">
-        <div class="chat-tabs">
-          <div class="tab-item active">채팅</div>
-          <div class="tab-item">활동 알림</div>
+        <div
+          class="page-header-title"
+          style="
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #e5e7eb;
+          "
+        >
+          채팅
         </div>
 
         <div class="chat-list">
@@ -61,8 +68,8 @@
             <div class="chat-info">
               <div class="chat-header-row">
                 <div class="user-meta">
-                  <span class="username">따뜻한이웃</span>
-                  <span class="location">정왕동</span>
+                  <span class="username">따뜻한이웃</span
+                  ><span class="location">정왕동</span>
                 </div>
                 <span class="time">5분 전</span>
               </div>
@@ -81,8 +88,8 @@
             <div class="chat-info">
               <div class="chat-header-row">
                 <div class="user-meta">
-                  <span class="username">캠핑러버</span>
-                  <span class="location">배곧동</span>
+                  <span class="username">캠핑러버</span
+                  ><span class="location">배곧동</span>
                 </div>
                 <span class="time">1시간 전</span>
               </div>
@@ -101,8 +108,8 @@
             <div class="chat-info">
               <div class="chat-header-row">
                 <div class="user-meta">
-                  <span class="username">DIY마스터</span>
-                  <span class="location">은행동</span>
+                  <span class="username">DIY마스터</span
+                  ><span class="location">은행동</span>
                 </div>
                 <span class="time">3시간 전</span>
               </div>
@@ -121,8 +128,8 @@
             <div class="chat-info">
               <div class="chat-header-row">
                 <div class="user-meta">
-                  <span class="username">육아맘</span>
-                  <span class="location">목감동</span>
+                  <span class="username">육아맘</span
+                  ><span class="location">목감동</span>
                 </div>
                 <span class="time">1일 전</span>
               </div>
@@ -132,51 +139,13 @@
               </div>
             </div>
           </div>
-
-          <div class="chat-item">
-            <div class="chat-avatar">
-              <img src="https://placehold.co/64x64" alt="프로필" />
-            </div>
-            <div class="chat-info">
-              <div class="chat-header-row">
-                <div class="user-meta">
-                  <span class="username">파티플래너</span>
-                  <span class="location">신천동</span>
-                </div>
-                <span class="time">2일 전</span>
-              </div>
-              <div class="chat-preview">파티용 접시세트 빌려드려요</div>
-              <div class="chat-last-msg-row">
-                <span class="last-msg">혹시 30인분도 가능한가요?</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="chat-item">
-            <div class="chat-avatar">
-              <img src="https://placehold.co/64x64" alt="프로필" />
-            </div>
-            <div class="chat-info">
-              <div class="chat-header-row">
-                <div class="user-meta">
-                  <span class="username">보드게이머</span>
-                  <span class="location">대야동</span>
-                </div>
-                <span class="time">3일 전</span>
-              </div>
-              <div class="chat-preview">보드게임 여러개 나눔</div>
-              <div class="chat-last-msg-row">
-                <span class="last-msg">저도 관심있어요!</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
 
     <script src="../JS/auth.js"></script>
     <script>
-      Auth.guard(); // 로그인 체크
+      Auth.guard();
     </script>
   </body>
 </html>
