@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "ShareSpotApplication",
+            "request": "launch",
+            "mainClass": "com.example.ShareSpotApplication",
+            "projectName": "sharespot"
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",

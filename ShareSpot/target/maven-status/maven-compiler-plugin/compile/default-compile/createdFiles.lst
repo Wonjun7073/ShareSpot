@@ -1,4 +1,4 @@
-com\example\model\package-info.class
-com\example\ShareSpotApplication.class
 com\example\controller\UserController.class
 com\example\model\Post.class
+com\example\ShareSpotApplication.class
+com\example\model\package-info.class
