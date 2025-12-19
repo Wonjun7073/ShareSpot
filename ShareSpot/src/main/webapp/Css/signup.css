@@ -1,0 +1,143 @@
+/* ===== Layout ===== */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-wrap {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+/* ===== Hero ===== */
+.hero {
+  margin-bottom: 8px; /* 로그인: 히어로 하단 여백 8px */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-mark {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #2b7fff;
+  border-radius: 16px;
+  border: 2px solid #6c8cbb;
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-title {
+  margin: 0; /* 로그인과 동일: 기본 하단마진 제거 */
+  color: #0a0a0a; /* 로그인과 동일한 컬러 보장 */
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  margin-top: 4px; /* 로그인: 4px */
+  margin-bottom: 0; /* 로그인: 0 */
+  font-size: 16px;
+  color: #6a7282;
+}
+
+/* ===== Card ===== */
+.signup-card {
+  width: min(448px, 92vw);
+  padding: 20px;
+  padding-top: 12px;
+}
+
+.form-field {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.form-field label {
+  font-size: 14px;
+  color: #4a5565;
+  margin-left: 4px;
+}
+
+.form-field input {
+  width: 100%;
+  height: 50px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.form-field input:focus {
+  outline: 2px solid rgba(43, 127, 255, 0.35);
+  border-color: #2b7fff;
+}
+
+/* ===== Button ===== */
+.btn-block {
+  width: 100%;
+}
+
+.btn-primary {
+  background: #2b7fff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  height: 50px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #1f61e3;
+}
+
+/* ===== Footer ===== */
+.signup-footer {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #4a5565;
+}
+
+.link {
+  color: #155dfc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ========== Footer ========== */
+.login-footer {
+  text-align: center;
+  color: #99a1af;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.login-footer p {
+  margin: 2px 0;
+}
