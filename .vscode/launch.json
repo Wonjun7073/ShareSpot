@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
@@ -20,3 +21,26 @@
     }
   ]
 }
+=======
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ShareSpotApplication",
+            "request": "launch",
+            "mainClass": "com.example.ShareSpotApplication",
+            "projectName": "sharespot"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}
+>>>>>>> da9aabdf81d6e014375465e836d9ffa55c7f1608
