@@ -1,0 +1,141 @@
+.chat-container {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 탭 (채팅 / 활동 알림) */
+.chat-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 18px 0;
+  font-size: 16px;
+  color: #99a1af;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-weight: 400;
+}
+
+.tab-item.active {
+  color: #155dfc;
+  border-bottom: 2px solid #2b7fff;
+  font-weight: 700;
+}
+
+/* 채팅 리스트 영역 */
+.chat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 개별 채팅 아이템 */
+.chat-item {
+  display: flex;
+  padding: 20px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chat-item:hover {
+  background-color: #f9fafb;
+}
+
+/* 프로필 이미지 */
+.chat-avatar {
+  width: 64px;
+  height: 64px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.chat-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 채팅 정보 텍스트 영역 */
+.chat-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* 이름 + 동네 + 시간 */
+.chat-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  font-size: 16px;
+  color: #0a0a0a;
+  font-weight: bold;
+}
+
+.location {
+  font-size: 14px;
+  color: #99a1af;
+}
+
+.time {
+  font-size: 14px;
+  color: #99a1af;
+}
+
+/* 채팅 미리보기 (글 제목 등) */
+.chat-preview {
+  font-size: 14px;
+  color: #6a7282;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 마지막 메시지 + 알림 뱃지 */
+.chat-last-msg-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.last-msg {
+  font-size: 14px;
+  color: #364153;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+}
+
+/* 읽지 않은 메시지 수 */
+.msg-badge {
+  background: #2b7fff;
+  color: white;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  min-width: 18px;
+  text-align: center;
+}
