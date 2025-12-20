@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 body {
-  font-family: "Malgun Gothic", "Arimo", sans-serif;
+  font-family: 'Malgun Gothic', 'Arimo', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9fafb;
@@ -143,21 +143,21 @@ body {
 
 /* 새롭게 추가된 input 요소 스타일 */
 .search-bar input {
-    /* 부모 요소인 .search-bar 안에서 최대한 공간 차지 */
-    flex-grow: 1; 
-    border: none;
-    background: transparent;
-    outline: none; /* 포커스 시 외곽선 제거 */
-    font-size: 16px;
-    color: #364153; /* 입력 텍스트 색상 */
+  /* 부모 요소인 .search-bar 안에서 최대한 공간 차지 */
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  outline: none; /* 포커스 시 외곽선 제거 */
+  font-size: 16px;
+  color: #364153; /* 입력 텍스트 색상 */
 }
 /* placeholder 색상 지정 */
 .search-bar input::placeholder {
-    color: #99A1AF;
+  color: #99a1af;
 }
 
 .write-btn {
-  background: #85b3f8;
+  background: #155dfc;
   color: white;
   padding: 8px 16px;
   border-radius: 10px;
