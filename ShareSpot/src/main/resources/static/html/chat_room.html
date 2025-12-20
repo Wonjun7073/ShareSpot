@@ -29,7 +29,7 @@
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
       </div>
-      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
     <div class="main-content chat-room-layout">
@@ -108,5 +108,8 @@
     <script>
       Auth.guard();
     </script>
+
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>

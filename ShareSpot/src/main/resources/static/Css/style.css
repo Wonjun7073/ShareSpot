@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 body {
-  font-family: 'Malgun Gothic', 'Arimo', sans-serif;
+  font-family: "Malgun Gothic", "Arimo", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9fafb;
@@ -286,4 +286,81 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+/* ===== Modal (Global - upload.css 디자인) ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: none; /* show: flex */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  width: min(520px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  padding: 24px 24px 20px;
+}
+.modal-box h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #0a0a0a;
+}
+.modal-box p {
+  margin: 0 0 16px;
+  color: #364153;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+/* ===== Buttons (Global - upload.css 디자인) ===== */
+.btn-primary {
+  background: #6c8cbb;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: #5a7aa5;
+}
+
+.btn-outline {
+  border: 1px solid #d1d5dc;
+  background: #fff;
+  color: #0a0a0a;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+/* ===== Toast (Global - upload.css 디자인) ===== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 9999;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
 }

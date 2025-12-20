@@ -31,8 +31,7 @@
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
       </div>
-
-      <a href="./login.html" class="login"><span>📕</span> 로그인</a>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
     <!-- 상단 헤더 -->
@@ -111,20 +110,21 @@
       </main>
     </div>
 
-    <div id="confirmModal" class="modal">
-      <div class="modal-box">
-        <h3 id="modalTitle">확인</h3>
-        <p id="modalMessage">메시지</p>
-        <div class="modal-actions">
-          <button id="modalCancel" class="btn-outline" type="button">
-            취소
-          </button>
-          <button id="modalOk" class="btn-primary" type="button">확인</button>
-        </div>
-      </div>
-    </div>
-
     <div id="toast" class="toast">물품이 등록되었습니다!</div>
+    <!-- 공통 인증 -->
+    <script src="../JS/auth.js"></script>
+    <script>
+      Auth.guard(); // 로그인한 사람만 등록 가능
+    </script>
+
+    <!-- upload 전용 -->
     <script src="../JS/upload.js" defer></script>
+
+    <!-- 공통 로그아웃 모달 -->
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
+
+    <script src="../JS/upload.js" defer></script>
+    <div id="modal-root"></div>
   </body>
 </html>
