@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>쉐어스팟 - 신뢰 지수</title>
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/trust.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="main.html" class="menu-item"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="chat.html" class="menu-item"
+          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
+        >
+        <a href="my.html" class="menu-item active"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
+      </div>
+      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+    </div>
+
+    <div class="main-content trust-layout">
+      <div class="page-header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <h2 class="header-title">신뢰 지수</h2>
+      </div>
+
+      <div class="trust-container">
+        <div class="score-card">
+          <div class="score-circle-bg">
+            <div class="score-icon">👑</div>
+          </div>
+          <div class="score-display">
+            <span class="score-percent">81%</span>
+            <span class="score-grade">신뢰 지수 - 우수</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 81%"></div>
+          </div>
+          <div class="score-text">총 405점 / 500점</div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <h3>신뢰 활동</h3>
+            <p>다양한 활동으로 신뢰 지수를 높여보세요</p>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-left">
+                <div class="icon-circle bg-green">✅</div>
+                <div class="activity-info">
+                  <span class="activity-name">거래 완료</span>
+                  <span class="activity-count">15회</span>
+                </div>
+              </div>
+              <span class="activity-point">+150점</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-left">
+                <div class="icon-circle bg-yellow">😊</div>
+                <div class="activity-info">
+                  <span class="activity-name">좋은 후기</span>
+                  <span class="activity-count">12회</span>
+                </div>
+              </div>
+              <span class="activity-point">+120점</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-left">
+                <div class="icon-circle bg-blue">🆔</div>
+                <div class="activity-info">
+                  <span class="activity-name">프로필 인증</span>
+                  <span class="activity-count">3회</span>
+                </div>
+              </div>
+              <span class="activity-point">+90점</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-left">
+                <div class="icon-circle bg-purple">📅</div>
+                <div class="activity-info">
+                  <span class="activity-name">활동 일수</span>
+                  <span class="activity-count">45일</span>
+                </div>
+              </div>
+              <span class="activity-point">+45점</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <h3>받은 후기</h3>
+            <p>총 3개의 후기</p>
+          </div>
+          <div class="review-list">
+            <div class="review-item">
+              <div class="review-top">
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">따</div>
+                  <div class="reviewer-meta">
+                    <span class="reviewer-name">따뜻한이웃</span>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                  </div>
+                </div>
+                <span class="review-date">2일 전</span>
+              </div>
+              <div class="review-content">
+                친절하시고 물건도 깨끗했어요. 감사합니다!
+              </div>
+            </div>
+            <div class="review-item">
+              <div class="review-top">
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">캠</div>
+                  <div class="reviewer-meta">
+                    <span class="reviewer-name">캠핑러버</span>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                  </div>
+                </div>
+                <span class="review-date">1주일 전</span>
+              </div>
+              <div class="review-content">
+                약속 시간 잘 지키시고 좋았습니다.
+              </div>
+            </div>
+            <div class="review-item">
+              <div class="review-top">
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">D</div>
+                  <div class="reviewer-meta">
+                    <span class="reviewer-name">DIY마스터</span>
+                    <div class="stars">⭐⭐⭐⭐☆</div>
+                  </div>
+                </div>
+                <span class="review-date">2주일 전</span>
+              </div>
+              <div class="review-content">거래 잘했습니다</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <div class="tip-title">💡 신뢰 지수를 올리는 방법</div>
+          <ul class="tip-list">
+            <li>약속 시간을 잘 지키세요</li>
+            <li>물품 상태를 정확히 설명하세요</li>
+            <li>친절하고 예의 바르게 대화하세요</li>
+            <li>거래 후 후기를 남겨주세요</li>
+            <li>프로필을 성실히 작성하세요</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script src="../JS/auth.js"></script>
+    <script>
+      Auth.guard();
+    </script>
+  </body>
+</html>
