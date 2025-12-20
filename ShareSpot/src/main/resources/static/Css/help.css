@@ -107,3 +107,47 @@
   color: #99a1af;
   font-size: 20px;
 }
+/* ✅ help-item-simple을 button으로 써도 기존 div처럼 보이게 보정 */
+button.help-item-simple {
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  font: inherit; /* 버튼 기본 폰트 제거 */
+  color: inherit;
+}
+
+button.help-item-simple:focus {
+  outline: none;
+}
+
+button.help-item-simple:focus-visible {
+  outline: 2px solid #85b3f8; /* 포커스 표시(접근성) */
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+
+.edit-header {
+  height: 65px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0a0a0a;
+}
+
+.cancel-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #6a7282;
+  cursor: pointer;
+}

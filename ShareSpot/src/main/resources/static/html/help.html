@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/help.css" />
   </head>
+
   <body>
     <div class="sidebar">
       <div class="brand">
@@ -15,6 +16,7 @@
           <p>시흥시 정왕동</p>
         </div>
       </div>
+
       <div class="menu">
         <a href="main.html" class="menu-item"
           ><span class="menu-icon">🏠</span> 홈</a
@@ -22,20 +24,23 @@
         <a href="near_me.html" class="menu-item"
           ><span class="menu-icon">📍</span> 내 근처</a
         >
-        <a href="chat.html" class="menu-item"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
-        >
+        <a href="chat.html" class="menu-item">
+          <span class="menu-icon">💬</span> 채팅<span class="badge">3</span>
+        </a>
         <a href="my.html" class="menu-item active"
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
       </div>
-      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+
+      <!-- ✅ 다른 페이지들과 통일: a.login or div.logout 중 하나만 쓰기 -->
+      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
     <div class="main-content help-layout">
-      <div class="page-header">
-        <button class="back-btn" onclick="history.back()">←</button>
-        <h2 class="header-title">고객센터</h2>
+      <div class="edit-header">
+        <button class="cancel-btn" onclick="history.back()">취소</button>
+        <div class="header-title">계정 설정</div>
+        <div style="width: 48px"></div>
       </div>
 
       <div class="help-container">
@@ -44,22 +49,30 @@
             <span class="header-icon">📘</span> 이용 방법
           </div>
           <div class="help-list">
-            <div class="help-item-simple">
+            <button
+              class="help-item-simple"
+              type="button"
+              data-key="how-register"
+            >
               <span>물품은 어떻게 등록하나요?</span>
               <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
+            </button>
+            <button class="help-item-simple" type="button" data-key="how-trade">
               <span>거래는 어떻게 진행되나요?</span>
               <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
+            </button>
+            <button
+              class="help-item-simple"
+              type="button"
+              data-key="share-vs-rent"
+            >
               <span>나눔과 대여의 차이는 무엇인가요?</span>
               <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
+            </button>
+            <button class="help-item-simple" type="button" data-key="how-chat">
               <span>채팅은 어떻게 시작하나요?</span>
               <span class="chevron">›</span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -68,14 +81,14 @@
             <span class="header-icon">🛡️</span> 안전 거래
           </div>
           <div class="help-list">
-            <div class="help-item-simple">
+            <button class="help-item-simple" type="button" data-key="scam">
               <span>사기를 당했을 때는 어떻게 하나요?</span>
               <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
+            </button>
+            <button class="help-item-simple" type="button" data-key="trust">
               <span>신뢰 지수는 어떻게 올라가나요?</span>
               <span class="chevron">›</span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -84,29 +97,60 @@
             <span class="header-icon">⚙️</span> 계정 관리
           </div>
           <div class="help-list">
-            <div class="help-item-simple">
+            <button class="help-item-simple" type="button" data-key="forgot-pw">
               <span>비밀번호를 잊어버렸어요</span>
               <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
-              <span>계정을 삭제하고 싶어요</span> <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
+            </button>
+            <button
+              class="help-item-simple"
+              type="button"
+              data-key="delete-account"
+            >
+              <span>계정을 삭제하고 싶어요</span>
+              <span class="chevron">›</span>
+            </button>
+            <button
+              class="help-item-simple"
+              type="button"
+              data-key="profile-photo"
+            >
               <span>프로필 사진은 어떻게 변경하나요?</span>
               <span class="chevron">›</span>
-            </div>
-            <div class="help-item-simple">
+            </button>
+            <button
+              class="help-item-simple"
+              type="button"
+              data-key="verify-town"
+            >
               <span>동네 인증은 어떻게 하나요?</span>
               <span class="chevron">›</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- ✅ confirmModal 재사용 (style.css의 .modal.show 기준) -->
+    <div id="confirmModal" class="modal" aria-hidden="true">
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <h3 id="modalTitle">확인</h3>
+        <p id="modalMessage">메시지</p>
+        <div class="modal-actions">
+          <button id="modalCancel" class="btn-outline" type="button">
+            취소
+          </button>
+          <button id="modalOk" class="btn-primary" type="button">확인</button>
+        </div>
+      </div>
+    </div>
+
     <script src="../JS/auth.js"></script>
-    <script>
-      Auth.guard();
-    </script>
+    <script src="../JS/help.js"></script>
+    <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>

@@ -1,11 +1,12 @@
 document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const id = document.getElementById("signupId").value.trim();
+  const userId = document.getElementById("signupId").value.trim();
+  const nickname = document.getElementById("signupNickname").value.trim();
   const pw = document.getElementById("signupPw").value.trim();
   const pw2 = document.getElementById("signupPwConfirm").value.trim();
 
-  if (!id || !pw || !pw2) {
+  if (!userId || !nickname || !pw || !pw2) {
     alert("모든 항목을 입력해주세요.");
     return;
   }
@@ -15,19 +16,13 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     return;
   }
 
-  try {
-    // ✅ 서버 회원가입 호출
-    const res = await Auth.register(id, pw);
+  const res = await Auth.register(userId, pw, nickname);
 
-    if (!res.success) {
-      alert(res.message || "회원가입 실패");
-      return;
-    }
-
-    alert("회원가입이 완료되었습니다!");
-    window.location.href = "./login.html";
-  } catch (e) {
-    console.error(e);
-    alert("서버 오류가 발생했습니다.");
+  if (!res.success) {
+    alert(res.message || "회원가입 실패");
+    return;
   }
+
+  alert("회원가입이 완료되었습니다!");
+  location.href = "./login.html";
 });
