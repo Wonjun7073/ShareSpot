@@ -170,6 +170,46 @@ body {
   text-decoration: none;
 }
 
+/* 1:1 채팅 버튼 스타일 */
+.chat-btn {
+    margin-left: auto; /* ★ 핵심: 버튼을 오른쪽 끝으로 밀어버림 */
+    background: #FF6900; /* 당근마켓 색상 (주황) */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.chat-btn:hover {
+    background-color: #E55D00;
+}
+
+/* 채팅 목록 화면 스타일 (사이드바 채팅 메뉴 눌렀을 때 나올 화면) */
+.chat-list-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.chat-room-item {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chat-room-item:hover { background-color: #F9FAFB; }
+.chat-room-title { font-weight: bold; font-size: 16px; color: #333; }
+.chat-room-last-msg { font-size: 13px; color: #888; margin-top: 4px; }
+.new-badge { background: #FF0000; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+
 /* 필터 및 목록 영역 */
 .content-wrapper {
   padding: 32px;

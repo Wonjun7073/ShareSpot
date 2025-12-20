@@ -10,17 +10,20 @@
   };
 
   // 값 바인딩
-  document.getElementById("statShared").textContent = state.shared;
-  document.getElementById("statThanks").textContent = state.thanks;
-  document.getElementById("statTrust").textContent = state.trust + "%";
-  document.getElementById("chipHistory").textContent = state.history;
-  document.getElementById("chipWish").textContent = state.wish;
-  document.getElementById("trustCount").textContent = state.thanks;
+  document.getElementById('statShared').textContent = state.shared;
+  document.getElementById('statThanks').textContent = state.thanks;
+  document.getElementById('statTrust').textContent = state.trust + '%';
+  document.getElementById('chipHistory').textContent = state.history;
+  document.getElementById('chipWish').textContent = state.wish;
+  document.getElementById('trustCount').textContent = state.thanks;
 
   // 이벤트 예시: 프로필 수정 버튼
-  document
-    .getElementById("btnEditProfile")
-    .addEventListener("click", function () {
-      alert("프로필 수정 모달(또는 페이지)로 이동하도록 연결하세요.");
+  // 이벤트 예시: 프로필 수정 버튼 클릭 시 이동
+  const editBtn = document.getElementById('btnEditProfile');
+  if (editBtn) {
+    editBtn.addEventListener('click', function () {
+      // 경고창 대신 진짜 페이지 이동 코드로 변경!
+      location.href = 'edit_profile.html';
     });
+  }
 })();

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>채팅방 - 쉐어스팟</title>
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" /> 
+    <style>
+        /* 채팅 UI를 위한 간단한 스타일 */
+        .chat-container { 
+            max-width: 800px; margin: 50px auto; border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden;
+        }
+        .chat-header { padding: 15px; background-color: #F9FAFB; border-bottom: 1px solid #E5E7EB; font-weight: bold; }
+        .chat-log { height: 400px; padding: 15px; overflow-y: scroll; background-color: white; }
+        .chat-input-area { display: flex; padding: 10px; border-top: 1px solid #E5E7EB; background-color: #F9FAFB; }
+        .chat-input-area input { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px; }
+        .chat-input-area button { padding: 10px 15px; background: #FF6900; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div id="chatHeader" class="chat-header">채팅방 로딩 중...</div> 
+        
+        <div id="chatLog" class="chat-log"></div>
+        
+        <div class="chat-input-area">
+            <input type="text" id="messageInput" placeholder="메시지를 입력하세요..." />
+            <button id="sendButton">전송</button>
+        </div>
+    </div>
+    
+    <script src="../JS/chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>쉐어스팟 - 프로필 수정</title>
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/edit_profile.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="main.html" class="menu-item"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="chat.html" class="menu-item"
+          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
+        >
+        <a href="my.html" class="menu-item active"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
+      </div>
+      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+    </div>
+
+    <div class="main-content edit-profile-layout">
+      <div class="edit-header">
+        <button class="cancel-btn" onclick="history.back()">취소</button>
+        <div class="header-title">프로필 수정</div>
+        <button
+          class="save-btn"
+          onclick="alert('프로필이 저장되었습니다!'); location.href='my.html'"
+        >
+          저장
+        </button>
+      </div>
+
+      <div class="edit-form-container">
+        <div class="section-card profile-img-section">
+          <div class="profile-img-wrapper">
+            <div class="img-placeholder">김</div>
+            <button class="camera-btn">📷</button>
+          </div>
+          <div class="change-photo-text">프로필 사진 변경</div>
+        </div>
+
+        <div class="section-card">
+          <div class="input-group">
+            <label>이름</label>
+            <input type="text" value="김시흥" class="input-box" />
+          </div>
+
+          <div class="input-group">
+            <label>내 동네</label>
+            <div class="select-box">
+              <select class="input-box">
+                <option value="정왕동" selected>시흥시 정왕동</option>
+                <option value="배곧동">시흥시 배곧동</option>
+                <option value="은행동">시흥시 은행동</option>
+                <option value="목감동">시흥시 목감동</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>소개</label>
+            <textarea
+              class="input-box textarea-box"
+              placeholder="자신을 소개해주세요"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="input-group">
+            <label>전화번호</label>
+            <input
+              type="text"
+              value="010-1234-5678"
+              class="input-box"
+              readonly
+              style="background-color: #f3f4f6; color: #666"
+            />
+          </div>
+          <div class="input-group">
+            <label>이메일</label>
+            <input
+              type="email"
+              value="kimsiheung@example.com"
+              class="input-box"
+              readonly
+              style="background-color: #f3f4f6; color: #666"
+            />
+          </div>
+        </div>
+
+        <div class="info-box">
+          📌 전화번호와 이메일은 다른 사용자에게 공개되지 않으며, 거래 시 안전한
+          연락을 위해 사용됩니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- <script src="../JS/auth.js"></script> -->
+    <!-- <script>Auth.guard();</script> -->
+  </body>
+</html>
