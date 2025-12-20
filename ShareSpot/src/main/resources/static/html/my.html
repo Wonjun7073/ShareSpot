@@ -33,7 +33,7 @@
         </a>
       </div>
 
-      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
     <div class="main-content">
@@ -119,11 +119,13 @@
             <header class="panel-header">설정</header>
             <ul class="panel-list">
               <li class="panel-item">
-                <div class="item-left">
-                  <span class="icon">👤</span>
-                  <span>계정 설정</span>
-                </div>
-                <div class="item-right"><span class="chevron">›</span></div>
+                <a class="panel-link" href="./account_settings.html">
+                  <div class="item-left">
+                    <span class="icon">👤</span>
+                    <span>계정 설정</span>
+                  </div>
+                  <div class="item-right"><span class="chevron">›</span></div>
+                </a>
               </li>
               <li class="panel-item">
                 <div class="item-left">
@@ -161,12 +163,15 @@
       Auth.guard();
       const me = Auth.getUser();
       if (me) {
-        const nickEl = document.querySelector('.nickname');
-        const locEl = document.querySelector('.location');
+        const nickEl = document.querySelector(".nickname");
+        const locEl = document.querySelector(".location");
         if (nickEl) nickEl.textContent = me.nickname || me.id;
-        if (locEl) locEl.textContent = me.dong || '내 동네';
+        if (locEl) locEl.textContent = me.dong || "내 동네";
       }
     </script>
     <script src="../JS/my.js"></script>
+
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>

@@ -1,0 +1,141 @@
+@charset "UTF-8";
+
+/* ✅ my.html 레이아웃 유지: main-content가 이미 width를 꽉 채움
+   따라서 max-width / margin:auto 같은 “화면 줄이는 코드” 절대 없음 */
+
+.as-back {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.as-back:hover {
+  background: #f3f4f6;
+}
+
+.as-back-icon {
+  font-size: 18px;
+  line-height: 1;
+  color: #0a0a0a;
+}
+
+.as-title {
+  font-size: 18px;
+  color: #0a0a0a;
+}
+
+.as-card {
+  margin-bottom: 24px;
+}
+
+.as-card-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.as-card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+  color: #0a0a0a;
+}
+
+.as-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.as-row {
+  width: 100%;
+  height: 88px;
+  border: none;
+  background: #fff;
+  padding: 0 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+}
+
+.as-row:last-child {
+  border-bottom: none;
+}
+
+.as-row:hover {
+  background: #f9fafb;
+}
+
+.as-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.as-label {
+  font-size: 14px;
+  color: #4a5565;
+}
+
+.as-value {
+  font-size: 16px;
+  color: #0a0a0a;
+}
+
+.as-only {
+  font-size: 16px;
+  color: #0a0a0a;
+}
+
+.as-chevron {
+  color: #99a1af;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.as-row.danger .as-only {
+  color: #fb2c36;
+}
+
+.as-chevron.danger {
+  color: #ff6467;
+}
+
+.as-footer {
+  padding: 22px 24px;
+  text-align: center;
+  color: #6a7282;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.edit-header {
+  height: 65px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.cancel-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #364153;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: normal;
+  color: #0a0a0a;
+}
