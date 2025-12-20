@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>쉐어스팟 - 채팅방</title>
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/chat_room.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="main.html" class="menu-item"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="chat.html" class="menu-item active"
+          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
+        >
+        <a href="my.html" class="menu-item"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
+      </div>
+      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+    </div>
+
+    <div class="main-content chat-room-layout">
+      <div class="chat-room-header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <div class="header-info">
+          <span class="header-name">따뜻한이웃</span>
+          <span class="header-sub">에어프라이어 나눔합니다</span>
+        </div>
+      </div>
+
+      <div class="product-bar">
+        <div class="product-img-box">
+          <img src="https://placehold.co/64x64" alt="물품" />
+        </div>
+        <div class="product-info">
+          <div class="product-title">에어프라이어 나눔합니다</div>
+          <div class="product-status">나눔</div>
+        </div>
+        <button class="view-btn">보기</button>
+      </div>
+
+      <div class="message-area">
+        <div class="date-divider">
+          <div class="line"></div>
+          <span>2024년 12월 19일</span>
+          <div class="line"></div>
+        </div>
+
+        <div class="message-row received">
+          <div class="bubble">
+            안녕하세요! 에어프라이어 아직 나눔 가능한가요?
+          </div>
+          <div class="msg-time">오후 3:24</div>
+        </div>
+
+        <div class="message-row sent">
+          <div class="msg-meta">
+            <span class="read-check">읽음</span>
+            <span class="msg-time">오후 3:25</span>
+          </div>
+          <div class="bubble">네, 가능합니다! 언제 받으러 오실 수 있나요?</div>
+        </div>
+
+        <div class="message-row received">
+          <div class="bubble">내일 오후 2시쯤 괜찮을까요?</div>
+          <div class="msg-time">오후 3:26</div>
+        </div>
+
+        <div class="message-row sent">
+          <div class="msg-meta">
+            <span class="read-check">읽음</span>
+            <span class="msg-time">오후 3:28</span>
+          </div>
+          <div class="bubble">
+            네, 좋아요! 정왕동 주민센터 근처 카페에서 만나실까요?
+          </div>
+        </div>
+
+        <div class="message-row received">
+          <div class="bubble">네, 내일 오후 2시에 만나요!</div>
+          <div class="msg-time">오후 3:30</div>
+        </div>
+      </div>
+
+      <div class="chat-input-bar">
+        <button class="icon-btn">+</button>
+        <div class="input-wrapper">
+          <input type="text" placeholder="메시지를 입력하세요" />
+        </div>
+        <button class="send-btn">➤</button>
+      </div>
+    </div>
+
+    <script src="../JS/auth.js"></script>
+    <script>
+      Auth.guard();
+    </script>
+  </body>
+</html>
