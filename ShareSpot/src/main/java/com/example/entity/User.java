@@ -56,7 +56,6 @@ public class User {
     public String getDong() { return dong; }
     public String getIntro() { return intro; }
     public String getPhone() { return phone; }
-    public String getEmail() { return email; }
     public int getSharedCount() { return sharedCount; }
     public int getThanksCount() { return thanksCount; }
     public int getTrustPercent() { return trustPercent; }
