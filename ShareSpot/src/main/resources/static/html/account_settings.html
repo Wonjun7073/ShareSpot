@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>계정 설정 • 쉐어스팟</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/account_settings.css" />
+  </head>
+
+  <body>
+    <!-- ✅ 사이드바: my.html과 동일 -->
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
+      </div>
+
+      <div class="menu">
+        <a href="./main.html" class="menu-item">
+          <span class="menu-icon">🏠</span> 홈
+        </a>
+        <a href="./near_me.html" class="menu-item">
+          <span class="menu-icon">📍</span> 내 근처
+        </a>
+        <a href="./chat.html" class="menu-item">
+          <span class="menu-icon">💬</span> 채팅
+          <span class="badge">3</span>
+        </a>
+        <a href="./my.html" class="menu-item active">
+          <span class="menu-icon">👤</span> 나의 시흥
+        </a>
+      </div>
+
+      <a href="#" class="login" id="logoutBtnSidebar">
+        <span>📕</span> 로그아웃
+      </a>
+    </div>
+
+    <!-- ✅ 메인: my.html과 동일 -->
+    <div class="main-content">
+      <div class="edit-header">
+        <button class="cancel-btn" onclick="history.back()">취소</button>
+        <div class="header-title">계정 설정</div>
+        <div style="width: 48px"></div>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 계정 정보 -->
+        <section class="as-card card">
+          <div class="as-card-header">
+            <h2 class="as-card-title">계정 정보</h2>
+          </div>
+
+          <div class="as-list">
+            <button class="as-row" type="button">
+              <div class="as-row-text">
+                <div class="as-label">아이디</div>
+                <div class="as-value" id="userIdText">kimsiheung</div>
+              </div>
+              <span class="as-chevron">›</span>
+            </button>
+
+            <button class="as-row" type="button">
+              <div class="as-row-text">
+                <div class="as-label">비밀번호</div>
+                <div class="as-value">••••••••</div>
+              </div>
+              <span class="as-chevron">›</span>
+            </button>
+
+            <button class="as-row" type="button">
+              <div class="as-row-text">
+                <div class="as-label">전화번호</div>
+                <div class="as-value" id="phoneText">010-1234-5678</div>
+              </div>
+              <span class="as-chevron">›</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 위치 설정 -->
+        <section class="as-card card">
+          <div class="as-card-header">
+            <h2 class="as-card-title">위치 설정</h2>
+          </div>
+
+          <div class="as-list">
+            <button class="as-row" type="button">
+              <div class="as-row-text">
+                <div class="as-label">내 동네</div>
+                <div class="as-value" id="locationText">시흥시 정왕동</div>
+              </div>
+              <span class="as-chevron">›</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 개인정보 및 보안 -->
+        <section class="as-card card">
+          <div class="as-card-header">
+            <h2 class="as-card-title">개인정보 및 보안</h2>
+          </div>
+
+          <div class="as-list">
+            <button class="as-row" type="button">
+              <div class="as-only">개인정보 처리방침</div>
+              <span class="as-chevron">›</span>
+            </button>
+            <button class="as-row" type="button">
+              <div class="as-only">이용약관</div>
+              <span class="as-chevron">›</span>
+            </button>
+            <button class="as-row" type="button">
+              <div class="as-only">위치기반 서비스 이용약관</div>
+              <span class="as-chevron">›</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 계정 관리 -->
+        <section class="as-card card">
+          <div class="as-card-header">
+            <h2 class="as-card-title">계정 관리</h2>
+          </div>
+
+          <div class="as-list">
+            <button class="as-row danger" type="button" id="withdrawBtn">
+              <div class="as-only">회원 탈퇴</div>
+              <span class="as-chevron danger">›</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 하단 -->
+        <section class="as-footer card">
+          <div>시흥 공유마켓</div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ✅ 기존 confirmModal 재사용 (style.css의 .modal.show) -->
+    <div id="confirmModal" class="modal" aria-hidden="true">
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <h3 id="modalTitle">확인</h3>
+        <p id="modalMessage">메시지</p>
+        <div class="modal-actions">
+          <button id="modalCancel" class="btn-outline" type="button">
+            취소
+          </button>
+          <button id="modalOk" class="btn-primary" type="button">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../JS/auth.js"></script>
+    <script src="../JS/account_settings.js"></script>
+    <script src="../Components/sidebar-auth.js"></script>
+  </body>
+</html>
