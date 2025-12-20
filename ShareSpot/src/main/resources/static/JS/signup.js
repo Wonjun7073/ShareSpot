@@ -1,4 +1,4 @@
-document.getElementById("signupForm").addEventListener("submit", (e) => {
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const id = document.getElementById("signupId").value.trim();
@@ -15,6 +15,19 @@ document.getElementById("signupForm").addEventListener("submit", (e) => {
     return;
   }
 
-  alert("회원가입이 완료되었습니다!");
-  window.location.href = "./login.html";
+  try {
+    // ✅ 서버 회원가입 호출
+    const res = await Auth.register(id, pw);
+
+    if (!res.success) {
+      alert(res.message || "회원가입 실패");
+      return;
+    }
+
+    alert("회원가입이 완료되었습니다!");
+    window.location.href = "./login.html";
+  } catch (e) {
+    console.error(e);
+    alert("서버 오류가 발생했습니다.");
+  }
 });

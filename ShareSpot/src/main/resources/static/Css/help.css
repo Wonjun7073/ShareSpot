@@ -1,0 +1,109 @@
+/* 고객센터 페이지 스타일 */
+
+/* 1. 전체 레이아웃 (전체 페이지 스크롤) */
+.help-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: auto;
+  background-color: #f9fafb;
+}
+
+/* 2. 헤더 스타일 (스크롤 시 상단 고정) */
+.page-header {
+  height: 65px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #0a0a0a;
+  padding: 0;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0a0a0a;
+  margin: 0;
+}
+
+/* 3. 컨텐츠 컨테이너 */
+.help-container {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* 4. 카드 공통 스타일 */
+.help-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 카드 헤더 (아이콘 + 제목) */
+.card-header-row {
+  padding: 20px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #0a0a0a;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-icon {
+  font-size: 18px;
+}
+
+/* 5. 리스트 스타일 */
+.help-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 리스트 아이템 */
+.help-item-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 16px;
+  color: #364153;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.help-item-simple:last-child {
+  border-bottom: none;
+}
+
+.help-item-simple:hover {
+  background-color: #f9fafb;
+}
+
+.chevron {
+  color: #99a1af;
+  font-size: 20px;
+}
