@@ -18,10 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
     el.setAttribute("aria-invalid", msg ? "true" : "false");
   }
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // 간단 검증
     let ok = true;
     if (!idEl.value.trim()) {
       setError(idEl, "아이디를 입력해주세요.");
@@ -35,15 +34,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!ok) return;
 
-    // 데모: 아무 값이나 통과
-    // 필요 시 여기에 실제 인증 API 연동
-    localStorage.setItem(
-      "shareSpotUser",
-      JSON.stringify({
-        id: idEl.value.trim(),
-        ts: Date.now(),
-      })
-    );
+    const id = idEl.value.trim();
+    const pw = pwEl.value.trim();
+
+    // ✅ 여기서 서버 로그인 호출
+    const success = await window.Auth.login(id, pw);
+
+    if (!success) {
+      showToast("아이디 또는 비밀번호가 잘못되었습니다.");
+      return;
+    }
 
     showToast("로그인되었습니다!");
     setTimeout(() => {
@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 900);
   });
 
-  // 입력 중 에러 문구 제거
   [idEl, pwEl].forEach((el) =>
     el.addEventListener("input", () => setError(el, ""))
   );

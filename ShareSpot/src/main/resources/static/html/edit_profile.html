@@ -1,116 +1,171 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>쉐어스팟 - 프로필 수정</title>
-    <link rel="stylesheet" href="../Css/style.css" />
-    <link rel="stylesheet" href="../Css/edit_profile.css" />
-  </head>
-  <body>
-    <div class="sidebar">
-      <div class="brand">
-        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
-        <div class="brand-text">
-          <h1>쉐어스팟</h1>
-          <p>시흥시 정왕동</p>
-        </div>
-      </div>
-      <div class="menu">
-        <a href="main.html" class="menu-item"
-          ><span class="menu-icon">🏠</span> 홈</a
-        >
-        <a href="near_me.html" class="menu-item"
-          ><span class="menu-icon">📍</span> 내 근처</a
-        >
-        <a href="chat.html" class="menu-item"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
-        >
-        <a href="my.html" class="menu-item active"
-          ><span class="menu-icon">👤</span> 나의 시흥</a
-        >
-      </div>
-      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>쉐어스팟 - 프로필 수정</title>
+  <link rel="stylesheet" href="../Css/style.css" />
+  <link rel="stylesheet" href="../Css/edit_profile.css" />
+</head>
 
-    <div class="main-content edit-profile-layout">
-      <div class="edit-header">
-        <button class="cancel-btn" onclick="history.back()">취소</button>
-        <div class="header-title">프로필 수정</div>
-        <button
-          class="save-btn"
-          onclick="alert('프로필이 저장되었습니다!'); location.href='my.html'"
-        >
-          저장
-        </button>
-      </div>
-
-      <div class="edit-form-container">
-        <div class="section-card profile-img-section">
-          <div class="profile-img-wrapper">
-            <div class="img-placeholder">김</div>
-            <button class="camera-btn">📷</button>
-          </div>
-          <div class="change-photo-text">프로필 사진 변경</div>
-        </div>
-
-        <div class="section-card">
-          <div class="input-group">
-            <label>이름</label>
-            <input type="text" value="김시흥" class="input-box" />
-          </div>
-
-          <div class="input-group">
-            <label>내 동네</label>
-            <div class="select-box">
-              <select class="input-box">
-                <option value="정왕동" selected>시흥시 정왕동</option>
-                <option value="배곧동">시흥시 배곧동</option>
-                <option value="은행동">시흥시 은행동</option>
-                <option value="목감동">시흥시 목감동</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>소개</label>
-            <textarea
-              class="input-box textarea-box"
-              placeholder="자신을 소개해주세요"
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="input-group">
-            <label>전화번호</label>
-            <input
-              type="text"
-              value="010-1234-5678"
-              class="input-box"
-              readonly
-              style="background-color: #f3f4f6; color: #666"
-            />
-          </div>
-          <div class="input-group">
-            <label>이메일</label>
-            <input
-              type="email"
-              value="kimsiheung@example.com"
-              class="input-box"
-              readonly
-              style="background-color: #f3f4f6; color: #666"
-            />
-          </div>
-        </div>
-
-        <div class="info-box">
-          📌 전화번호와 이메일은 다른 사용자에게 공개되지 않으며, 거래 시 안전한
-          연락을 위해 사용됩니다.
-        </div>
+<body>
+  <div class="sidebar">
+    <div class="brand">
+      <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+      <div class="brand-text">
+        <h1>쉐어스팟</h1>
+        <p>시흥시 정왕동</p>
       </div>
     </div>
 
-    <!-- <script src="../JS/auth.js"></script> -->
-    <!-- <script>Auth.guard();</script> -->
-  </body>
+    <div class="menu">
+      <a href="main.html" class="menu-item"><span class="menu-icon">🏠</span> 홈</a>
+      <a href="near_me.html" class="menu-item"><span class="menu-icon">📍</span> 내 근처</a>
+      <a href="chat.html" class="menu-item"><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a>
+      <a href="my.html" class="menu-item active"><span class="menu-icon">👤</span> 나의 시흥</a>
+    </div>
+
+    <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+  </div>
+
+  <div class="main-content edit-profile-layout">
+    <div class="edit-header">
+      <button class="cancel-btn" onclick="history.back()">취소</button>
+      <div class="header-title">프로필 수정</div>
+      <button class="save-btn" onclick="saveProfile()">저장</button>
+    </div>
+
+    <div class="edit-form-container">
+      <div class="section-card profile-img-section">
+        <div class="profile-img-wrapper">
+          <div class="img-placeholder" id="avatarPlaceholder">?</div>
+          <button class="camera-btn" type="button">📷</button>
+        </div>
+        <div class="change-photo-text">프로필 사진 변경</div>
+      </div>
+
+      <div class="section-card">
+        <div class="input-group">
+          <label>이름</label>
+          <input id="nicknameInput" type="text" value="" class="input-box" />
+        </div>
+
+        <div class="input-group">
+          <label>내 동네</label>
+          <div class="select-box">
+            <select id="dongSelect" class="input-box">
+              <option value="시흥시 정왕동">시흥시 정왕동</option>
+              <option value="시흥시 배곧동">시흥시 배곧동</option>
+              <option value="시흥시 은행동">시흥시 은행동</option>
+              <option value="시흥시 목감동">시흥시 목감동</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>소개</label>
+          <textarea
+            id="introTextarea"
+            class="input-box textarea-box"
+            placeholder="자신을 소개해주세요"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="input-group">
+          <label>전화번호</label>
+          <input
+            id="phoneInput"
+            type="text"
+            value=""
+            class="input-box"
+            readonly
+            style="background-color: #f3f4f6; color: #666"
+          />
+        </div>
+
+        <div class="input-group">
+          <label>이메일</label>
+          <input
+            id="emailInput"
+            type="email"
+            value=""
+            class="input-box"
+            readonly
+            style="background-color: #f3f4f6; color: #666"
+          />
+        </div>
+      </div>
+
+      <div class="info-box">
+        📌 전화번호와 이메일은 다른 사용자에게 공개되지 않으며, 거래 시 안전한
+        연락을 위해 사용됩니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ DB에서 내 정보 로딩 + 저장 -->
+  <script>
+    async function loadMeForEdit() {
+      try {
+        const res = await fetch("/api/user/me");
+        if (!res.ok) {
+          console.error("me api failed:", res.status);
+          return;
+        }
+        const me = await res.json();
+
+        // 값 채우기
+        const nickname = me.nickname || me.userId || "";
+        document.getElementById("nicknameInput").value = nickname;
+        document.getElementById("dongSelect").value = me.dong || "시흥시 정왕동";
+        document.getElementById("introTextarea").value = me.intro || "";
+
+        // 읽기전용
+        document.getElementById("phoneInput").value = me.phone || "";
+        document.getElementById("emailInput").value = me.email || "";
+
+        // 아바타
+        const initial =
+          me.profileInitial ||
+          (nickname && nickname.length > 0 ? nickname[0] : "?");
+        document.getElementById("avatarPlaceholder").textContent = initial;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function saveProfile() {
+      try {
+        const nickname = document.getElementById("nicknameInput").value.trim();
+        const dong = document.getElementById("dongSelect").value;
+        const intro = document.getElementById("introTextarea").value;
+
+        if (!nickname) {
+          alert("이름(닉네임)을 입력해주세요.");
+          return;
+        }
+
+        const res = await fetch("/api/user/me", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nickname, dong, intro })
+        });
+
+        if (!res.ok) {
+          alert("프로필 저장 실패");
+          return;
+        }
+
+        // 저장 성공 → 마이페이지
+        location.href = "my.html";
+      } catch (e) {
+        console.error(e);
+        alert("서버 오류");
+      }
+    }
+
+    loadMeForEdit();
+  </script>
+</body>
 </html>
