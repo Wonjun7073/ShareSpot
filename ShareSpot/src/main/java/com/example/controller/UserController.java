@@ -1,10 +1,11 @@
 package com.example.controller;
 
 import com.example.dto.LoginRequest;
-import com.example.service.UserService;
 import com.example.dto.MeResponse;
 import com.example.dto.RegisterRequest;
 import com.example.dto.UpdateProfileRequest;
+import com.example.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -14,6 +15,8 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
 
+    private static final String LOGIN_USER_ID = "LOGIN_USER_ID";
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -21,13 +24,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody LoginRequest req) {
+    public Map<String, Object> login(@RequestBody LoginRequest req, HttpSession session) {
         Map<String, Object> res = new HashMap<>();
 
         boolean success = userService.login(req.getUserId(), req.getPassword());
 
-
         if (success) {
+            session.setAttribute(LOGIN_USER_ID, req.getUserId().trim());
             res.put("success", true);
             res.put("message", "로그인 성공");
         } else {
@@ -38,31 +41,40 @@ public class UserController {
     }
 
     @PostMapping("/register")
-public Map<String, Object> register(@RequestBody RegisterRequest req) {
-    Map<String, Object> res = new HashMap<>();
-    try {
-        userService.register(req.getUserId(), req.getPassword());
-        res.put("success", true);
-        res.put("message", "회원가입 성공");
-    } catch (IllegalArgumentException e) {
-        res.put("success", false);
-        res.put("message", e.getMessage());
-    } catch (Exception e) {
-        res.put("success", false);
-        res.put("message", "서버 오류");
+    public Map<String, Object> register(@RequestBody RegisterRequest req) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            userService.register(req.getUserId(), req.getPassword(), req.getNickname());
+            res.put("success", true);
+            res.put("message", "회원가입 성공");
+        } catch (IllegalArgumentException e) {
+            res.put("success", false);
+            res.put("message", e.getMessage());
+        } catch (Exception e) {
+            res.put("success", false);
+            res.put("message", "서버 오류");
+        }
+        return res;
     }
-    return res;
-}
 
     @GetMapping("/me")
-    public MeResponse me() {
-        return MeResponse.from(userService.getMe());
+    public MeResponse me(HttpSession session) {
+        String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
+        if (loginUserId == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        return MeResponse.from(userService.getMe(loginUserId));
     }
 
     @PutMapping("/me")
-    public MeResponse updateMe(@RequestBody UpdateProfileRequest req) {
-        return MeResponse.from(
-                userService.updateMe(req.getNickname(), req.getDong(), req.getIntro()));
-    }
+    public MeResponse updateMe(@RequestBody UpdateProfileRequest req, HttpSession session) {
+        String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
+        if (loginUserId == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
 
+        return MeResponse.from(
+                userService.updateMe(loginUserId, req.getNickname(), req.getDong(), req.getIntro())
+        );
+    }
 }
