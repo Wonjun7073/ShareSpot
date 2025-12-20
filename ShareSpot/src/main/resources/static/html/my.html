@@ -1,44 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
-<<<<<<< HEAD
-<head>
-  <meta charset="UTF-8" />
-  <title>나의 시흥 • 쉐어스팟</title>
-
-  <!-- 공통 스타일 + 마이페이지 전용 스타일 -->
-  <link rel="stylesheet" href="../Css/style.css" />
-  <link rel="stylesheet" href="../Css/my.css" />
-</head>
-=======
   <head>
     <meta charset="UTF-8" />
     <title>나의 시흥 • 쉐어스팟</title>
+
+    <!-- 공통 스타일 + 마이페이지 전용 스타일 -->
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/my.css" />
   </head>
 
   <body>
+    <!-- 사이드바 -->
     <div class="sidebar">
       <div class="brand">
         <img src="../Images/logo.png" alt="로고" class="brand-logo" />
         <div class="brand-text">
           <h1>쉐어스팟</h1>
-          <p>시흥시 정왕동</p>
+          <p id="dongTextSide">시흥시 정왕동</p>
         </div>
       </div>
->>>>>>> c26fe5d3e0f48a022f8c4e259da189971cda2cf4
 
       <div class="menu">
         <a href="./main.html" class="menu-item">
           <span class="menu-icon">🏠</span> 홈
         </a>
+
         <a href="./near_me.html" class="menu-item">
           <span class="menu-icon">📍</span> 내 근처
         </a>
+
         <a href="./chat.html" class="menu-item">
           <span class="menu-icon">💬</span> 채팅
           <span class="badge">3</span>
         </a>
+
         <a href="./my.html" class="menu-item active">
           <span class="menu-icon">👤</span> 나의 시흥
         </a>
@@ -47,11 +42,10 @@
       <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
     </div>
 
+    <!-- 메인 -->
     <div class="main-content">
       <div class="top-header">
-        <div class="search-bar">
-          <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
-        </div>
+        <div class="search-bar"><span>🔍</span> 물품, 동네 이름 등을 검색해보세요</div>
         <div class="header-actions">
           <button class="write-btn" onclick="location.href='upload.html'">
             <span>✏️</span> 글쓰기
@@ -60,37 +54,35 @@
       </div>
 
       <div class="content-wrapper mypage">
+        <!-- 프로필 카드 -->
         <section class="profile-card card">
-          <div class="avatar">김</div>
+          <div class="avatar" id="avatarText">?</div>
           <div class="profile-meta">
-            <h2 class="nickname">김시흥</h2>
-            <p class="location">시흥시 정왕동</p>
+            <h2 class="nickname" id="nicknameText">로딩중...</h2>
+            <p class="location" id="dongText">로딩중...</p>
           </div>
-          <button
-            class="btn-outline"
-            id="btnEditProfile"
-            onclick="location.href='edit_profile.html'"
-          >
-            프로필 수정
-          </button>
+          <button class="btn-outline" id="btnEditProfile">프로필 수정</button>
         </section>
 
+        <!-- 스탯 -->
         <section class="stats">
           <div class="stat stat-share">
-            <div class="stat-value" id="statShared">8</div>
+            <div class="stat-value" id="statShared">0</div>
             <div class="stat-label">공유한 물품</div>
           </div>
           <div class="stat stat-thanks">
-            <div class="stat-value" id="statThanks">15</div>
+            <div class="stat-value" id="statThanks">0</div>
             <div class="stat-label">받은 감사</div>
           </div>
           <div class="stat stat-trust">
-            <div class="stat-value" id="statTrust">92%</div>
+            <div class="stat-value" id="statTrust">0%</div>
             <div class="stat-label">신뢰도</div>
           </div>
         </section>
 
+        <!-- 하단 2열 -->
         <section class="two-col">
+          <!-- 나의 활동 -->
           <article class="panel card">
             <header class="panel-header">나의 활동</header>
             <ul class="panel-list">
@@ -126,6 +118,7 @@
             </ul>
           </article>
 
+          <!-- 설정 -->
           <article class="panel card">
             <header class="panel-header">설정</header>
             <ul class="panel-list">
@@ -154,244 +147,93 @@
           </article>
         </section>
 
+        <!-- 신뢰 배너 -->
         <aside class="trust-banner card">
           <div class="badge">⭐</div>
           <div class="trust-text">
             <h3>믿을 수 있는 이웃</h3>
-            <p>
-              <strong id="trustCount">15</strong>회의 성공적인 거래를
-              완료했어요!
-            </p>
+            <p><strong id="trustCount">0</strong>회의 성공적인 거래를 완료했어요!</p>
           </div>
         </aside>
       </div>
     </div>
 
-<<<<<<< HEAD
-    <div class="menu">
-      <a href="./main.html" class="menu-item">
-        <span class="menu-icon">🏠</span> 홈
-      </a>
-
-      <a href="./near_me.html" class="menu-item">
-        <span class="menu-icon">📍</span> 내 근처
-      </a>
-
-      <a href="./chat.html" class="menu-item">
-        <span class="menu-icon">💬</span> 채팅
-        <span class="badge">3</span>
-      </a>
-
-      <a href="./my.html" class="menu-item active">
-        <span class="menu-icon">👤</span> 나의 시흥
-      </a>
-    </div>
-
-    <a href="#" class="login" id="logoutBtn">
-      <span>📕</span> 로그아웃
-    </a>
-  </div>
-
-  <!-- 메인 -->
-  <div class="main-content">
-    <div class="top-header">
-      <div class="search-bar">
-        <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
-      </div>
-      <div class="header-actions">
-        <button class="write-btn" onclick="location.href='upload.html'">
-          <span>✏️</span> 글쓰기
-        </button>
-      </div>
-    </div>
-
-    <div class="content-wrapper mypage">
-      <!-- 프로필 카드 -->
-      <section class="profile-card card">
-        <div class="avatar" id="avatarText">?</div>
-        <div class="profile-meta">
-          <h2 class="nickname" id="nicknameText">로딩중...</h2>
-          <p class="location" id="dongText">로딩중...</p>
-        </div>
-        <button class="btn-outline" id="btnEditProfile">프로필 수정</button>
-      </section>
-
-      <!-- 스탯 -->
-      <section class="stats">
-        <div class="stat stat-share">
-          <div class="stat-value" id="statShared">0</div>
-          <div class="stat-label">공유한 물품</div>
-        </div>
-        <div class="stat stat-thanks">
-          <div class="stat-value" id="statThanks">0</div>
-          <div class="stat-label">받은 감사</div>
-        </div>
-        <div class="stat stat-trust">
-          <div class="stat-value" id="statTrust">0%</div>
-          <div class="stat-label">신뢰도</div>
-        </div>
-      </section>
-
-      <!-- 하단 2열 -->
-      <section class="two-col">
-        <!-- 나의 활동 -->
-        <article class="panel card">
-          <header class="panel-header">나의 활동</header>
-          <ul class="panel-list">
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">🧾</span>
-                <span>판매/대여 내역</span>
-              </div>
-              <div class="item-right">
-                <span class="chip" id="chipHistory">3</span>
-                <span class="chevron">›</span>
-              </div>
-            </li>
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">⭐</span>
-                <span>관심목록</span>
-              </div>
-              <div class="item-right">
-                <span class="chip" id="chipWish">12</span>
-                <span class="chevron">›</span>
-              </div>
-            </li>
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">✍️</span>
-                <span>내가 쓴 글</span>
-              </div>
-              <div class="item-right">
-                <span class="chevron">›</span>
-              </div>
-            </li>
-          </ul>
-        </article>
-
-        <!-- 설정 -->
-        <article class="panel card">
-          <header class="panel-header">설정</header>
-          <ul class="panel-list">
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">🔔</span>
-                <span>알림 설정</span>
-              </div>
-              <div class="item-right"><span class="chevron">›</span></div>
-            </li>
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">👤</span>
-                <span>계정 설정</span>
-              </div>
-              <div class="item-right"><span class="chevron">›</span></div>
-            </li>
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">🧰</span>
-                <span>고객센터</span>
-              </div>
-              <div class="item-right"><span class="chevron">›</span></div>
-            </li>
-            <li class="panel-item">
-              <div class="item-left">
-                <span class="icon">📈</span>
-                <span>신뢰 지수</span>
-              </div>
-              <div class="item-right"><span class="chevron">›</span></div>
-            </li>
-          </ul>
-        </article>
-      </section>
-
-      <!-- 신뢰 배너 -->
-      <aside class="trust-banner card">
-        <div class="badge">⭐</div>
-        <div class="trust-text">
-          <h3>믿을 수 있는 이웃</h3>
-          <p>
-            <strong id="trustCount">0</strong>회의 성공적인 거래를
-            완료했어요!
-          </p>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- 기존 스크립트 (로그아웃 등) -->
-  <script src="../JS/auth.js"></script>
-  <script src="../JS/my.js"></script>
-  <div id="modal-root"></div>
-  <script src="../Components/sidebar-auth.js"></script>
-
-  <!-- ✅ DB에서 내 정보 로딩 + 프로필 수정 버튼 연결 -->
-  <script>
-    // 프로필 수정 페이지로 이동
-    const editBtn = document.getElementById("btnEditProfile");
-    if (editBtn) {
-      editBtn.addEventListener("click", () => {
-        location.href = "edit_profile.html";
-      });
-    }
-
-    // API로 내 정보 조회해서 화면에 뿌리기
-    async function loadMe() {
-      try {
-        const res = await fetch("/api/user/me");
-        if (!res.ok) {
-          console.error("me api failed:", res.status);
-          return;
-        }
-
-        const me = await res.json();
-
-        // 닉네임 / 동네
-        const nickname = me.nickname || me.userId || "사용자";
-        const dong = me.dong || "내 동네";
-
-        document.getElementById("nicknameText").textContent = nickname;
-        document.getElementById("dongText").textContent = dong;
-
-        // 아바타 글자
-        const initial =
-          me.profileInitial ||
-          (nickname && nickname.length > 0 ? nickname[0] : "?");
-        document.getElementById("avatarText").textContent = initial;
-
-        // 스탯
-        document.getElementById("statShared").textContent =
-          me.sharedCount ?? 0;
-        document.getElementById("statThanks").textContent =
-          me.thanksCount ?? 0;
-        document.getElementById("statTrust").textContent =
-          (me.trustPercent ?? 0) + "%";
-
-        // 배너 숫자(임시: thanksCount로 연결)
-        document.getElementById("trustCount").textContent =
-          me.thanksCount ?? 0;
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    loadMe();
-  </script>
-</body>
-=======
+    <!-- 스크립트 -->
     <script src="../JS/auth.js"></script>
-    <script>
-      Auth.guard();
-      const me = Auth.getUser();
-      if (me) {
-        const nickEl = document.querySelector('.nickname');
-        const locEl = document.querySelector('.location');
-        if (nickEl) nickEl.textContent = me.nickname || me.id;
-        if (locEl) locEl.textContent = me.dong || '내 동네';
-      }
-    </script>
     <script src="../JS/my.js"></script>
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
+
+    <script>
+      // ✅ 로그인 필요
+      if (window.Auth && typeof Auth.guard === "function") {
+        Auth.guard();
+      }
+
+      // ✅ 로그아웃 버튼 (auth.js에 logout만 있으니 이동까지 처리)
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          if (window.Auth) Auth.logout();
+          location.href = "./login.html";
+        });
+      }
+
+      // ✅ 프로필 수정 페이지로 이동
+      const editBtn = document.getElementById("btnEditProfile");
+      if (editBtn) {
+        editBtn.addEventListener("click", () => {
+          location.href = "./edit_profile.html";
+        });
+      }
+
+      // ✅ API로 내 정보 조회해서 화면에 뿌리기
+      async function loadMe() {
+        try {
+          const res = await fetch("/api/user/me");
+          if (!res.ok) {
+            console.error("me api failed:", res.status);
+            return;
+          }
+
+          const me = await res.json();
+
+          // 닉네임 / 동네
+          const nickname = me.nickname || me.userId || "사용자";
+          const dong = me.dong || "내 동네";
+
+          const nickEl = document.getElementById("nicknameText");
+          const dongEl = document.getElementById("dongText");
+          if (nickEl) nickEl.textContent = nickname;
+          if (dongEl) dongEl.textContent = dong;
+
+          const sideDong = document.getElementById("dongTextSide");
+          if (sideDong) sideDong.textContent = dong;
+
+          // 아바타 글자
+          const initial =
+            me.profileInitial || (nickname && nickname.length > 0 ? nickname[0] : "?");
+          const avatarEl = document.getElementById("avatarText");
+          if (avatarEl) avatarEl.textContent = initial;
+
+          // 스탯
+          const sharedEl = document.getElementById("statShared");
+          const thanksEl = document.getElementById("statThanks");
+          const trustEl = document.getElementById("statTrust");
+
+          if (sharedEl) sharedEl.textContent = me.sharedCount ?? 0;
+          if (thanksEl) thanksEl.textContent = me.thanksCount ?? 0;
+          if (trustEl) trustEl.textContent = (me.trustPercent ?? 0) + "%";
+
+          // 배너 숫자(임시: thanksCount로 연결)
+          const trustCountEl = document.getElementById("trustCount");
+          if (trustCountEl) trustCountEl.textContent = me.thanksCount ?? 0;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      loadMe();
+    </script>
   </body>
->>>>>>> c26fe5d3e0f48a022f8c4e259da189971cda2cf4
 </html>

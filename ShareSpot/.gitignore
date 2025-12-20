@@ -4,3 +4,5 @@
 /.settings/
 *.mv.db
 *.trace.db
+*.db
+data/*.db
