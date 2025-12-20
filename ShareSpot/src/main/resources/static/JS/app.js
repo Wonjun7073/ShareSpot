@@ -128,11 +128,28 @@
     if(chatMenuBtn) chatMenuBtn.classList.add('active');
   }
 
-  // (3) 홈 화면(물품 목록) 렌더링
-  function renderHome() {
+ // (3) 홈 화면(물품 목록) 렌더링 - 실제 서버 DB 연동 버전
+  async function renderHome() {
     grid.style.display = 'grid'; // 다시 그리드 레이아웃으로 복귀
-    const html = window.POSTS.map(toCardHTML).join("");
-    grid.innerHTML = html;
+    
+    try {
+      // 서버에서 실제 물품 목록 가져오기
+      const response = await fetch('/api/items');
+      const items = await response.json();
+
+      if (items.length === 0) {
+        grid.style.display = 'block';
+        grid.innerHTML = '<p style="text-align: center; color: #6A7282; padding: 50px;">등록된 물품이 없습니다. 첫 물품을 등록해보세요!</p>';
+      } else {
+        grid.style.display = 'grid';
+        // 서버에서 받아온 items를 HTML 카드 형태로 변환하여 삽입
+        const html = items.map(toCardHTML).join("");
+        grid.innerHTML = html;
+      }
+    } catch (error) {
+      console.error("데이터 로드 실패:", error);
+      grid.innerHTML = '<p style="text-align: center; color: red;">서버 연결에 실패했습니다.</p>';
+    }
     
     // 메뉴 활성화 상태 변경
     document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
