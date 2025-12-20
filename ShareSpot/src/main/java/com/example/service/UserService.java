@@ -3,8 +3,8 @@ package com.example.service;
 import com.example.entity.User;
 import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -15,31 +15,21 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // 🔍 로그인 (디버깅용)
+    // ✅ 로그인
     public boolean login(String userId, String password) {
         final String uid = (userId == null) ? null : userId.trim();
         final String pw = (password == null) ? null : password.trim();
 
-        System.out.println("[LOGIN] input userId='" + uid + "', password='" + pw + "'");
-
         return userRepository.findByUserId(uid)
-                .map(u -> {
-                    System.out.println("[LOGIN] FOUND userId='" + u.getUserId() + "'");
-                    System.out.println("[LOGIN] DB password='" + u.getPassword() + "'");
-                    return Objects.equals(u.getPassword(), pw);
-                })
-                .orElseGet(() -> {
-                    System.out.println("[LOGIN] NOT FOUND userId='" + uid + "'");
-                    return false;
-                });
+                .map(u -> Objects.equals(u.getPassword(), pw))
+                .orElse(false);
     }
 
-    // 🔍 회원가입 (디버깅용)
-    public void register(String userId, String password) {
+    // ✅ 회원가입 (userId, password, nickname)
+    public void register(String userId, String password, String nickname) {
         userId = userId == null ? null : userId.trim();
         password = password == null ? null : password.trim();
-
-        System.out.println("[REGISTER] input userId='" + userId + "', password='" + password + "'");
+        nickname = nickname == null ? "" : nickname.trim();
 
         if (userId == null || userId.isBlank() || password == null || password.isBlank()) {
             throw new IllegalArgumentException("아이디/비밀번호를 입력하세요.");
@@ -48,24 +38,30 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
-        User saved = userRepository.save(new User(userId, password));
-        System.out.println("[REGISTER] SAVED id=" + saved.getId() + ", userId='" + saved.getUserId() + "'");
+        User u = new User(userId, password);
+        u.setNickname(nickname);
+
+        if (!nickname.isBlank()) {
+            u.setProfileInitial(nickname.substring(0, 1));
+        }
+
+        userRepository.save(u);
     }
 
-    // ✅ 아래는 그대로 유지 (절대 수정 X)
-    private static final String CURRENT_USER_ID = "parkmj0390";
-
-    public User getMe() {
-        return userRepository.findByUserId(CURRENT_USER_ID)
-                .orElseThrow(() -> new IllegalStateException("임시 사용자 데이터가 없습니다."));
+    // ✅ 현재 로그인 유저 조회
+    public User getMe(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalStateException("사용자 데이터가 없습니다."));
     }
 
-    public User updateMe(String nickname, String dong, String intro) {
-        User me = getMe();
+    // ✅ 현재 로그인 유저 수정
+    public User updateMe(String userId, String nickname, String dong, String intro) {
+        User me = getMe(userId);
 
         if (nickname != null && !nickname.isBlank()) {
-            me.setNickname(nickname.trim());
-            me.setProfileInitial(nickname.substring(0, 1));
+            String nn = nickname.trim();
+            me.setNickname(nn);
+            me.setProfileInitial(nn.substring(0, 1));
         }
         if (dong != null && !dong.isBlank()) {
             me.setDong(dong.trim());

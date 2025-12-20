@@ -1,13 +1,11 @@
 package com.example.controller;
 
 import com.example.dto.LoginRequest;
-import com.example.service.UserService;
-
-import jakarta.servlet.http.HttpSession;
-
 import com.example.dto.MeResponse;
 import com.example.dto.RegisterRequest;
 import com.example.dto.UpdateProfileRequest;
+import com.example.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -16,6 +14,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    private static final String LOGIN_USER_ID = "LOGIN_USER_ID";
 
     private final UserService userService;
 
@@ -30,7 +30,7 @@ public class UserController {
         boolean success = userService.login(req.getUserId(), req.getPassword());
 
         if (success) {
-            session.setAttribute("LOGIN_USER_ID", req.getUserId().trim()); // ✅ 저장
+            session.setAttribute(LOGIN_USER_ID, req.getUserId().trim());
             res.put("success", true);
             res.put("message", "로그인 성공");
         } else {
@@ -59,7 +59,7 @@ public class UserController {
 
     @GetMapping("/me")
     public MeResponse me(HttpSession session) {
-        String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
+        String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
         if (loginUserId == null) {
             throw new IllegalStateException("로그인이 필요합니다.");
         }
@@ -68,12 +68,13 @@ public class UserController {
 
     @PutMapping("/me")
     public MeResponse updateMe(@RequestBody UpdateProfileRequest req, HttpSession session) {
-        String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
+        String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
         if (loginUserId == null) {
             throw new IllegalStateException("로그인이 필요합니다.");
         }
-        return MeResponse.from(
-                userService.updateMe(loginUserId, req.getNickname(), req.getDong(), req.getIntro()));
-    }
 
+        return MeResponse.from(
+                userService.updateMe(loginUserId, req.getNickname(), req.getDong(), req.getIntro())
+        );
+    }
 }
