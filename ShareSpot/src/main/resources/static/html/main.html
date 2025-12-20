@@ -1,67 +1,85 @@
 <!DOCTYPE html>
 <html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>쉐어스팟</title>
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>쉐어스팟</title>
-  <!-- Html 폴더 기준의 상대경로: 한 단계 위로 올라가서 Css -->
-  <link rel="stylesheet" type="text/css" href="../Css/style.css" />
-</head>
-
-<body>
-  <div class="sidebar">
-    <div class="brand">
-      <img src="../Images/logo.png" alt="로고" class="brand-logo" />
-      <div class="brand-text">
-        <h1>쉐어스팟</h1>
-        <p>시흥시 정왕동</p>
-      </div>
-    </div>
-
-    <div class="menu">
-      <a href="#" class="menu-item active"><span class="menu-icon">🏠</span> 홈</a>
-      <a href="./near_me.html" class="menu-item"><span class="menu-icon">📍</span> 내 근처</a>
-      <a href="./chat.html" class="menu-item"><span class="menu-icon">💬</span pulln> 채팅
-        <span class="badge">3</span></a>
-      <a href="./my.html" class="menu-item"><span class="menu-icon">👤</span> 나의 시흥</a>
-    </div>
-    <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
-  </div>
-
-  <div class="main-content">
-    <div class="top-header">
-      <div class="search-bar">
-        <span>🔍</span>
-        <input type="text" id="searchInput" placeholder="물품, 동네 이름 등을 검색해보세요">
-      </div>
-      <div class="header-actions">
-        <button class="write-btn" onclick="location.href='upload.html'"><span>✏️</span> 글쓰기</button>
-      </div>
-    </div>
-
-    <div class="content-wrapper">
-      <div class="filter-bar">
-        <div class="filter-buttons">
-          <button class="filter-btn active">전체</button>
-          <button class="filter-btn">나눔</button>
-          <button class="filter-btn">대여</button>
-          <button class="filter-btn">교환</button>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
         </div>
-        <div class="sort-dropdown">정렬: 최신순 ▼</div>
       </div>
 
-      <!-- JS가 여기에 카드 목록을 렌더링 -->
-      <div id="itemGrid" class="item-grid"></div>
+      <div class="menu">
+        <a href="#" class="menu-item active"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="./near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="./chat.html" class="menu-item"
+          ><span class="menu-icon">💬</span> 채팅
+          <span class="badge">3</span></a
+        >
+        <a href="./my.html" class="menu-item"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
+      </div>
+
+      <!-- ✅ upload의 디자인(class="login") 유지 + id만 logoutBtn -->
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
-  </div>
 
-  <!-- 데이터와 앱 스크립트 (Html 기준에서 한 단계 위의 JS 폴더) -->
-  <script src="../JS/auth.js"></script>
-  <script>
-    Auth.guard(); // 로그인 검증
-  </script>
-  <script src="../JS/data.js"></script>
-  <script src="../JS/app.js"></script>
-</body>
+    <div class="main-content">
+      <div class="top-header">
+        <div class="search-bar">
+          <span>🔍</span>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="물품, 동네 이름 등을 검색해보세요"
+          />
+        </div>
+        <div class="header-actions">
+          <button class="write-btn" onclick="location.href='upload.html'">
+            <span>✏️</span> 글쓰기
+          </button>
+        </div>
+      </div>
 
+      <div class="content-wrapper">
+        <div class="filter-bar">
+          <div class="filter-buttons">
+            <button class="filter-btn active">전체</button>
+            <button class="filter-btn">나눔</button>
+            <button class="filter-btn">대여</button>
+            <button class="filter-btn">교환</button>
+          </div>
+          <div class="sort-dropdown">정렬: 최신순 ▼</div>
+        </div>
+
+        <div id="itemGrid" class="item-grid"></div>
+      </div>
+    </div>
+
+    <!-- 스크립트 -->
+    <script src="../JS/auth.js"></script>
+
+    <script>
+      Auth.guard(); // 로그인 검증
+    </script>
+
+    <script src="../JS/data.js"></script>
+    <script src="../JS/app.js"></script>
+
+    <div id="modal-root"></div>
+
+    <script src="../Components/sidebar-auth.js"></script>
+  </body>
 </html>
