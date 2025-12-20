@@ -17,6 +17,9 @@ public class ItemController {
     // 1. 물품 등록 API
     @PostMapping
     public Item createItem(@RequestBody Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("물품 정보가 없습니다.");
+        }
         return itemRepository.save(item);
     }
 
