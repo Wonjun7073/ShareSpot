@@ -29,13 +29,14 @@
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
       </div>
-      <div class="logout" id="logoutBtn"><span>🚪</span> 로그아웃</div>
+      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
     <div class="main-content trust-layout">
-      <div class="page-header">
-        <button class="back-btn" onclick="history.back()">←</button>
-        <h2 class="header-title">신뢰 지수</h2>
+      <div class="edit-header">
+        <button class="cancel-btn" onclick="history.back()">나가기</button>
+        <div class="header-title">신뢰 지수</div>
+        <div style="width: 48px"></div>
       </div>
 
       <div class="trust-container">
@@ -171,5 +172,7 @@
     <script>
       Auth.guard();
     </script>
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>

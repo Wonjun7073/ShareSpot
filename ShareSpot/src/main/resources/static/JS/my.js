@@ -1,29 +1,71 @@
-// 마이페이지 전용 스크립트 (기본 분리)
+// my.js (서버 연동 최종본)
 (function () {
-  // 더미 데이터 (필요시 서버/스토리지 연동으로 교체 가능)
-  const state = {
-    shared: 8,
-    thanks: 15,
-    trust: 92,
-    history: 3,
-    wish: 12,
-  };
+  /* =====================
+   * 로그인 가드
+   * ===================== */
+  if (window.Auth && typeof Auth.guard === "function") {
+    Auth.guard();
+  }
 
-  // 값 바인딩
-  document.getElementById('statShared').textContent = state.shared;
-  document.getElementById('statThanks').textContent = state.thanks;
-  document.getElementById('statTrust').textContent = state.trust + '%';
-  document.getElementById('chipHistory').textContent = state.history;
-  document.getElementById('chipWish').textContent = state.wish;
-  document.getElementById('trustCount').textContent = state.thanks;
-
-  // 이벤트 예시: 프로필 수정 버튼
-  // 이벤트 예시: 프로필 수정 버튼 클릭 시 이동
-  const editBtn = document.getElementById('btnEditProfile');
+  /* =====================
+   * 프로필 수정 이동
+   * ===================== */
+  const editBtn = document.getElementById("btnEditProfile");
   if (editBtn) {
-    editBtn.addEventListener('click', function () {
-      // 경고창 대신 진짜 페이지 이동 코드로 변경!
-      location.href = 'edit_profile.html';
+    editBtn.addEventListener("click", () => {
+      location.href = "./edit_profile.html";
     });
   }
+
+  /* =====================
+   * 화면 렌더링
+   * ===================== */
+  function renderMe(me) {
+    const nickname = me.nickname || me.userId || "사용자";
+    const dong = me.dong || "내 동네";
+
+    document.getElementById("nicknameText").textContent = nickname;
+    document.getElementById("dongText").textContent = dong;
+
+    const sideDong = document.getElementById("dongTextSide");
+    if (sideDong) sideDong.textContent = dong;
+
+    const avatar = me.profileInitial || (nickname ? nickname[0] : "?");
+    document.getElementById("avatarText").textContent = avatar;
+
+    document.getElementById("statShared").textContent = me.sharedCount ?? 0;
+    document.getElementById("statThanks").textContent = me.thanksCount ?? 0;
+    document.getElementById("statTrust").textContent =
+      (me.trustPercent ?? 0) + "%";
+
+    document.getElementById("trustCount").textContent = me.thanksCount ?? 0;
+  }
+
+  /* =====================
+   * 서버에서 내 정보 조회
+   * ===================== */
+  async function loadMe() {
+    try {
+      const res = await fetch("/api/user/me");
+      if (!res.ok) {
+        console.error("me api failed:", res.status);
+
+        // 🔁 fallback (localStorage)
+        const local = Auth.getUser();
+        if (local) renderMe(local);
+        return;
+      }
+
+      const me = await res.json();
+      renderMe(me);
+    } catch (e) {
+      console.error("me api error:", e);
+
+      // 🔁 fallback
+      const local = Auth.getUser();
+      if (local) renderMe(local);
+    }
+  }
+
+  loadMe();
 })();

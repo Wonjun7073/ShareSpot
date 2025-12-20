@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>나의 시흥 • 쉐어스팟</title>
 
-    <!-- 공통 스타일 + 마이페이지 전용 스타일 -->
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/my.css" />
   </head>
@@ -38,8 +37,7 @@
           <span class="menu-icon">👤</span> 나의 시흥
         </a>
       </div>
-
-      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
+      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
     <!-- 메인 -->
@@ -133,6 +131,7 @@
                   <div class="item-right"><span class="chevron">›</span></div>
                 </a>
               </li>
+
               <li class="panel-item" onclick="location.href='help.html'">
                 <div class="item-left">
                   <span class="icon">🧰</span>
@@ -140,6 +139,7 @@
                 </div>
                 <div class="item-right"><span class="chevron">›</span></div>
               </li>
+
               <li class="panel-item" onclick="location.href='trust.html'">
                 <div class="item-left">
                   <span class="icon">📈</span>
@@ -164,97 +164,11 @@
       </div>
     </div>
 
-    <!-- 스크립트 -->
+    <!-- 스크립트: 순서 중요 -->
     <script src="../JS/auth.js"></script>
-    <script>
-      Auth.guard();
-      const me = Auth.getUser();
-      if (me) {
-        const nickEl = document.querySelector('.nickname');
-        const locEl = document.querySelector('.location');
-        if (nickEl) nickEl.textContent = me.nickname || me.id;
-        if (locEl) locEl.textContent = me.dong || '내 동네';
-      }
-    </script>
     <script src="../JS/my.js"></script>
 
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
-    <script src="../JS/my.js"></script>
-    <div id="modal-root"></div>
-    <script src="../Components/sidebar-auth.js"></script>
-
-    <script>
-      // ✅ 로그인 필요
-      if (window.Auth && typeof Auth.guard === 'function') {
-        Auth.guard();
-      }
-
-      // ✅ 로그아웃 버튼 (auth.js에 logout만 있으니 이동까지 처리)
-      const logoutBtn = document.getElementById('logoutBtn');
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-          if (window.Auth) Auth.logout();
-          location.href = './login.html';
-        });
-      }
-
-      // ✅ 프로필 수정 페이지로 이동
-      const editBtn = document.getElementById('btnEditProfile');
-      if (editBtn) {
-        editBtn.addEventListener('click', () => {
-          location.href = './edit_profile.html';
-        });
-      }
-
-      // ✅ API로 내 정보 조회해서 화면에 뿌리기
-      async function loadMe() {
-        try {
-          const res = await fetch('/api/user/me');
-          if (!res.ok) {
-            console.error('me api failed:', res.status);
-            return;
-          }
-
-          const me = await res.json();
-
-          // 닉네임 / 동네
-          const nickname = me.nickname || me.userId || '사용자';
-          const dong = me.dong || '내 동네';
-
-          const nickEl = document.getElementById('nicknameText');
-          const dongEl = document.getElementById('dongText');
-          if (nickEl) nickEl.textContent = nickname;
-          if (dongEl) dongEl.textContent = dong;
-
-          const sideDong = document.getElementById('dongTextSide');
-          if (sideDong) sideDong.textContent = dong;
-
-          // 아바타 글자
-          const initial =
-            me.profileInitial ||
-            (nickname && nickname.length > 0 ? nickname[0] : '?');
-          const avatarEl = document.getElementById('avatarText');
-          if (avatarEl) avatarEl.textContent = initial;
-
-          // 스탯
-          const sharedEl = document.getElementById('statShared');
-          const thanksEl = document.getElementById('statThanks');
-          const trustEl = document.getElementById('statTrust');
-
-          if (sharedEl) sharedEl.textContent = me.sharedCount ?? 0;
-          if (thanksEl) thanksEl.textContent = me.thanksCount ?? 0;
-          if (trustEl) trustEl.textContent = (me.trustPercent ?? 0) + '%';
-
-          // 배너 숫자(임시: thanksCount로 연결)
-          const trustCountEl = document.getElementById('trustCount');
-          if (trustCountEl) trustCountEl.textContent = me.thanksCount ?? 0;
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      loadMe();
-    </script>
   </body>
 </html>

@@ -35,10 +35,7 @@
           <span class="menu-icon">👤</span> 나의 시흥
         </a>
       </div>
-
-      <a href="#" class="login" id="logoutBtnSidebar">
-        <span>📕</span> 로그아웃
-      </a>
+      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
     <!-- ✅ 메인: my.html과 동일 -->
@@ -142,28 +139,10 @@
         </section>
       </div>
     </div>
-
-    <!-- ✅ 기존 confirmModal 재사용 (style.css의 .modal.show) -->
-    <div id="confirmModal" class="modal" aria-hidden="true">
-      <div
-        class="modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modalTitle"
-      >
-        <h3 id="modalTitle">확인</h3>
-        <p id="modalMessage">메시지</p>
-        <div class="modal-actions">
-          <button id="modalCancel" class="btn-outline" type="button">
-            취소
-          </button>
-          <button id="modalOk" class="btn-primary" type="button">확인</button>
-        </div>
-      </div>
-    </div>
-
     <script src="../JS/auth.js"></script>
     <script src="../JS/account_settings.js"></script>
+    <div id="modal-root"></div>
+
     <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>

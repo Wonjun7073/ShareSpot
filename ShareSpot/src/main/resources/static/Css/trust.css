@@ -294,8 +294,33 @@
   position: relative;
 }
 .tip-list li::before {
-  content: '•';
+  content: "•";
   position: absolute;
   left: 0;
   color: #1e3a8a;
+}
+
+.edit-header {
+  height: 65px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0a0a0a;
+}
+
+.cancel-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #6a7282;
+  cursor: pointer;
 }

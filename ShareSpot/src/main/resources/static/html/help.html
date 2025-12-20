@@ -31,14 +31,12 @@
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
       </div>
-
-      <!-- ✅ 다른 페이지들과 통일: a.login or div.logout 중 하나만 쓰기 -->
       <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
     <div class="main-content help-layout">
       <div class="edit-header">
-        <button class="cancel-btn" onclick="history.back()">취소</button>
+        <button class="cancel-btn" onclick="history.back()">나가기</button>
         <div class="header-title">계정 설정</div>
         <div style="width: 48px"></div>
       </div>
@@ -130,27 +128,9 @@
       </div>
     </div>
 
-    <!-- ✅ confirmModal 재사용 (style.css의 .modal.show 기준) -->
-    <div id="confirmModal" class="modal" aria-hidden="true">
-      <div
-        class="modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modalTitle"
-      >
-        <h3 id="modalTitle">확인</h3>
-        <p id="modalMessage">메시지</p>
-        <div class="modal-actions">
-          <button id="modalCancel" class="btn-outline" type="button">
-            취소
-          </button>
-          <button id="modalOk" class="btn-primary" type="button">확인</button>
-        </div>
-      </div>
-    </div>
-
     <script src="../JS/auth.js"></script>
     <script src="../JS/help.js"></script>
+    <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>
