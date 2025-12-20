@@ -19,6 +19,7 @@ public class Item {
     private String location;    // 거래 희망 장소
     @Column(columnDefinition = "TEXT")
     private String description; // 자세한 설명
+    private String imageUrl;   // 이미지 파일 경로
     
     private LocalDateTime createdAt = LocalDateTime.now(); // 등록 시간
 }

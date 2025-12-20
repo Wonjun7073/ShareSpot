@@ -19,6 +19,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             // 경로 허용 범위를 더 넓게 잡아 누락을 방지합니다.
             .requestMatchers("/", "/html/**", "/JS/**", "/Css/**", "/Images/**", "/Components/**").permitAll()
             .requestMatchers("/api/items/**", "/api/user/**").permitAll()
+            .requestMatchers("/uploads/**").permitAll()
             .anyRequest().authenticated()
         )
         .formLogin(login -> login
