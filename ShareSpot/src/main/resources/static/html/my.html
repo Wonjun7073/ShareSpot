@@ -45,7 +45,9 @@
     <!-- 메인 -->
     <div class="main-content">
       <div class="top-header">
-        <div class="search-bar"><span>🔍</span> 물품, 동네 이름 등을 검색해보세요</div>
+        <div class="search-bar">
+          <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
+        </div>
         <div class="header-actions">
           <button class="write-btn" onclick="location.href='upload.html'">
             <span>✏️</span> 글쓰기
@@ -154,7 +156,9 @@
           <div class="badge">⭐</div>
           <div class="trust-text">
             <h3>믿을 수 있는 이웃</h3>
-            <p><strong id="trustCount">0</strong>회의 성공적인 거래를 완료했어요!</p>
+            <p>
+              <strong id="trustCount">0</strong>회의 성공적인 거래를 완료했어요!
+            </p>
           </div>
         </aside>
       </div>
@@ -162,7 +166,6 @@
 
     <!-- 스크립트 -->
     <script src="../JS/auth.js"></script>
-<<<<<<< HEAD
     <script>
       Auth.guard();
       const me = Auth.getUser();
@@ -177,7 +180,6 @@
 
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
-=======
     <script src="../JS/my.js"></script>
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
@@ -230,7 +232,8 @@
 
           // 아바타 글자
           const initial =
-            me.profileInitial || (nickname && nickname.length > 0 ? nickname[0] : "?");
+            me.profileInitial ||
+            (nickname && nickname.length > 0 ? nickname[0] : "?");
           const avatarEl = document.getElementById("avatarText");
           if (avatarEl) avatarEl.textContent = initial;
 
@@ -253,6 +256,5 @@
 
       loadMe();
     </script>
->>>>>>> 5e499e1b3b21ce5a30f0c1c982037a26eaf28d03
   </body>
 </html>
