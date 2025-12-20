@@ -28,10 +28,13 @@ const Auth = {
 
       if (!res.ok || !data.success) return false;
 
+      // ✅ 로그인 성공 시 저장 정보 (확장 가능)
       localStorage.setItem(
         this.STORAGE_KEY,
         JSON.stringify({
-          userId,
+          userId: data.userId || userId,
+          nickname: data.nickname || null,
+          dong: data.dong || null,
           loginAt: Date.now(),
         })
       );
@@ -46,15 +49,19 @@ const Auth = {
   /* =========================
    * 회원가입
    * ========================= */
-  async register(userId, password) {
+  async register(userId, password, nickname) {
     try {
       const res = await fetch("/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, password }),
+        body: JSON.stringify({
+          userId,
+          password,
+          nickname, // ✅ 닉네임 추가
+        }),
       });
 
-      const text = await res.text(); // ✅ 에러도 그대로 받기
+      const text = await res.text();
       let data;
       try {
         data = JSON.parse(text);
@@ -66,15 +73,17 @@ const Auth = {
         };
       }
 
-      if (!res.ok) {
-        console.error("REGISTER HTTP ERROR:", res.status, data);
+      if (!res.ok || !data.success) {
+        console.error("REGISTER ERROR:", data);
         return {
           success: false,
-          message: `HTTP ${res.status} 오류`,
+          message: data.message || "회원가입 실패",
         };
       }
 
-      return data;
+      return {
+        success: true,
+      };
     } catch (e) {
       console.error("회원가입 네트워크 오류:", e);
       return {
@@ -89,6 +98,7 @@ const Auth = {
    * ========================= */
   logout() {
     localStorage.removeItem(this.STORAGE_KEY);
+    location.href = "./login.html";
   },
 
   /* =========================
