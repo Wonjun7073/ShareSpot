@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>쉐어스팟 - 판매/대여 내역</title>
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/history.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="main.html" class="menu-item"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="chat.html" class="menu-item"
+          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
+        >
+        <a href="my.html" class="menu-item active"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
+      </div>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
+    </div>
+
+    <div class="main-content history-layout">
+      <div class="page-header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <h2 class="header-title">판매/대여 내역</h2>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-item active">판매중 (3)</div>
+        <div class="tab-item">거래완료 (5)</div>
+      </div>
+
+      <div class="history-list">
+        <div class="history-card">
+          <div class="card-img-box">
+            <div class="img-placeholder"></div>
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge green">나눔</span>
+              <span class="time-text">2일 전</span>
+            </div>
+            <h3 class="card-title">공기청정기 나눔합니다</h3>
+            <p class="card-price">나눔 🎁</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 8</span>
+                <span>❤️ 15</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-card">
+          <div class="card-img-box">
+            <div class="img-placeholder"></div>
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge blue">대여</span>
+              <span class="time-text">5일 전</span>
+            </div>
+            <h3 class="card-title">전기자전거 대여해요</h3>
+            <p class="card-price">15,000원</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 12</span>
+                <span>❤️ 23</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-card">
+          <div class="card-img-box">
+            <div class="img-placeholder"></div>
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge purple">교환</span>
+              <span class="time-text">1주일 전</span>
+            </div>
+            <h3 class="card-title">키보드 교환해요</h3>
+            <p class="card-price">나눔 🎁</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 5</span>
+                <span>❤️ 9</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="logoutModalContainer"></div>
+
+    <script src="../JS/auth.js"></script>
+    <script>
+      Auth.guard();
+    </script>
+    <script src="../JS/near_me.js"></script>
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
+  </body>
+</html>
