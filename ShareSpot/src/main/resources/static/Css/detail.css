@@ -1,0 +1,181 @@
+/* ===========================================
+   detail.html 전용 (style.css 위에 얹는 것만)
+   - 전역(html, body, :root) 건드리지 않음
+=========================================== */
+
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* page는 wrapper 폭을 그대로 쓰게 */
+.detail-page .page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* wishlist card 톤과 맞춤 */
+.detail-page .photo,
+.detail-page .content,
+.detail-page .bottombar {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+/* ===== 이미지 영역 ===== */
+.detail-page .photo {
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.detail-page .photo img {
+  width: 100%;
+  height: 460px; /* ✅ 너무 커 보이면 420~520에서 조절 */
+  display: block;
+  object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+  .detail-page .photo img {
+    height: 320px;
+  }
+}
+
+/* ===== 내용 영역 ===== */
+.detail-page .content {
+  padding: 16px;
+}
+
+/* 작성자 */
+.detail-page .author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 0 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-page .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+}
+
+.detail-page .author-text .name {
+  font-size: 16px;
+  line-height: 24px;
+  color: #0a0a0a;
+}
+
+.detail-page .author-text .location {
+  font-size: 14px;
+  line-height: 20px;
+  color: #6a7282;
+}
+
+/* 본문 */
+.detail-page .post {
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-page .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #ffedd4;
+  color: #f54900;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.detail-page .title {
+  margin: 10px 0 6px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+  color: #0a0a0a;
+}
+
+.detail-page .meta {
+  color: #6a7282;
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+
+.detail-page .desc {
+  margin: 0 0 12px;
+  color: #364153;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.detail-page .stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #6a7282;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* 가격 */
+.detail-page .price {
+  padding-top: 16px;
+}
+
+.detail-page .price-label {
+  color: #6a7282;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.detail-page .price-value {
+  margin-top: 6px;
+  font-size: 24px;
+  line-height: 32px;
+  color: #0a0a0a;
+}
+
+/* ===== 하단 액션바 (fixed X, 카드형) ===== */
+.detail-page .bottombar {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 버튼들 */
+.detail-page .outline-btn {
+  width: 120px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #d1d5dc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.detail-page .primary-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  border: 0;
+  background: #ff6900;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.detail-page .primary-btn:hover {
+  filter: brightness(0.98);
+}

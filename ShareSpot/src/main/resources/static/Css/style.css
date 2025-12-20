@@ -420,3 +420,41 @@ body {
   opacity: 1;
   transform: translateX(-50%) translateY(-6px);
 }
+/* ===== 공통 상단 헤더: edit-header 통일 (wishlist 기준) ===== */
+/* ===== 공통 상단 헤더: edit-header 통일 (wishlist 기준) ===== */
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.cancel-btn {
+  width: 110px;
+  padding: 8px 10px;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  font-size: 16px;
+  font-weight: 400;
+  color: #6a7282;
+
+  text-align: left;
+  white-space: nowrap;
+}
+
+.header-title {
+  flex: 1;
+  text-align: center;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #0a0a0a;
+}
+
+/* 오른쪽 더미 폭은 왼쪽 버튼과 동일해야 제목이 정확히 중앙 */
+.edit-header > div:last-child {
+  width: 110px;
+}
