@@ -79,9 +79,14 @@
   }
 
   function toCardHTML(p) {
+    // 💡 추가: 서버에서 받은 이미지 경로가 있으면 사용하고, 없으면 기본 이미지를 사용합니다.
+    const imgSrc = p.imageUrl ? p.imageUrl : "https://placehold.co/413x413";
+
     return `
       <div class="card">
-        <img src="https://placehold.co/413x413" class="card-img" alt="상품 이미지" />
+        <img src="${imgSrc}" class="card-img" alt="상품 이미지" 
+        style="width: 413px; height: 413px; object-fit: cover;"
+             onerror="this.src='https://placehold.co/413x413'"/>
         <div class="card-body">
           <div class="card-top">
             <span class="badge-tag">${escapeHTML(p.category)}</span>
