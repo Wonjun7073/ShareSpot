@@ -82,7 +82,13 @@
     // 💡 추가: 서버에서 받은 이미지 경로가 있으면 사용하고, 없으면 기본 이미지를 사용합니다.
     const imgSrc = p.imageUrl ? p.imageUrl : "https://placehold.co/413x413";
 
+    // ✅ id가 없으면 버튼 자체를 비활성화
+    const roomBtn = (it.id != null)
+      ? `<button class="chat-btn" data-item-id="${it.id}">1:1 채팅</button>`
+      : `<button class="chat-btn" disabled>1:1 채팅</button>`;
+
     return `
+<<<<<<< HEAD
       <div class="card">
         <img src="${imgSrc}" class="card-img" alt="상품 이미지" 
         style="width: 413px; height: 413px; object-fit: cover;"
@@ -104,9 +110,29 @@
               <span>❤️ ${Number(p.interestCount) || 0}</span>
             </div>
           </div>
+=======
+    <div class="card">
+      <img src="https://placehold.co/413x413" class="card-img" />
+      <div class="card-body">
+        <div class="card-top">
+          <span class="badge-tag">${escapeHTML(it.category)}</span>
+          <span class="time-ago">${formatTimeAgo(it.createdAt)}</span>
+        </div>
+
+        <h3 class="card-title">${escapeHTML(it.title)}</h3>
+        <p class="card-price">${priceText}</p>
+
+        <div class="card-footer">
+          <span>${escapeHTML(it.location)}</span>
+
+          ${roomBtn}
+
+          ${canDelete ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>` : ""}
+>>>>>>> f637233b7fd001b5c98de05aae3d04bd769ea46f
         </div>
       </div>
-    `;
+    </div>
+  `;
   }
 
   // (2) 채팅 목록 화면 렌더링
@@ -119,6 +145,7 @@
     if (rooms.length === 0) {
       grid.innerHTML = '<div class="chat-list-container"><p style="text-align:center; color:#888;">개설된 채팅방이 없습니다.</p></div>';
     }
+<<<<<<< HEAD
     else {
       const listHTML = rooms.map(room => `
         <div class="chat-room-item" onclick="alert('${room.title} 방으로 입장합니다 (웹소켓 연결 예정)')">
@@ -172,14 +199,64 @@
   window.handleChatClick = function (title, location) {
     if (confirm(`'${title}' 상품에 대한 1:1 채팅방을 만드시겠습니까?`)) {
       addChatRoom(title, location);
+=======
+
+    grid.querySelectorAll(".chat-btn[data-item-id]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const itemId = Number(btn.dataset.itemId);
+        openChatList(itemId);
+      });
+    });
+
+
+    menuItems.forEach((el) => el.classList.remove("active"));
+    if (homeMenuBtn) homeMenuBtn.classList.add("active");
+  }
+
+  /* =========================
+   * 채팅방 생성 → 목록 이동
+   * ========================= */
+  window.openChatList = async function (itemId) {
+    if (itemId == null || Number.isNaN(Number(itemId))) {
+      alert("itemId가 올바르지 않습니다. (프론트 렌더링/데이터 확인 필요)");
+      return;
+>>>>>>> f637233b7fd001b5c98de05aae3d04bd769ea46f
     }
+
+    const res = await fetch("/api/chat/rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ itemId: Number(itemId) }),
+    });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      alert("채팅방 생성 실패: " + (txt || res.status));
+      return;
+    }
+
+    window.location.href = "/html/chat.html";
   };
 
+<<<<<<< HEAD
   // 사이드바 메뉴 클릭 이벤트
   if (chatMenuBtn) {
     chatMenuBtn.addEventListener("click", (e) => {
       e.preventDefault(); // 링크 이동 방지
       renderChatList();
+=======
+
+  /* =========================
+   * 삭제
+   * ========================= */
+  window.deleteItem = async function (id) {
+    if (!confirm("삭제하시겠습니까?")) return;
+
+    const res = await fetch(`/api/items/${id}`, {
+      method: "DELETE",
+      credentials: "same-origin",
+>>>>>>> f637233b7fd001b5c98de05aae3d04bd769ea46f
     });
   }
 
