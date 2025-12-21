@@ -5,6 +5,7 @@
 
 const Auth = {
   STORAGE_KEY: "SS_USER",
+  LOGIN_URL: "/html/login.html",
 
   /* =========================
    * 로그인
@@ -98,7 +99,7 @@ const Auth = {
    * ========================= */
   logout() {
     localStorage.removeItem(this.STORAGE_KEY);
-    location.href = "./login.html";
+    location.replace(this.LOGIN_URL);
   },
 
   /* =========================
@@ -115,7 +116,7 @@ const Auth = {
   guard() {
     if (!this.getUser()) {
       alert("로그인이 필요합니다.");
-      location.replace("./login.html");
+      location.replace(this.LOGIN_URL);
     }
   },
 };
