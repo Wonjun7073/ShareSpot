@@ -10,8 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "chat_rooms", uniqueConstraints = {
-        // 같은 item에 대해 같은 buyer는 채팅방 1개만
-        @UniqueConstraint(name = "uk_chat_room_item_buyer", columnNames = { "item_id", "buyer_user_id" })
+    @UniqueConstraint(
+        name = "uk_chat_room_item_buyer",
+        columnNames = { "item_id", "buyer_user_id" }
+    )
 })
 public class ChatRoom {
 
@@ -34,9 +36,15 @@ public class ChatRoom {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // 목록 미리보기용(지금은 없어도 되지만 나중에 편함)
+    // 목록 미리보기용
     private LocalDateTime lastMessageAt;
+
     @Column(length = 500)
     private String lastMessage;
+
+    // =========================
+    // ✅ 퇴장 상태 (추가)
+    // =========================
+    private LocalDateTime buyerLeftAt;
+    private LocalDateTime sellerLeftAt;
 }
-//헤헤

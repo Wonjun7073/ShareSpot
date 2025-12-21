@@ -248,6 +248,40 @@
     }
   })();
 })();
-document.getElementById("btnLeaveChat")?.addEventListener("click", () => {
-  location.href = "/html/chat.html";
+document.addEventListener("DOMContentLoaded", () => {
+  const leaveBtn = document.getElementById("btnLeave");
+  if (!leaveBtn) return;
+
+  const params = new URLSearchParams(location.search);
+  const roomId = Number(params.get("room"));
+
+  // room이 없으면 버튼 비활성화
+  if (!Number.isFinite(roomId)) {
+    leaveBtn.disabled = true;
+    return;
+  }
+
+  leaveBtn.addEventListener("click", async () => {
+    // (선택) 확인창
+    // if (!confirm("채팅방에서 나가시겠습니까?")) return;
+
+    try {
+      const res = await fetch(`/api/chat/rooms/${roomId}/leave`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        alert("나가기 실패: " + (txt || res.status));
+        return;
+      }
+
+      // ✅ 성공하면 목록으로 이동
+      location.href = "/html/chat.html";
+    } catch (e) {
+      console.error(e);
+      alert("네트워크 오류로 나가기에 실패했어요.");
+    }
+  });
 });
