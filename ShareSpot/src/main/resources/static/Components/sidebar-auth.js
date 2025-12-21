@@ -1,6 +1,5 @@
 (function () {
   async function mountLogoutModal() {
-    // 모달이 이미 있으면 중복 로드 방지
     if (document.getElementById("confirmModal")) return;
 
     const root = document.getElementById("modal-root");
@@ -44,14 +43,41 @@
       location.href = "./login.html";
     };
 
-    // 바깥 클릭 닫기(선택)
     modal.addEventListener("click", (e) => {
       if (e.target === modal) close();
     });
   }
 
+  // ✅ 추가: 채팅 배지 갱신 (채팅방 개수)
+  async function updateChatBadge() {
+    const badge = document.getElementById("chatBadge");
+    if (!badge) return;
+
+    try {
+      const res = await fetch("/api/chat/rooms", { credentials: "include" });
+      if (!res.ok) {
+        badge.style.display = "none";
+        return;
+      }
+
+      const rooms = await res.json();
+      const count = Array.isArray(rooms) ? rooms.length : 0;
+
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = "inline-flex";
+      } else {
+        badge.style.display = "none";
+      }
+    } catch (e) {
+      console.warn("updateChatBadge fail", e);
+      badge.style.display = "none";
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
     await mountLogoutModal();
     bindLogoutModal();
+    updateChatBadge(); // ✅ 추가
   });
 })();

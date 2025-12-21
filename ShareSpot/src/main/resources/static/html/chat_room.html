@@ -16,28 +16,20 @@
         </div>
       </div>
       <div class="menu">
-        <a href="main.html" class="menu-item"
-          ><span class="menu-icon">🏠</span> 홈</a
-        >
-        <a href="near_me.html" class="menu-item"
-          ><span class="menu-icon">📍</span> 내 근처</a
-        >
-        <a href="chat.html" class="menu-item active"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
-        >
-        <a href="my.html" class="menu-item"
-          ><span class="menu-icon">👤</span> 나의 시흥</a
-        >
+        <a href="main.html" class="menu-item"><span class="menu-icon">🏠</span> 홈</a>
+        <a href="near_me.html" class="menu-item"><span class="menu-icon">📍</span> 내 근처</a>
+        <a href="chat.html" class="menu-item active"><span class="menu-icon">💬</span> 채팅</a>
+        <a href="my.html" class="menu-item"><span class="menu-icon">👤</span> 나의 시흥</a>
       </div>
-      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
+      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
     <div class="main-content chat-room-layout">
       <div class="chat-room-header">
         <button class="back-btn" onclick="history.back()">←</button>
         <div class="header-info">
-          <span class="header-name">따뜻한이웃</span>
-          <span class="header-sub">에어프라이어 나눔합니다</span>
+          <span class="header-name"></span>
+          <span class="header-sub"></span>
         </div>
       </div>
 
@@ -46,59 +38,16 @@
           <img src="https://placehold.co/64x64" alt="물품" />
         </div>
         <div class="product-info">
-          <div class="product-title">에어프라이어 나눔합니다</div>
-          <div class="product-status">나눔</div>
+          <div class="product-title"></div>
+          <div class="product-status"></div>
         </div>
         <button class="view-btn">보기</button>
       </div>
 
-      <div class="message-area">
+      <!-- ✅ 더미 제거: 대화 영역은 비워둠 -->
+      <div class="message-area"></div>
 
-        <div class="date-divider">
-          <div class="line"></div>
-          <span>2024년 12월 19일</span>
-          <div class="line"></div>
-        </div>
-
-        <!-- <div class="message-row received">
-          <div class="bubble">
-            안녕하세요! 에어프라이어 아직 나눔 가능한가요?
-          </div>
-          <div class="msg-time">오후 3:24</div>
-        </div>
-
-        <div class="message-row sent">
-          <div class="msg-meta">
-            <span class="read-check">읽음</span>
-            <span class="msg-time">오후 3:25</span>
-          </div>
-          <div class="bubble">네, 가능합니다! 언제 받으러 오실 수 있나요?</div>
-        </div>
-
-        <div class="message-row received">
-          <div class="bubble">내일 오후 2시쯤 괜찮을까요?</div>
-          <div class="msg-time">오후 3:26</div>
-        </div>
-
-        <div class="message-row sent">
-          <div class="msg-meta">
-            <span class="read-check">읽음</span>
-            <span class="msg-time">오후 3:28</span>
-          </div>
-          <div class="bubble">
-            네, 좋아요! 정왕동 주민센터 근처 카페에서 만나실까요?
-          </div>
-        </div>
-
-        <div class="message-row received">
-          <div class="bubble">네, 내일 오후 2시에 만나요!</div>
-          <div class="msg-time">오후 3:30</div>
-        </div> -->
-
-
-        
-      </div>
-
+      <!-- ✅ 입력창은 message-area 밖에 있어야 함 -->
       <div class="chat-input-bar">
         <button class="icon-btn">+</button>
         <div class="input-wrapper">
@@ -109,15 +58,16 @@
     </div>
 
     <script src="../JS/auth.js"></script>
-    <script>
-      Auth.guard();
-    </script>
+    <script>Auth.guard();</script>
 
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+    <!-- ✅ DB+폴링 방식이면 아래 3개는 필요 없음(지워도 됨) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-  </body>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script> -->
+
     <script src="../JS/chat.js"></script>
+  </body>
 </html>
