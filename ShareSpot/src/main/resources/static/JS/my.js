@@ -1,4 +1,4 @@
-// my.js (서버 연동 최종본)
+// my.js (정리본: 중복 fetch 제거 + 받은 감사 = 내 글의 likeCount 합)
 (function () {
   /* =====================
    * 로그인 가드
@@ -10,158 +10,149 @@
   /* =====================
    * 프로필 수정 이동
    * ===================== */
-  const editBtn = document.getElementById("btnEditProfile");
-  if (editBtn) {
-    editBtn.addEventListener("click", () => {
-      location.href = "./edit_profile.html";
-    });
+  document.getElementById("btnEditProfile")?.addEventListener("click", () => {
+    location.href = "./edit_profile.html";
+  });
+
+  /* =====================
+   * 유틸
+   * ===================== */
+  function getMeFromAuth() {
+    return window.Auth?.getUser?.() || window.Auth?.getSessionUser?.() || null;
+  }
+
+  async function fetchJSON(url, options) {
+    const res = await fetch(url, options);
+    const ct = res.headers.get("content-type") || "";
+    const data = ct.includes("application/json")
+      ? await res.json()
+      : await res.text();
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  function safeText(elId, value) {
+    const el = document.getElementById(elId);
+    if (el) el.textContent = value;
   }
 
   /* =====================
-   * 화면 렌더링
+   * 화면 렌더링 (me)
    * ===================== */
   function renderMe(me) {
-    const nickname = me.nickname || me.userId || "사용자";
-    const dong = me.dong || "내 동네";
+    const nickname = me?.nickname || me?.userId || "사용자";
+    const dong = me?.dong || "내 동네";
+    const avatar = me?.profileInitial || (nickname ? nickname[0] : "?");
 
-    document.getElementById("nicknameText").textContent = nickname;
-    document.getElementById("dongText").textContent = dong;
+    safeText("nicknameText", nickname);
+    safeText("dongText", dong);
 
     const sideDong = document.getElementById("dongTextSide");
     if (sideDong) sideDong.textContent = dong;
 
-    const avatar = me.profileInitial || (nickname ? nickname[0] : "?");
-    document.getElementById("avatarText").textContent = avatar;
+    safeText("avatarText", avatar);
 
-    document.getElementById("statShared").textContent = me.sharedCount ?? 0;
-    document.getElementById("statThanks").textContent = me.thanksCount ?? 0;
-    document.getElementById("statTrust").textContent =
-      (me.trustPercent ?? 0) + "%";
+    // ✅ 숫자들은 아래에서 "계산값"으로 다시 덮어쓸 거라
+    // 여기서는 일단 fallback(있으면 표시)만 해둠
+    if (me?.sharedCount != null) safeText("statShared", String(me.sharedCount));
+    if (me?.thanksCount != null) safeText("statThanks", String(me.thanksCount));
+    if (me?.trustPercent != null)
+      safeText("statTrust", String(me.trustPercent) + "%");
 
-    document.getElementById("trustCount").textContent = me.thanksCount ?? 0;
+    // trust-banner는 기존 코드가 thanksCount를 넣고 있었는데
+    // 실제 의도가 "성공 거래 횟수"면 별도 계산/필드가 필요함.
+    // 일단 값이 있으면 보여주고, 없으면 0 유지.
+    if (me?.trustCount != null) safeText("trustCount", String(me.trustCount));
   }
 
   /* =====================
-   * 서버에서 내 정보 조회
+   * 검색 → main으로 이동
    * ===================== */
-  async function loadMe() {
-    try {
-      const res = await fetch("/api/user/me");
-      if (!res.ok) {
-        console.error("me api failed:", res.status);
+  function bindSearch() {
+    const searchInput = document.getElementById("searchInput");
+    if (!searchInput) return;
 
-        // 🔁 fallback (localStorage)
-        const local = Auth.getUser();
-        if (local) renderMe(local);
-        return;
+    function goMainSearch() {
+      const q = searchInput.value.trim();
+      const url = q ? `./main.html?q=${encodeURIComponent(q)}` : `./main.html`;
+      location.href = url;
+    }
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        goMainSearch();
       }
+    });
 
-      const me = await res.json();
-      renderMe(me);
+    document
+      .querySelector(".search-bar span")
+      ?.addEventListener("click", goMainSearch);
+  }
+
+  /* =====================
+   * 한 번에 로드/계산
+   * ===================== */
+  async function loadAll() {
+    bindSearch();
+
+    // 1) me 먼저 로드
+    let me = null;
+
+    try {
+      const { ok, data } = await fetchJSON("/api/user/me", {
+        credentials: "include",
+      });
+      if (ok) me = data;
     } catch (e) {
-      console.error("me api error:", e);
-
-      // 🔁 fallback
-      const local = Auth.getUser();
-      if (local) renderMe(local);
+      console.warn("me api error:", e);
     }
-  }
 
-  loadMe();
-})();
-// ✅ 검색하면 main으로 이동해서 검색되게
-const searchInput = document.getElementById("searchInput");
-if (searchInput) {
-  function goMainSearch() {
-    const q = searchInput.value.trim();
-    const url = q ? `./main.html?q=${encodeURIComponent(q)}` : `./main.html`;
-    window.location.href = url;
-  }
+    // fallback: Auth 저장값
+    if (!me) me = getMeFromAuth();
+    if (me) renderMe(me);
 
-  // 엔터로 검색
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      goMainSearch();
+    const myUserId = me?.userId ?? null;
+    if (!myUserId) {
+      // 로그인 안 되어 있으면 전부 0 처리
+      safeText("statShared", "0");
+      safeText("statThanks", "0");
+      safeText("chipHistory", "0");
+      safeText("chipWish", "0");
+      safeText("trustCount", "0");
+      return;
     }
-  });
 
-  // 돋보기 클릭 검색
-  document
-    .querySelector(".search-bar span")
-    ?.addEventListener("click", goMainSearch);
-}
-(async function () {
-  // 로그인 유저 정보 가져오기
-  const me =
-    window.Auth?.getUser?.() || window.Auth?.getSessionUser?.() || null;
+    // 2) items는 딱 1번만 가져와서 shared/history/thanks 계산
+    let items = [];
+    try {
+      const { ok, data } = await fetchJSON("/api/items", {
+        credentials: "include",
+      });
+      if (ok && Array.isArray(data)) items = data;
+    } catch (e) {
+      console.error("items load fail:", e);
+    }
 
-  const myUserId = me?.userId ?? null;
+    const myItems = items.filter((it) => it.ownerUserId === myUserId);
 
-  const sharedEl = document.getElementById("statShared");
-  if (!sharedEl) return;
+    // ✅ 공유한 물품 수
+    safeText("statShared", String(myItems.length));
 
-  // 로그인 안 되어 있으면 0
-  if (!myUserId) {
-    sharedEl.textContent = "0";
-    return;
+    // ✅ 판매/대여 내역 칩(내 글 수)
+    safeText("chipHistory", String(myItems.length));
+
+    // 3) wishlist count는 count API 우선
+    await loadWishCount();
   }
-
-  try {
-    const res = await fetch("/api/items", { credentials: "include" });
-    const items = await res.json();
-
-    const list = Array.isArray(items) ? items : [];
-
-    // ✅ 내가 등록한 물품 수
-    const myItemCount = list.filter((it) => it.ownerUserId === myUserId).length;
-
-    sharedEl.textContent = String(myItemCount);
-  } catch (e) {
-    console.error("공유한 물품 수 로드 실패", e);
-    sharedEl.textContent = "0";
-  }
-})();
-(async function () {
-  // 로그인 유저 정보
-  const me =
-    window.Auth?.getUser?.() || window.Auth?.getSessionUser?.() || null;
-
-  const myUserId = me?.userId ?? null;
-
-  const chipHistory = document.getElementById("chipHistory");
-  if (!chipHistory) return;
-
-  if (!myUserId) {
-    chipHistory.textContent = "0";
-    // 로그인 안 돼있으면 관심도 0 처리
-    const chipWish = document.getElementById("chipWish");
-    if (chipWish) chipWish.textContent = "0";
-    return;
-  }
-
-  try {
-    // ✅ 판매/대여 내역 수
-    const res = await fetch("/api/items", { credentials: "include" });
-    const items = await res.json();
-    const list = Array.isArray(items) ? items : [];
-
-    const sellingCount = list.filter((it) => it.ownerUserId === myUserId).length;
-    chipHistory.textContent = String(sellingCount);
-  } catch (e) {
-    console.error("판매/대여 내역 수 로드 실패", e);
-    chipHistory.textContent = "0";
-  }
-
-  // ✅ 관심목록 개수는 DOMContentLoaded 기다리지 말고 "바로" 실행
-  await loadWishCount();
 
   async function loadWishCount() {
     const chip = document.getElementById("chipWish");
+    const thanksEl = document.getElementById("statThanks");
+    const trustEl = document.getElementById("trustCount");
     if (!chip) return;
 
     try {
-      // ⭐ count API가 있으면 그게 제일 안전/빠름
+      // ⭐ count API 우선
       const countRes = await fetch("/api/wishlist/count", {
         credentials: "include",
         headers: { Accept: "application/json" },
@@ -169,26 +160,38 @@ if (searchInput) {
 
       if (countRes.ok) {
         const data = await countRes.json();
-        chip.textContent = String(data.count ?? 0);
+        const c = Number(data.count ?? 0);
+
+        chip.textContent = String(c);
+
+        // ✅ 받은 감사 = 관심목록과 동일
+        if (thanksEl) thanksEl.textContent = String(c);
+        if (trustEl) trustEl.textContent = String(c);
+
         return;
       }
 
-      // (fallback) count API가 없으면 목록 길이로 계산
+      // fallback: 목록 길이
       const res = await fetch("/api/wishlist", {
         credentials: "include",
         headers: { Accept: "application/json" },
       });
 
-      if (!res.ok) {
-        chip.textContent = "0";
-        return;
-      }
+      if (!res.ok) return;
 
       const wishes = await res.json();
-      chip.textContent = String(Array.isArray(wishes) ? wishes.length : 0);
+      const c = Array.isArray(wishes) ? wishes.length : 0;
+
+      chip.textContent = String(c);
+      if (thanksEl) thanksEl.textContent = String(c);
+      if (trustEl) trustEl.textContent = String(c);
     } catch (e) {
       console.error("관심목록 개수 로드 실패", e);
-      chip.textContent = "0";
     }
   }
+
+  /* =====================
+   * 시작
+   * ===================== */
+  document.addEventListener("DOMContentLoaded", loadAll);
 })();
