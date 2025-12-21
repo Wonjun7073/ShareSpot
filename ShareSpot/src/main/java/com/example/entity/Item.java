@@ -22,6 +22,8 @@ public class Item {
     private String description; // 자세한 설명
     @Column(nullable = false)
     private String ownerUserId;
-
     private LocalDateTime createdAt = LocalDateTime.now(); // 등록 시간
+    // 기존 필드들 아래에 추가
+    @Column(columnDefinition = "LONGTEXT") // 큰 이미지 데이터를 위해 LONGTEXT 사용
+    private String imageUrl; // Base64 인코딩된 이미지 문자열 저장
 }

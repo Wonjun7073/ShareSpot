@@ -43,11 +43,18 @@
    * ========================= */
   function toCardHTML(it) {
     const canDelete = myUserId && it.ownerUserId === myUserId;
-    const priceText = it.price === 0 ? "0" : `${it.price.toLocaleString()}원`;
+    const priceText = it.price === 0 ? "나눔 🎁" : `${it.price.toLocaleString()}원`;
+
+    // 💡 이미지 처리 로직: it.imageUrl(Base64)이 있으면 사용, 없으면 더미 이미지 사용
+    const imgSrc = it.imageUrl ? it.imageUrl : "https://placehold.co/413x413";
 
     return `
       <div class="card">
-        <img src="https://placehold.co/413x413" class="card-img" />
+        <div class="card-img-wrapper" style="width: 413px; height: 413px; overflow: hidden; background: #f0f0f0;">
+            <img src="${imgSrc}" class="card-img" 
+                 style="width: 100%; height: 100%; object-fit: cover;" 
+                 onerror="this.src='https://placehold.co/413x413'"/>
+        </div>
         <div class="card-body">
           <div class="card-top">
             <span class="badge-tag">${escapeHTML(it.category)}</span>
@@ -65,14 +72,14 @@
             </button>
 
             ${canDelete
-        ? `<button class="delete-btn" onclick="deleteItem(${it.id})">삭제</button>`
-        : ""
-      }
+                ? `<button class="delete-btn" onclick="deleteItem(${it.id})">삭제</button>`
+                : ""
+            }
           </div>
         </div>
       </div>
     `;
-  }
+}
 
   /* =========================
    * 홈 렌더
