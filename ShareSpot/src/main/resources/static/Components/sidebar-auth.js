@@ -61,7 +61,9 @@
       }
 
       const rooms = await res.json();
-      const count = Array.isArray(rooms) ? rooms.length : 0;
+      const count = Array.isArray(rooms)
+      ? rooms.reduce((sum, r) => sum + (r.unreadCount || 0), 0)
+      : 0;
 
       if (count > 0) {
         badge.textContent = count;

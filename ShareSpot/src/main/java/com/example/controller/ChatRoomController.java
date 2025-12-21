@@ -5,7 +5,6 @@ import com.example.dto.CreateChatRoomRequest;
 import com.example.entity.ChatRoom;
 import com.example.entity.Item;
 import com.example.repository.ChatMessageRepository;
-import com.example.repository.ChatMessageRepository;
 import com.example.repository.ChatRoomRepository;
 import com.example.repository.ItemRepository;
 import jakarta.servlet.http.HttpSession;
