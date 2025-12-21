@@ -76,3 +76,4 @@ public class User {
     public void setTrustPercent(int trustPercent) { this.trustPercent = trustPercent; }
     public void setProfileInitial(String profileInitial) { this.profileInitial = profileInitial; }
 }
+//헤헤

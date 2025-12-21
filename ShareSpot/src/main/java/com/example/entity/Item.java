@@ -22,4 +22,4 @@ public class Item {
     private String imageUrl;   // 이미지 파일 경로
     
     private LocalDateTime createdAt = LocalDateTime.now(); // 등록 시간
-}
+}//헤헤

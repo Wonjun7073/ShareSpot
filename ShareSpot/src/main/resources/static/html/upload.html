@@ -1,145 +1,141 @@
 <!DOCTYPE html>
 <html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>물품 등록하기 • 쉐어스팟</title>
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/upload.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>물품 등록하기 • 쉐어스팟</title>
-  <link rel="stylesheet" href="../Css/style.css" />
-  <link rel="stylesheet" href="../Css/upload.css" />
-</head>
-
-<body>
-  <div class="sidebar">
-    <div class="brand">
-      <img src="../images/logo.png" alt="쉐어스팟 로고" class="brand-logo" />
-      <div class="brand-text">
-        <h1>쉐어스팟</h1>
-        <p>시흥시 정왕동</p>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="쉐어스팟 로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
       </div>
+
+      <div class="menu">
+        <a href="./main.html" class="menu-item active"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="./near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="./chat.html" class="menu-item"
+          ><span class="menu-icon">💬</span> 채팅
+          <span class="badge">3</span></a
+        >
+        <a href="./my.html" class="menu-item"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
+      </div>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
-    <div class="menu">
-      <a href="./main.html" class="menu-item active"><span class="menu-icon">🏠</span> 홈</a>
-      <a href="./near_me.html" class="menu-item"><span class="menu-icon">📍</span> 내 근처</a>
-      <a href="./chat.html" class="menu-item"><span class="menu-icon">💬</span> 채팅
-        <span class="badge">3</span></a>
-      <a href="./my.html" class="menu-item"><span class="menu-icon">👤</span> 나의 시흥</a>
-    </div>
-    <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
-  </div>
-
-  <!-- 상단 헤더 -->
-  <div class="main-content">
-    <div class="top-header">
-      <div class="search-bar">
-        <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
-      </div>
-      <div class="header-actions">
-        <a href="./upload.html" class="write-btn"><span>✏️</span> 글쓰기</a>
-      </div>
-    </div>
-
-    <!-- 본문 -->
-    <main class="upload-container">
-      <div class="upload-header">
-        <h2>물품 등록하기</h2>
-        <p>이웃들과 공유할 물품을 등록해주세요</p>
+    <!-- 상단 헤더 -->
+    <div class="main-content">
+      <div class="top-header">
+        <div class="search-bar">
+          <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
+        </div>
+        <div class="header-actions">
+          <a href="./upload.html" class="write-btn"><span>✏️</span> 글쓰기</a>
+        </div>
       </div>
 
-      <div class="upload-body">
-        <!-- 사진 등록 -->
-        <section class="upload-photo card">
-          <h3>사진 등록</h3>
-          <p>최대 10장까지 등록 가능합니다</p>
+      <!-- 본문 -->
+      <main class="upload-container">
+        <div class="upload-header">
+          <h2>물품 등록하기</h2>
+          <p>이웃들과 공유할 물품을 등록해주세요</p>
+        </div>
 
-          <div class="photo-upload-wrapper" style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <div class="photo-box" id="imageUploadTrigger" style="cursor: pointer;">
+        <div class="upload-body">
+          <!-- 사진 등록 -->
+          <section class="upload-photo card">
+            <h3>사진 등록</h3>
+            <p>최대 10장까지 등록 가능합니다</p>
+            <div class="photo-box">
               <div class="photo-icon">📷</div>
               <div class="photo-text">사진 추가</div>
-              <div class="photo-count" id="photoCountText">(0/10)</div>
+              <div class="photo-count">(0/10)</div>
+            </div>
+          </section>
+
+          <!-- 폼 영역 -->
+          <section class="upload-form">
+            <div class="card">
+              <label>제목 *</label>
+              <input type="text" placeholder="물품 제목을 입력하세요" />
             </div>
 
-            <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
-
-            <div id="imagePreviewList" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
-          </div>
-        </section>
-
-        <!-- 폼 영역 -->
-        <section class="upload-form">
-          <div class="card">
-            <label>제목 *</label>
-            <input type="text" placeholder="물품 제목을 입력하세요" />
-          </div>
-
-          <div class="card">
-            <label>카테고리 *</label>
-            <div class="category-buttons">
-              <button class="active">나눔</button>
-              <button>대여</button>
-              <button>교환</button>
+            <div class="card">
+              <label>카테고리 *</label>
+              <div class="category-buttons">
+                <button class="active">나눔</button>
+                <button>대여</button>
+                <button>교환</button>
+              </div>
             </div>
-          </div>
 
-          <div class="card">
-            <label>거래 희망 장소</label>
-            <select>
-              <option>시흥시 정왕동</option>
-              <option>시흥시 배곧동</option>
-              <option>시흥시 은행동</option>
-              <option>시흥시 목감동</option>
-              <option>시흥시 신천동</option>
-              <option>시흥시 대야동</option>
-              <option>시흥시 능곡동</option>
-            </select>
-          </div>
+            <div class="card">
+              <label>거래 희망 장소</label>
+              <select>
+                <option>시흥시 정왕동</option>
+                <option>시흥시 배곧동</option>
+                <option>시흥시 은행동</option>
+                <option>시흥시 목감동</option>
+                <option>시흥시 신천동</option>
+                <option>시흥시 대야동</option>
+                <option>시흥시 능곡동</option>
+              </select>
+            </div>
 
-          <div class="card">
-            <label>자세한 설명 *</label>
-            <textarea rows="6" placeholder="물품에 대한 자세한 설명을 입력해주세요 (예: 상태, 사용 기간, 거래 방법 등)"></textarea>
-          </div>
+            <div class="card">
+              <label>자세한 설명 *</label>
+              <textarea
+                rows="6"
+                placeholder="물품에 대한 자세한 설명을 입력해주세요 (예: 상태, 사용 기간, 거래 방법 등)"
+              ></textarea>
+            </div>
 
-          <div class="form-actions">
-            <button class="btn-cancel">취소</button>
-            <button type="button" class="btn-submit">등록하기</button>
-          </div>
-        </section>
-      </div>
-    </main>
-  </div>
+            <div class="form-actions">
+              <button class="btn-cancel">취소</button>
+              <button type="button" class="btn-submit">등록하기</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
 
-  <div id="toast" class="toast">물품이 등록되었습니다!</div>
-  <!-- 공통 인증 -->
-  <script src="../JS/auth.js"></script>
-  <script>
-    Auth.guard(); // 로그인한 사람만 등록 가능
-  </script>
-
-  <!-- upload 전용 -->
-  <script src="../JS/upload.js" defer></script>
-
-  <!-- 공통 로그아웃 모달 -->
-  <div id="modal-root"></div>
-  <script src="../Components/sidebar-auth.js"></script>
-
-  <div id="confirmModal"
-    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-    <div style="background:white; padding:20px; border-radius:8px; text-align:center;">
-      <h3 id="modalTitle"></h3>
-      <p id="modalMessage"></p>
-      <div style="margin-top:20px;">
-        <button id="modalCancel">취소</button>
-        <button id="modalOk"
-          style="background:#4A90E2; color:white; border:none; padding:5px 15px; border-radius:4px; margin-left:10px;">확인</button>
+    <div id="confirmModal" class="modal">
+      <div class="modal-box">
+        <h3 id="modalTitle">확인</h3>
+        <p id="modalMessage">메시지</p>
+        <div class="modal-actions">
+          <button id="modalCancel" class="btn-outline" type="button">
+            취소
+          </button>
+          <button id="modalOk" class="btn-primary" type="button">확인</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <style>
-    #confirmModal.show {
-      display: flex !important;
-    }
-  </style>
-</body>
+    <div id="toast" class="toast">물품이 등록되었습니다!</div>
+    <!-- 공통 인증 -->
+    <script src="../JS/auth.js"></script>
+    <script>
+      //   Auth.guard(); //
+    </script>
 
+    <!-- upload 전용 -->
+    <script src="../JS/upload.js" defer></script>
+
+    <!-- 공통 로그아웃 모달 -->
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
+  </body>
 </html>

@@ -10,3 +10,4 @@ public class LoginRequest {
     public void setUserId(String userId) { this.userId = userId; }
     public void setPassword(String password) { this.password = password; }
 }
+//헤헤

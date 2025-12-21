@@ -13,3 +13,4 @@ public class RegisterRequest {
     public void setPassword(String password) { this.password = password; }
     public void setNickname(String nickname) { this.nickname = nickname; }
 }
+//헤헤

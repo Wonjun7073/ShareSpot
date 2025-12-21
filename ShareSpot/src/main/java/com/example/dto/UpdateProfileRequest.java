@@ -13,3 +13,4 @@ public class UpdateProfileRequest {
     public void setDong(String dong) { this.dong = dong; }
     public void setIntro(String intro) { this.intro = intro; }
 }
+//헤헤
