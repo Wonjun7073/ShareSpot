@@ -113,11 +113,10 @@
           <div class="card-footer">
             <span>${escapeHTML(it.location)}</span>
             ${roomBtn}
-            ${
-              canDelete
-                ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
-                : ""
-            }
+            ${canDelete
+        ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
+        : ""
+      }
           </div>
         </div>
       </div>
@@ -184,10 +183,7 @@
    * ========================= */
   window.openChatList = async function (itemId) {
     const idNum = Number(itemId);
-    if (!Number.isFinite(idNum)) {
-      alert("잘못된 상품 정보입니다.");
-      return;
-    }
+    if (!Number.isFinite(idNum)) return alert("잘못된 상품 정보입니다.");
 
     const res = await fetch("/api/chat/rooms", {
       method: "POST",
@@ -202,8 +198,14 @@
       return;
     }
 
-    window.location.href = "/html/chat.html";
+    const room = await res.json();
+    const me = window.Auth?.getUser?.()?.userId || window.Auth?.getSessionUser?.()?.userId || "";
+    const peer = me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
+
+    window.location.href =
+      `/html/chat_room.html?room=${encodeURIComponent(room.id)}&me=${encodeURIComponent(me)}&peer=${encodeURIComponent(peer)}`;
   };
+
 
   /* =========================
    * 클릭 이벤트 위임

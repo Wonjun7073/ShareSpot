@@ -13,6 +13,7 @@ public class ChatRoomResponse {
     public LocalDateTime createdAt;
     public String lastMessage;
     public LocalDateTime lastMessageAt;
+    public int unreadCount;
 
     public static ChatRoomResponse from(ChatRoom r) {
         ChatRoomResponse o = new ChatRoomResponse();
