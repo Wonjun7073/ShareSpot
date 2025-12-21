@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,16 +25,24 @@ public class ChatRoomController {
     private final ItemRepository itemRepository;
     private final ChatMessageRepository chatMessageRepository;
 
-    public ChatRoomController(ChatRoomRepository chatRoomRepository, ItemRepository itemRepository,
-            ChatMessageRepository chatMessageRepository) {
+    public ChatRoomController(
+            ChatRoomRepository chatRoomRepository,
+            ItemRepository itemRepository,
+            ChatMessageRepository chatMessageRepository
+    ) {
         this.chatRoomRepository = chatRoomRepository;
         this.itemRepository = itemRepository;
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    // ✅ 채팅방 생성 (이미 있으면 기존 방 반환)
+    /* =====================================================
+     * 채팅방 생성 (이미 있으면 기존 방 반환)
+     * ===================================================== */
     @PostMapping("/rooms")
-    public ChatRoomResponse createRoom(@RequestBody CreateChatRoomRequest req, HttpSession session) {
+    public ChatRoomResponse createRoom(
+            @RequestBody CreateChatRoomRequest req,
+            HttpSession session
+    ) {
         String buyerUserId = (String) session.getAttribute(LOGIN_USER_ID);
         if (buyerUserId == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
@@ -52,26 +61,30 @@ public class ChatRoomController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "판매자 정보가 없습니다.");
         }
 
-        // 자기 글에 채팅 거는 거 막고 싶으면
+        // 본인 글에 채팅 생성 방지
         if (buyerUserId.equals(sellerUserId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인 글에는 채팅을 생성할 수 없습니다.");
         }
 
-        // 같은 item + 같은 buyer는 방 1개 (엔티티 유니크 제약 조건이랑도 맞춤)
-        ChatRoom room = chatRoomRepository.findByItemIdAndBuyerUserId(itemId, buyerUserId)
+        // 같은 item + 같은 buyer는 채팅방 1개
+        ChatRoom room = chatRoomRepository
+                .findByItemIdAndBuyerUserId(itemId, buyerUserId)
                 .orElseGet(() -> {
                     ChatRoom r = new ChatRoom();
                     r.setItemId(itemId);
                     r.setItemTitle(item.getTitle());
                     r.setBuyerUserId(buyerUserId);
                     r.setSellerUserId(sellerUserId);
+                    r.setCreatedAt(LocalDateTime.now());
                     return chatRoomRepository.save(r);
                 });
 
         return ChatRoomResponse.from(room);
     }
 
-    // ✅ 내 채팅방 목록
+    /* =====================================================
+     * 내 채팅방 목록 (✅ 내가 나간 방은 제외)
+     * ===================================================== */
     @GetMapping("/rooms")
     public List<ChatRoomResponse> myRooms(HttpSession session) {
         String me = (String) session.getAttribute(LOGIN_USER_ID);
@@ -80,7 +93,7 @@ public class ChatRoomController {
         }
 
         return chatRoomRepository
-                .findByBuyerUserIdOrSellerUserIdOrderByCreatedAtDesc(me, me)
+                .findActiveRoomsByUserId(me) // ✅ 핵심 변경
                 .stream()
                 .map(r -> {
                     ChatRoomResponse dto = ChatRoomResponse.from(r);
@@ -89,14 +102,17 @@ public class ChatRoomController {
                     return dto;
                 })
                 .toList();
-
     }
 
+    /* =====================================================
+     * 채팅방 읽음 처리
+     * ===================================================== */
     @PostMapping("/rooms/{roomId}/read")
     public void markRead(@PathVariable Long roomId, HttpSession session) {
         String me = (String) session.getAttribute(LOGIN_USER_ID);
-        if (me == null)
+        if (me == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
 
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "채팅방이 없습니다."));
@@ -105,28 +121,67 @@ public class ChatRoomController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "참여자가 아닙니다.");
         }
 
-        // 내가 receiver인 미읽음 메시지들 readAt 채우기
-        var list = chatMessageRepository.findByRoomIdAndReceiverUserIdAndReadAtIsNull(roomId, me);
-        if (list.isEmpty())
-            return;
+        var list = chatMessageRepository
+                .findByRoomIdAndReceiverUserIdAndReadAtIsNull(roomId, me);
 
-        var now = java.time.LocalDateTime.now();
-        for (var m : list)
+        if (list.isEmpty()) return;
+
+        var now = LocalDateTime.now();
+        for (var m : list) {
             m.setReadAt(now);
+        }
         chatMessageRepository.saveAll(list);
     }
-@GetMapping("/rooms/{roomId}")
-public ChatRoomResponse getRoom(@PathVariable Long roomId, HttpSession session) {
-    String me = (String) session.getAttribute(LOGIN_USER_ID);
-    if (me == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 
-    ChatRoom room = chatRoomRepository.findById(roomId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "채팅방이 없습니다."));
+    /* =====================================================
+     * 채팅방 단건 조회 (✅ 나간 방 재입장 차단)
+     * ===================================================== */
+    @GetMapping("/rooms/{roomId}")
+    public ChatRoomResponse getRoom(@PathVariable Long roomId, HttpSession session) {
+        String me = (String) session.getAttribute(LOGIN_USER_ID);
+        if (me == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
 
-    if (!me.equals(room.getBuyerUserId()) && !me.equals(room.getSellerUserId())) {
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "참여자가 아닙니다.");
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "채팅방이 없습니다."));
+
+        if (!me.equals(room.getBuyerUserId()) && !me.equals(room.getSellerUserId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "참여자가 아닙니다.");
+        }
+
+        // ✅ 내가 이미 나간 방이면 접근 불가
+        if (me.equals(room.getBuyerUserId()) && room.getBuyerLeftAt() != null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 나간 채팅방입니다.");
+        }
+        if (me.equals(room.getSellerUserId()) && room.getSellerLeftAt() != null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 나간 채팅방입니다.");
+        }
+
+        return ChatRoomResponse.from(room);
     }
 
-    return ChatRoomResponse.from(room);
-}
+    /* =====================================================
+     * 채팅방 나가기 (✅ 진짜 퇴장)
+     * ===================================================== */
+    @PostMapping("/rooms/{roomId}/leave")
+    public void leaveRoom(@PathVariable Long roomId, HttpSession session) {
+        String me = (String) session.getAttribute(LOGIN_USER_ID);
+        if (me == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "채팅방이 없습니다."));
+
+        if (me.equals(room.getBuyerUserId())) {
+            room.setBuyerLeftAt(LocalDateTime.now());
+        } else if (me.equals(room.getSellerUserId())) {
+            room.setSellerLeftAt(LocalDateTime.now());
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "참여자가 아닙니다.");
+        }
+
+        chatRoomRepository.save(room);
+    }
 }
