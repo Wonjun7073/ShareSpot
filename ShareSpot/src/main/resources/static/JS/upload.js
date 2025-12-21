@@ -1,10 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('[upload] JS loaded');
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("[upload] JS loaded");
 
-  // ===== 1. 사진 등록 기능 =====
-  const photoBox = document.getElementById('photoBox');
-  const fileInput = document.getElementById('fileInput');
-  const photoCount = document.getElementById('photoCount');
+    const $ = (s) => document.querySelector(s);
 
   if (photoBox && fileInput) {
     photoBox.addEventListener('click', () => fileInput.click());
@@ -98,9 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (submitBtn) {
     let locking = false;
-    submitBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (locking) return;
 
       // -- 데이터 읽기 --
       const title = document.querySelector('#title').value.trim();

@@ -1,78 +1,153 @@
 <!DOCTYPE html>
 <html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>쉐어스팟 - 채팅</title>
+    <link rel="stylesheet" href="../Css/style.css" />
+    <link rel="stylesheet" href="../Css/chat.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="brand">
+        <img src="../Images/logo.png" alt="로고" class="brand-logo" />
+        <div class="brand-text">
+          <h1>쉐어스팟</h1>
+          <p>시흥시 정왕동</p>
+        </div>
+      </div>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>쉐어스팟 - 채팅</title>
-  <link rel="stylesheet" href="../Css/style.css" />
-  <link rel="stylesheet" href="../Css/chat.css" />
-</head>
+      <div class="menu">
+        <a href="main.html" class="menu-item">
+          <span class="menu-icon">🏠</span> 홈
+        </a>
+        <a href="near_me.html" class="menu-item">
+          <span class="menu-icon">📍</span> 내 근처
+        </a>
+        <a href="chat.html" class="menu-item active">
+          <span class="menu-icon">💬</span> 채팅
+          <span class="badge">3</span>
+        </a>
+        <a href="my.html" class="menu-item">
+          <span class="menu-icon">👤</span> 나의 시흥
+        </a>
+      </div>
 
-<body>
-  <div class="sidebar">
-    <div class="brand">
-      <img src="../Images/logo.png" class="brand-logo" />
-      <div class="brand-text">
-        <h1>쉐어스팟</h1>
-        <p>시흥시 정왕동</p>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
+    </div>
+
+    <div class="main-content">
+      <div class="top-header">
+        <div class="search-bar">
+          <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
+        </div>
+        <div class="header-actions">
+          <button class="write-btn" onclick="location.href='upload.html'">
+            <span>✏️</span> 글쓰기
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <div
+          class="page-header-title"
+          style="
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #e5e7eb;
+          "
+        >
+          채팅
+        </div>
+
+        <div class="chat-list">
+          <div class="chat-item" onclick="location.href='chat_room.html?room=chat1'">
+            <div class="chat-avatar">
+              <img src="https://placehold.co/64x64" alt="프로필" />
+            </div>
+            <div class="chat-info">
+              <div class="chat-header-row">
+                <div class="user-meta">
+                  <span class="username">따뜻한이웃</span
+                  ><span class="location">정왕동</span>
+                </div>
+                <span class="time">5분 전</span>
+              </div>
+              <div class="chat-preview">에어프라이어 나눔합니다</div>
+              <div class="chat-last-msg-row">
+                <span class="last-msg">네, 내일 오후 2시에 만나요!</span>
+                <span class="msg-badge">2</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-item">
+            <div class="chat-avatar">
+              <img src="https://placehold.co/64x64" alt="프로필" />
+            </div>
+            <div class="chat-info">
+              <div class="chat-header-row">
+                <div class="user-meta">
+                  <span class="username">캠핑러버</span
+                  ><span class="location">배곧동</span>
+                </div>
+                <span class="time">1시간 전</span>
+              </div>
+              <div class="chat-preview">캠핑 텐트 빌려드립니다</div>
+              <div class="chat-last-msg-row">
+                <span class="last-msg">이번 주말에 사용 가능한가요?</span>
+                <span class="msg-badge">1</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-item">
+            <div class="chat-avatar">
+              <img src="https://placehold.co/64x64" alt="프로필" />
+            </div>
+            <div class="chat-info">
+              <div class="chat-header-row">
+                <div class="user-meta">
+                  <span class="username">DIY마스터</span
+                  ><span class="location">은행동</span>
+                </div>
+                <span class="time">3시간 전</span>
+              </div>
+              <div class="chat-preview">전동 드릴 공유해요</div>
+              <div class="chat-last-msg-row">
+                <span class="last-msg">보증금은 얼마인가요?</span>
+                <span class="msg-badge">1</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-item">
+            <div class="chat-avatar">
+              <img src="https://placehold.co/64x64" alt="프로필" />
+            </div>
+            <div class="chat-info">
+              <div class="chat-header-row">
+                <div class="user-meta">
+                  <span class="username">육아맘</span
+                  ><span class="location">목감동</span>
+                </div>
+                <span class="time">1일 전</span>
+              </div>
+              <div class="chat-preview">유아 책 교환해요</div>
+              <div class="chat-last-msg-row">
+                <span class="last-msg">감사합니다! 아이가 정말 좋아해요</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="menu">
-      <a href="main.html" class="menu-item">
-        <span class="menu-icon">🏠</span> 홈
-      </a>
-      <a href="near_me.html" class="menu-item">
-        <span class="menu-icon">📍</span> 내 근처
-      </a>
-      <a href="chat.html" class="menu-item active">
-        <span class="menu-icon">💬</span> 채팅
-      </a>
-      <a href="my.html" class="menu-item">
-        <span class="menu-icon">👤</span> 나의 시흥
-      </a>
-    </div>
-
-    <a href="#" class="login" id="logoutBtn">
-      <span>📕</span> 로그아웃
-    </a>
-  </div>
-
-  <div class="main-content">
-    <div class="top-header">
-      <div class="search-bar">
-        <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
-      </div>
-      <div class="header-actions">
-        <button class="write-btn" onclick="location.href='upload.html'">
-          <span>✏️</span> 글쓰기
-        </button>
-      </div>
-    </div>
-
-    <div class="chat-container">
-      <div class="page-header-title"
-        style="padding:20px;font-size:18px;font-weight:bold;border-bottom:1px solid #e5e7eb;">
-        채팅
-      </div>
-
-      <!-- 서버 기반 채팅 목록 -->
-      <div id="chatList" class="chat-list"></div>
-    </div>
-  </div>
-
-  <script src="../JS/auth.js"></script>
-  <script>
-    (async () => {
-      await Auth.guard();
-    })();
-  </script>
-
-  <div id="modal-root"></div>
-
-  <script src="../JS/chat_list.js"></script>
-  <script src="../Components/sidebar-auth.js"></script>
-
-</body>
-
+    <script src="../JS/auth.js"></script>
+    <script>
+      Auth.guard();
+    </script>
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
+  </body>
 </html>

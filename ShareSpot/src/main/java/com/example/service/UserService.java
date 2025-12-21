@@ -25,8 +25,7 @@ public class UserService {
                 .orElse(false);
     }
 
-    // ✅ 회원가입
-    // (nickname까지 받도록 바꾼 버전 기준)
+    // ✅ 회원가입 (userId, password, nickname)
     public void register(String userId, String password, String nickname) {
         userId = userId == null ? null : userId.trim();
         password = password == null ? null : password.trim();
@@ -41,6 +40,7 @@ public class UserService {
 
         User u = new User(userId, password);
         u.setNickname(nickname);
+
         if (!nickname.isBlank()) {
             u.setProfileInitial(nickname.substring(0, 1));
         }
@@ -48,13 +48,13 @@ public class UserService {
         userRepository.save(u);
     }
 
-    // ✅ 현재 로그인한 유저(userId) 기준으로 조회
+    // ✅ 현재 로그인 유저 조회
     public User getMe(String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("사용자 데이터가 없습니다."));
     }
 
-    // ✅ 현재 로그인한 유저(userId) 기준으로 수정
+    // ✅ 현재 로그인 유저 수정
     public User updateMe(String userId, String nickname, String dong, String intro) {
         User me = getMe(userId);
 

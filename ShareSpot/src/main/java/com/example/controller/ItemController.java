@@ -2,14 +2,13 @@ package com.example.controller;
 
 import com.example.entity.Item;
 import com.example.repository.ItemRepository;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,71 +16,67 @@ import java.util.UUID;
 @RequestMapping("/api/items")
 public class ItemController {
 
-    private final ItemRepository itemRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
-    public ItemController(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
-
-    // 1) 물품 등록 (파일 업로드 추가됨)
+    // 1. 물품 등록 API (사진 포함 버전)
     @PostMapping
     public Item createItem(
-            @ModelAttribute Item item, // @RequestBody가 아니라 @ModelAttribute여야 파일과 글을 같이 받습니다!
-            @RequestParam(value = "imageFile", required = false) MultipartFile file, // 파일 받기
-            HttpSession session) throws IOException {
+            @RequestParam("title") String title,
+            @RequestParam("category") String category,
+            @RequestParam("price") int price,
+            @RequestParam("location") String location,
+            @RequestParam("description") String description,
+            @RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
 
-        String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
-        if (loginUserId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-        }
+        // Item 객체 생성 및 데이터 세팅
+        Item item = new Item();
+        item.setTitle(title);
+        item.setCategory(category);
+        item.setPrice(price);
+        item.setLocation(location);
+        item.setDescription(description);
 
-        // 작성자 설정
-        item.setOwnerUserId(loginUserId);
+        // 사진 파일 처리 로직
+        if (files != null && !files.isEmpty()) {
+            List<String> imagePaths = new ArrayList<>();
+            
+            // 저장 폴더 설정 (없으면 생성)
+            String uploadDir = "C:/uploads/"; 
+            File folder = new File(uploadDir);
+            if (!folder.exists()) folder.mkdirs();
 
-        // 파일 업로드 처리
-        if (file != null && !file.isEmpty()) {
-            // 저장할 경로 (WebConfig 설정과 일치해야 함)
-            String uploadDir = "C:/uploads/";
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs(); // 폴더가 없으면 자동으로 만들어줍니다.
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    // 파일명 중복 방지를 위한 UUID 생성
+                    String originalFileName = file.getOriginalFilename();
+                    String savedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+                    
+                    // 파일 실제 저장
+                    File saveFile = new File(uploadDir, savedFileName);
+                    file.transferTo(saveFile);
+                    
+                    // 저장된 경로 저장 (나중에 불러올 때 사용)
+                    imagePaths.add("/uploads/" + savedFileName);
+                }
             }
-
-            // 파일명 중복 방지 (랜덤이름_원래이름.jpg)
-            String originalFilename = file.getOriginalFilename();
-            String savedFilename = UUID.randomUUID() + "_" + originalFilename;
-
-            // 실제 파일 저장
-            file.transferTo(new File(uploadDir + savedFilename));
-
-            // DB에는 "이 주소로 가면 이미지 보여줘"라고 경로만 저장
-            item.setImageUrl("/uploads/" + savedFilename);
+            
+            // Item 엔티티에 이미지 경로 저장 (Item 엔티티에 imagePaths 필드가 있다고 가정)
+            // 만약 없다면, 아래 주석을 풀고 Item 엔티티에 필드를 추가해야 합니다.
+            // item.setImagePaths(imagePaths);
+            
+            // 임시로 첫 번째 이미지만 대표 이미지로 저장한다면 (Item 엔티티에 imageUrl 필드가 있는 경우)
+            if (!imagePaths.isEmpty()) {
+                item.setImageUrl(imagePaths.get(0));
+            }
         }
 
         return itemRepository.save(item);
     }
 
-    // 2) 메인 목록
+    // 2. 메인 화면용 물품 목록 조회 API
     @GetMapping
     public List<Item> getAllItems() {
         return itemRepository.findAllByOrderByCreatedAtDesc();
-    }
-
-    // 3) 삭제 (작성자만 가능)
-    @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable Long id, HttpSession session) {
-        String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
-        if (loginUserId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-        }
-
-        Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 물품입니다."));
-
-        if (!item.getOwnerUserId().equals(loginUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자만 삭제할 수 있습니다.");
-        }
-
-        itemRepository.delete(item);
     }
 }

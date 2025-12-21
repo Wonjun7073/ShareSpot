@@ -1,76 +1,422 @@
-// src/main/webapp/JS/chat.js
+/**
+ * chat.js (for existing chat_room.html DOM)
+ * - chat_room.html 수정 없이 1:1 실시간 송/수신
+ * - URL: /html/chat_room.html?me=user1&peer=user2
+ *   (me/peer 없으면 Auth(STORAGE_KEY)에서 me 추출 시도)
+ */
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    const chatLog = document.getElementById('chatLog');
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
-    const chatHeader = document.getElementById('chatHeader');
-    
-    // URL에서 roomId와 title을 추출 (openChatRoom에서 리다이렉트 시 넘겨준 파라미터)
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomId = urlParams.get('room'); 
-    const itemTitle = urlParams.get('title');
+(function () {
+  console.log("chat.js loaded (chat_room compatible)");
 
-    if (!roomId) {
-        chatHeader.textContent = "오류: 채팅방 정보가 없습니다.";
-        return;
-    }
-    
-    // 1. 헤더 업데이트 및 현재 사용자 ID 설정 (임시)
-    chatHeader.textContent = `[${itemTitle}] 채팅방`;
-    const currentUserId = "user_" + Math.floor(Math.random() * 100); // 임시 사용자 ID
+  // ===== DOM (chat_room.html 기준) =====
+  const messageArea = document.querySelector(".message-area");
+  const inputEl = document.querySelector(".chat-input-bar input[type='text']");
+  const sendBtn = document.querySelector(".chat-input-bar .send-btn");
 
-    // 2. 웹소켓 연결 수립
-    // 서버 엔드포인트에 roomId를 쿼리 파라미터로 전송
-    const chatSocket = new WebSocket(`ws://localhost:8080/sharespot/chat?roomId=${roomId}&userId=${currentUserId}`);
+  if (!messageArea || !inputEl || !sendBtn) {
+    console.warn("Chat elements not found", { messageArea, inputEl, sendBtn });
+    return;
+  }
 
-    // 3. 연결 이벤트 처리
-    chatSocket.onopen = function(e) {
-        console.log(`[WebSocket] 방 ${roomId}에 연결됨.`);
-        // [TODO: 기존 채팅 기록을 서버에 요청하는 로직 추가]
-    };
+  // ===== Query params =====
+  const params = new URLSearchParams(location.search);
+  const peer = (params.get("peer") || "").trim();
+  let me = (params.get("me") || "").trim();
+  let room = (params.get("room") || "").trim();
 
-    // 4. 메시지 수신 처리
-    chatSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        displayMessage(data.sender, data.msg); // 화면에 메시지 표시
-    };
-    
-    // 5. 메시지 전송 버튼 이벤트
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
+
+
+  function loadMsgList(key)
+  {
+    return JSON.parse(localStorage.getItem(key)) || [];
+  }
+
+  function saveMsgList(key,store) {
+    localStorage.setItem(key, JSON.stringify(store));
+  }
+  // ===== Auth에서 me 자동 추출 (가능하면) =====
+  // auth.js에 STORAGE_KEY="SS_USER"가 있다고 했었음 (네 프로젝트 기준)
+  // 구조가 다를 수 있으니 안전하게 여러 키를 시도
+  function tryGetMeFromAuth(perSession) {
+    try {
+      if (window.Auth && Auth.STORAGE_KEY) {
+
+        let raw = ""
+        if(perSession == true)
+        {
+          raw = sessionStorage.getItem(Auth.STORAGE_KEY);
+        }else
+        {
+          raw = localStorage.getItem(Auth.STORAGE_KEY);
         }
+
+      
+        if (!raw) return "";
+        const obj = JSON.parse(raw);
+        // 흔한 케이스들 다 시도
+        return (
+          (obj && (obj.userId || obj.userid || obj.id || obj.username || obj.email)) ||
+          ""
+        ).toString().trim();
+      }
+    } catch (e) {}
+    return "";
+  }
+
+  if (!me) me = tryGetMeFromAuth(true);
+
+  // if (!me || !peer) {
+  //   // chat_room.html은 수정 안 하니까, 최소 안내만 콘솔로 찍고 종료
+  //   console.warn("Need me & peer. Use: /html/chat_room.html?me=user1&peer=user2");
+  //   // 입력/전송 막기
+  //   inputEl.placeholder = "URL에 me, peer가 필요합니다. 예) ?me=user1&peer=user2";
+  //   inputEl.disabled = true;
+  //   sendBtn.disabled = true;
+  //   return;
+  // }
+
+    if(room != "")
+  {
+    //localStorage.removeItem(room);
+    
+    let msgList = loadMsgList(room);
+    displayMsgList(msgList);
+  }
+
+
+  // ===== 컨텍스트 경로 자동 =====
+  // 예) /ShareSpot/html/chat_room.html -> basePath=/ShareSpot
+  const basePath = (() => {
+    const p = location.pathname;
+    const idx = p.indexOf("/html/");
+    if (idx >= 0) return p.substring(0, idx);
+    return "";
+  })();
+
+  // ===== roomId =====
+  const roomId = [me, peer].sort().join("__");
+
+  console.log("[CHAT]", { me, peer, roomId, basePath: basePath || "/" });
+
+  // ===== UI append helpers =====
+  function esc(s) {
+    return String(s).replace(/[&<>\"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+    }[c]));
+  }
+
+  function toTimeLabel(dateLike) {
+    // createdAt: "2025-12-21T12:34:56"
+    // 화면은 대충 "오후 3:24" 형태
+    try {
+      const d = dateLike ? new Date(dateLike) : new Date();
+      let h = d.getHours();
+      const m = d.getMinutes();
+      const ap = h >= 12 ? "오후" : "오전";
+      h = h % 12;
+      if (h === 0) h = 12;
+      const mm = m < 10 ? "0" + m : "" + m;
+      return `${ap} ${h}:${mm}`;
+    } catch {
+      return "";
+    }
+  }
+
+  function appendMsg({ sender, receiver, content, createdAt }) {
+    const isMe = sender === me;
+    const row = document.createElement("div");
+    row.className = "message-row " + (isMe ? "sent" : "received");
+
+    if (isMe) {
+      // sent 구조: msg-meta + bubble
+      const meta = document.createElement("div");
+      meta.className = "msg-meta";
+
+      const read = document.createElement("span");
+      read.className = "read-check";
+      read.textContent = ""; // 읽음 처리 로직은 나중에 (HTML 수정 없이 비워둠)
+
+      const time = document.createElement("span");
+      time.className = "msg-time";
+      time.textContent = toTimeLabel(createdAt);
+
+      meta.appendChild(read);
+      meta.appendChild(time);
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.innerHTML = esc(content);
+
+      row.appendChild(meta);
+      row.appendChild(bubble);
+    } else {
+      // received 구조: bubble + msg-time
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.innerHTML = esc(content);
+
+      const time = document.createElement("div");
+      time.className = "msg-time";
+      time.textContent = toTimeLabel(createdAt);
+
+      row.appendChild(bubble);
+      row.appendChild(time);
+    }
+
+    messageArea.appendChild(row);
+    messageArea.scrollTop = messageArea.scrollHeight;
+  }
+
+  async function loadHistory() {
+    const url = `${basePath}/api/chat/history?roomId=${encodeURIComponent(roomId)}`;
+    console.log("[HISTORY] GET", url);
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("history http " + res.status);
+      const list = await res.json();
+
+      // 기존 더미 메시지(하드코딩) 제거하고 싶으면 여기서 비우면 됨.
+      // chat_room.html 수정은 안 하더라도, JS로 화면 내용 비우는 건 OK.
+      // ✅ 필요하면 주석 해제:
+      messageArea.innerHTML = "";
+
+      list.forEach(appendMsg);
+    } catch (e) {
+      console.warn("[HISTORY] load fail:", e);
+    }
+  }
+
+  // ===== STOMP connect =====
+  let stompClient = null;
+
+  // function connect() {
+  //   const wsUrl = `${basePath}/ws`;
+  //   console.log("[WS] connect:", wsUrl);
+
+  //   const sock = new SockJS(wsUrl);
+  //   stompClient = Stomp.over(sock);
+  //   stompClient.debug = null;
+
+  //   stompClient.connect({}, async () => {
+  //     console.log("[WS] connected");
+  //     sendBtn.disabled = false;
+
+  //     stompClient.subscribe(`/topic/room/${roomId}`, (frame) => {
+  //       console.log("[RECV]", frame.body);
+  //       try {
+  //         const msg = JSON.parse(frame.body);
+  //         appendMsg(msg);
+  //       } catch (e) {
+  //         console.warn("[RECV] parse fail:", e);
+  //       }
+  //     });
+
+  //     await loadHistory();
+  //   }, (err) => {
+  //     console.warn("[WS] error:", err);
+  //     sendBtn.disabled = true;
+  //     setTimeout(connect, 1500);
+  //   });
+  // }
+
+  var socket = null;
+
+  function connect() {
+      socket = io("http://localhost:10001");
+
+      socket.on("connect",()=> {
+        socket.emit("joinRoom", room);
+      });
+
+      socket.on("receiveMessage",(msg)=>{
+          displayMsg(msg.message,true);
+      });
+  }
+
+  // function send() {
+  //   const text = (inputEl.value || "").trim();
+  //   if (!text) return;
+
+  //   if (!stompClient || !stompClient.connected) {
+  //     console.warn("[SEND] not connected");
+  //     return;
+  //   }
+
+  //   const payload = {
+  //     roomId,
+  //     sender: me,
+  //     receiver: peer,
+  //     content: text
+  //   };
+
+  //   console.log("[SEND]", payload);
+  //   stompClient.send("/app/chat.send", {}, JSON.stringify(payload));
+
+  //   inputEl.value = "";
+  //   inputEl.focus();
+  // }
+
+  function send()
+  {
+     const text = (inputEl.value || "").trim();
+     if (!text) return;
+
+
+    if(!socket.connected) return;
+
+
+
+
+     const payload = {
+       tid : crypto.randomUUID(),
+       roomId : room,
+       sender: me,
+       receiver: peer,
+       content: text,
+       ts : Date.now(),
+     };
+
+     console.log("[SEND]", payload);
+  //   stompClient.send("/app/chat.send", {}, JSON.stringify(payload));
+     socket.emit("chat",  {roomId:room,message:JSON.stringify(payload)});
+
+     inputEl.value = "";
+     inputEl.focus();
+  }
+
+  // 이벤트 바인딩
+  sendBtn.addEventListener("click", send);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") send();
+  });
+
+
+
+
+
+  function makeMyMsg(msgData)
+  {
+      let msgRow = document.createElement("div");
+      msgRow.classList.add("message-row","sent");
+
+      let msgMeta = document.createElement("div");
+      msgMeta.className = "msg-meta";
+
+      let msgRead = document.createElement("span");
+      msgRead.className = "read-check";
+      msgRead.textContent = "읽음";
+
+      let msgTime = document.createElement("span");
+      msgTime.className ="msg-time";
+      msgTime.textContent = getKoreanTime();
+
+
+      let message = document.createElement("div");
+      message.className = "bubble";
+      message.textContent = msgData.content;
+
+      msgMeta.appendChild(msgRead);
+      msgMeta.appendChild(msgTime);
+
+
+      msgRow.appendChild(msgMeta);
+      msgRow.appendChild(message);
+
+      return msgRow;
+  }
+
+
+  function makePeerMsg(msgData)
+  {
+    let msgRow = document.createElement("div");
+    msgRow.classList.add("message-row","received");
+
+    let message = document.createElement("div");
+    message.className = "bubble";
+    message.textContent = msgData.content;
+
+    let msgTime = document.createElement("div");
+    msgTime.className = "msg-time";
+    msgTime.textContent = getKoreanTime();
+
+    msgRow.appendChild(message);
+    msgRow.appendChild(msgTime);
+
+    return msgRow;
+
+  }
+
+  function displayMsgList(list)
+  {
+    list.forEach(msg => {
+      displayMsg(msg,false);
     });
+  }
 
-    // 6. 메시지 전송 함수
-    function sendMessage() {
-        const message = messageInput.value.trim();
-        if (message === "") return;
+  function displayMsg(msg, needAddMsg)
+  {
+      if (msg == null) return;
 
-        const messageData = {
-            sender: currentUserId,
-            msg: message,
-            roomId: roomId 
-        };
-        
-        // 서버로 전송 (JSON 문자열)
-        chatSocket.send(JSON.stringify(messageData));
-        messageInput.value = ''; // 입력창 초기화
+      let chatList = document.getElementsByClassName("message-area")[0];
+
+      let msgData = JSON.parse(msg);
+
+      if(msgData.sender == me)
+      {
+        chatList.appendChild(makeMyMsg(msgData));
+
+      }else
+      {
+        chatList.appendChild(makePeerMsg(msgData));
+      }    
+
+      if(!needAddMsg) return;
+
+
+      addMessage(msg);
+
+  }
+
+  function addMessage(message)
+  {
+    let msgList = loadMsgList(room);
+    if (!msgList) msgList = [];
+
+    if (msgList.some(m => m.tid && m.tid === message.tid))  
+    {
+      return;
     }
-    
-    // 7. 메시지 화면 출력 함수
-    function displayMessage(sender, msg) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add(sender === currentUserId ? 'my-message' : 'other-message'); // CSS 클래스 추가
-        messageElement.innerHTML = `<b>${sender}:</b> ${msg}`;
-        chatLog.appendChild(messageElement);
-        chatLog.scrollTop = chatLog.scrollHeight; // 스크롤을 맨 아래로 이동
-    }
-    
-    // 8. 기타 연결 이벤트
-    chatSocket.onclose = function(e) { console.warn("[WebSocket] 연결 종료."); };
-    chatSocket.onerror = function(e) { console.error("[WebSocket] 오류 발생:", e); };
-});
+
+
+    msgList.push(message)
+
+    msgList.sort((a, b) => a.ts - b.ts);
+
+    let json = JSON.stringify(msgList);
+
+    saveMsgList(room,msgList);
+  }
+
+
+
+  function getKoreanTime() {
+  const now = new Date();
+
+  let hours = now.getHours(); // 0~23
+  const minutes = now.getMinutes(); // 0~59
+
+  const ampm = hours >= 12 ? "오후" : "오전";
+
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+
+  const minStr = minutes.toString().padStart(2, "0");
+
+  return `${ampm} ${hours}:${minStr}`;
+}
+
+
+  // 시작
+  sendBtn.disabled = true;
+  connect();
+})();

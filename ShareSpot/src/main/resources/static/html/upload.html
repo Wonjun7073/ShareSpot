@@ -24,34 +24,35 @@
       </div>
 
       <div class="menu">
-        <a href="./main.html" class="menu-item active">
-          <span class="menu-icon">🏠</span> 홈
-        </a>
-        <a href="./near_me.html" class="menu-item">
-          <span class="menu-icon">📍</span> 내 근처
-        </a>
-        <a href="./chat.html" class="menu-item">
-          <span class="menu-icon">💬</span> 채팅
-          <span class="badge">3</span>
-        </a>
-        <a href="./my.html" class="menu-item">
-          <span class="menu-icon">👤</span> 나의 시흥
-        </a>
+        <a href="./main.html" class="menu-item active"
+          ><span class="menu-icon">🏠</span> 홈</a
+        >
+        <a href="./near_me.html" class="menu-item"
+          ><span class="menu-icon">📍</span> 내 근처</a
+        >
+        <a href="./chat.html" class="menu-item"
+          ><span class="menu-icon">💬</span> 채팅
+          <span class="badge">3</span></a
+        >
+        <a href="./my.html" class="menu-item"
+          ><span class="menu-icon">👤</span> 나의 시흥</a
+        >
       </div>
-
       <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
+    <!-- 상단 헤더 -->
     <div class="main-content">
       <div class="top-header">
         <div class="search-bar">
           <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
         </div>
         <div class="header-actions">
-          <a href="./upload.html" class="write-btn"> <span>✏️</span> 글쓰기 </a>
+          <a href="./upload.html" class="write-btn"><span>✏️</span> 글쓰기</a>
         </div>
       </div>
 
+      <!-- 본문 -->
       <main class="upload-container">
         <div class="upload-header">
           <h2>물품 등록하기</h2>
@@ -59,38 +60,30 @@
         </div>
 
         <div class="upload-body">
+          <!-- 사진 등록 -->
           <section class="upload-photo card">
             <h3>사진 등록</h3>
-            <p>사진을 1장 등록해주세요</p>
-            <div class="photo-box" id="photoBox" style="cursor: pointer">
+            <p>최대 10장까지 등록 가능합니다</p>
+            <div class="photo-box">
               <div class="photo-icon">📷</div>
               <div class="photo-text">사진 추가</div>
-              <div class="photo-count" id="photoCount">(0/1)</div>
+              <div class="photo-count">(0/10)</div>
             </div>
-            <input
-              type="file"
-              id="fileInput"
-              accept="image/*"
-              style="display: none"
-            />
           </section>
 
+          <!-- 폼 영역 -->
           <section class="upload-form">
             <div class="card">
               <label>제목 *</label>
-              <input
-                id="title"
-                type="text"
-                placeholder="물품 제목을 입력하세요"
-              />
+              <input type="text" placeholder="물품 제목을 입력하세요" />
             </div>
 
             <div class="card">
               <label>카테고리 *</label>
               <div class="category-buttons">
-                <button type="button" class="active">나눔</button>
-                <button type="button">대여</button>
-                <button type="button">교환</button>
+                <button class="active">나눔</button>
+                <button>대여</button>
+                <button>교환</button>
               </div>
             </div>
 
@@ -105,7 +98,7 @@
 
             <div class="card">
               <label>거래 희망 장소</label>
-              <select id="location">
+              <select>
                 <option>시흥시 정왕동</option>
                 <option>시흥시 배곧동</option>
                 <option>시흥시 은행동</option>
@@ -119,22 +112,24 @@
             <div class="card">
               <label>자세한 설명 *</label>
               <textarea
-                id="description"
                 rows="6"
                 placeholder="물품에 대한 자세한 설명을 입력해주세요 (예: 상태, 사용 기간, 거래 방법 등)"
               ></textarea>
             </div>
 
             <div class="form-actions">
-              <button class="btn-cancel" type="button">취소</button>
-              <button class="btn-submit" type="button">등록하기</button>
+              <button class="btn-cancel">취소</button>
+              <button type="button" class="btn-submit">등록하기</button>
             </div>
           </section>
         </div>
       </main>
     </div>
 
+<<<<<<< HEAD
     <div id="toast" class="toast">물품이 등록되었습니다!</div>
+=======
+>>>>>>> 9d5896eaee5627196fcd13495ed2ba243074ef9e
     <div id="confirmModal" class="modal">
       <div class="modal-box">
         <h3 id="modalTitle">확인</h3>
@@ -148,12 +143,21 @@
       </div>
     </div>
 
+    <div id="toast" class="toast">물품이 등록되었습니다!</div>
+    <!-- 공통 인증 -->
     <script src="../JS/auth.js"></script>
     <script>
-      (async () => {
-        await Auth.guard();
-      })();
+      //   Auth.guard(); //
     </script>
+<<<<<<< HEAD
+=======
+
+    <!-- upload 전용 -->
+>>>>>>> 9d5896eaee5627196fcd13495ed2ba243074ef9e
     <script src="../JS/upload.js" defer></script>
+
+    <!-- 공통 로그아웃 모달 -->
+    <div id="modal-root"></div>
+    <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>

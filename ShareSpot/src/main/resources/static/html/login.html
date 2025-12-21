@@ -17,7 +17,7 @@
         <header class="brand login-brand">
           <a href="./main.html" class="brand-link" aria-label="메인으로 이동">
             <div class="brand-mark">
-              <img src="../images/logo.png" alt="시흥 공유마켓 로고" />
+              <img src="../Images/logo.png" alt="시흥 공유마켓 로고" />
             </div>
           </a>
           <h1 class="brand-title">쉐어스팟</h1>
@@ -109,7 +109,7 @@
         showToast();
         // 로그인 성공 → 메인으로
         setTimeout(() => {
-          location.href = "./main.html";
+          location.href = "./main.html?" + id;
         }, 600);
       });
     </script>
