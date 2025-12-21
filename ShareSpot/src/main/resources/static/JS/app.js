@@ -48,6 +48,12 @@
     // 💡 이미지 처리 로직: it.imageUrl(Base64)이 있으면 사용, 없으면 더미 이미지 사용
     const imgSrc = it.imageUrl ? it.imageUrl : "https://placehold.co/413x413";
 
+    // ✅ id가 없으면 버튼 자체를 비활성화
+    const roomBtn =
+      it.id != null
+        ? `<button class="chat-btn" data-item-id="${it.id}">1:1 채팅</button>`
+        : `<button class="chat-btn" disabled>1:1 채팅</button>`;
+
     return `
       <div class="card">
         <div class="card-img-wrapper" style="width: 413px; height: 413px; overflow: hidden; background: #f0f0f0;">
@@ -61,15 +67,13 @@
             <span class="time-ago">${formatTimeAgo(it.createdAt)}</span>
           </div>
 
-          <h3 class="card-title">${escapeHTML(it.title)}</h3>
-          <p class="card-price">${priceText}</p>
+        <h3 class="card-title">${escapeHTML(it.title)}</h3>
+        <p class="card-price">${priceText}</p>
 
-          <div class="card-footer">
-            <span>${escapeHTML(it.location)}</span>
+        <div class="card-footer">
+          <span>${escapeHTML(it.location)}</span>
 
-            <button class="chat-btn" onclick="openChatList(${it.id})">
-              1:1 채팅
-            </button>
+          ${roomBtn}
 
             ${canDelete
                 ? `<button class="delete-btn" onclick="deleteItem(${it.id})">삭제</button>`
@@ -86,7 +90,7 @@
    * ========================= */
   async function renderHome() {
     try {
-      const res = await fetch("/api/items", { credentials: "same-origin" });
+      const res = await fetch("/api/items", { credentials: "include" });
       const items = await res.json();
 
       if (!Array.isArray(items) || items.length === 0) {
@@ -98,8 +102,7 @@
       grid.innerHTML = items.map(toCardHTML).join("");
     } catch (e) {
       console.error(e);
-      grid.innerHTML =
-        '<p style="text-align:center;color:red;">서버 오류</p>';
+      grid.innerHTML = '<p style="text-align:center;color:red;">서버 오류</p>';
     }
 
     menuItems.forEach((el) => el.classList.remove("active"));
@@ -110,45 +113,72 @@
    * 채팅방 생성 → 목록 이동
    * ========================= */
   window.openChatList = async function (itemId) {
-    try {
-      const res = await fetch("/api/chat/rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({ itemId }),
-      });
-
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        alert("채팅방 생성 실패: " + (txt || res.status));
-        return;
-      }
-
-      window.location.href = "/html/chat.html";
-    } catch (e) {
-      console.error(e);
-      alert("채팅방 생성 중 오류");
+    const idNum = Number(itemId);
+    if (!Number.isFinite(idNum)) {
+      alert("itemId가 올바르지 않습니다. (프론트 렌더링/데이터 확인 필요)");
+      return;
     }
+
+    const res = await fetch("/api/chat/rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ itemId: idNum }),
+    });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      alert("채팅방 생성 실패: " + (txt || res.status));
+      return;
+    }
+
+    window.location.href = "/html/chat.html";
   };
 
   /* =========================
    * 삭제
    * ========================= */
   window.deleteItem = async function (id) {
+    const idNum = Number(id);
+    if (!Number.isFinite(idNum)) return;
+
     if (!confirm("삭제하시겠습니까?")) return;
 
-    const res = await fetch(`/api/items/${id}`, {
+    const res = await fetch(`/api/items/${idNum}`, {
       method: "DELETE",
-      credentials: "same-origin",
+      credentials: "include",
     });
 
+    const txt = await res.text().catch(() => "");
     if (!res.ok) {
-      alert("삭제 실패");
+      alert("삭제 실패: " + (txt || res.status));
       return;
     }
 
     renderHome();
   };
+
+  /* =========================
+   * 클릭 이벤트 위임 (채팅/삭제)
+   * - renderHome() 재호출돼도 리스너는 1번만 유지됨
+   * ========================= */
+  if (grid) {
+    grid.addEventListener("click", (e) => {
+      const delBtn = e.target.closest(".delete-btn[data-del-id]");
+      if (delBtn) {
+        const id = Number(delBtn.dataset.delId);
+        if (Number.isFinite(id)) window.deleteItem(id);
+        return;
+      }
+
+      const chatBtn = e.target.closest(".chat-btn[data-item-id]");
+      if (chatBtn) {
+        const itemId = Number(chatBtn.dataset.itemId);
+        if (Number.isFinite(itemId)) window.openChatList(itemId);
+        return;
+      }
+    });
+  }
 
   if (homeMenuBtn) {
     homeMenuBtn.addEventListener("click", (e) => {

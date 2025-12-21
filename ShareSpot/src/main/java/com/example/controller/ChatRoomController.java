@@ -28,6 +28,7 @@ public class ChatRoomController {
     // ✅ 1) 채팅방 생성(또는 기존 채팅방 반환)
     @PostMapping("/rooms")
     public ChatRoomResponse createOrGetRoom(@RequestBody CreateChatRoomRequest req, HttpSession session) {
+        
         String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
         if (loginUserId == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
@@ -67,7 +68,6 @@ public class ChatRoomController {
         if (!(room.getBuyerUserId().equals(loginUserId) || room.getSellerUserId().equals(loginUserId))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
         }
-
         return ChatRoomResponse.from(room);
     }
 
@@ -86,3 +86,4 @@ public class ChatRoomController {
                 .toList();
     }
 }
+//헤헤 tlqkf

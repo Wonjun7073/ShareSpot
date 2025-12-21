@@ -39,3 +39,4 @@ public class ChatRoom {
     @Column(length = 500)
     private String lastMessage;
 }
+//헤헤

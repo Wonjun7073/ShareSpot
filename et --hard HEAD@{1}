@@ -1,0 +1,48 @@
+[33mf4c8875[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: pull --tags origin main: Fast-forward
+[33md2f5e8c[m HEAD@{1}: commit: 채팅방 목록 활성화, 물품 등록 오류 해결
+[33m19a82e4[m HEAD@{2}: reset: moving to 19a82e4
+[33me775b27[m HEAD@{3}: commit: 오류 해결
+[33m44b4b9d[m HEAD@{4}: pull --tags origin main: Fast-forward
+[33m19a82e4[m HEAD@{5}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33m142d656[m HEAD@{6}: commit: 불필요한 로그 삭제
+[33mf579f07[m HEAD@{7}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33me518c42[m HEAD@{8}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33mbd97bd3[m HEAD@{9}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33mebf3a73[m HEAD@{10}: commit (merge): Merge branch 'main' of https://github.com/Wonjun7073/ShareSpot
+[33m950d197[m HEAD@{11}: commit: chore: remove local db file from repository
+[33m8b5279d[m HEAD@{12}: commit: fix: resolve my page merge conflict and ignore db
+[33m17b691a[m HEAD@{13}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33m55e9802[m HEAD@{14}: commit (merge): Merge branch 'main' of https://github.com/Wonjun7073/ShareSpot
+[33m3bf73f6[m HEAD@{15}: commit: 내정보 수정 추가
+[33mbc511dd[m HEAD@{16}: commit: ㅌ
+[33mf95c3ac[m HEAD@{17}: pull --tags origin main: Fast-forward
+[33m75d5968[m HEAD@{18}: pull --tags origin main: Fast-forward
+[33m81977cc[m HEAD@{19}: pull --tags origin main: Fast-forward
+[33m1542a75[m HEAD@{20}: commit: gitignore 추가
+[33m25339bb[m HEAD@{21}: pull --tags origin main: Fast-forward
+[33m9514f64[m HEAD@{22}: pull --tags origin main: Fast-forward
+[33m83f4e46[m HEAD@{23}: reset: moving to origin/main
+[33m032b21f[m HEAD@{24}: reset: moving to HEAD
+[33m032b21f[m HEAD@{25}: reset: moving to HEAD
+[33m032b21f[m HEAD@{26}: reset: moving to HEAD
+[33m032b21f[m HEAD@{27}: reset: moving to HEAD
+[33m032b21f[m HEAD@{28}: reset: moving to HEAD
+[33m032b21f[m HEAD@{29}: commit: Fix gitignore and application properties
+[33m1741032[m HEAD@{30}: commit: Remove build artifacts (target, class files)
+[33mc6ca0e6[m HEAD@{31}: pull --tags origin main: Fast-forward
+[33me9e69e3[m HEAD@{32}: commit: chore: ignore build artifacts
+[33m703f4bb[m HEAD@{33}: commit: chore: add Maven Wrapper
+[33mbb91738[m HEAD@{34}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33m6b3c8cd[m HEAD@{35}: commit: chore: ignore target directory
+[33m4598f6d[m HEAD@{36}: pull --tags origin main: updating HEAD
+[33m4598f6d[m HEAD@{37}: commit: h2로 변경
+[33m0b258af[m HEAD@{38}: commit: 전체 구조 수정및 데이터 베이스 연결, 로그인 회원가입 기능 추가
+[33mde27b9a[m HEAD@{39}: commit (merge): Merge branch 'main' of https://github.com/Wonjun7073/ShareSpot
+[33m7be3ecf[m HEAD@{40}: commit: 환경 설정
+[33mcb6f431[m HEAD@{41}: pull --tags origin main: Fast-forward
+[33m8ea71ac[m HEAD@{42}: reset: moving to origin/main
+[33ma33496e[m HEAD@{43}: reset: moving to HEAD
+[33ma33496e[m HEAD@{44}: pull --tags origin main: Fast-forward
+[33m680bdd3[m HEAD@{45}: pull --tags origin main: Fast-forward
+[33m587d29a[m HEAD@{46}: pull --tags origin main: Fast-forward
+[33mc5a0cc1[m[33m ([m[1;31morigin/newbranch[m[33m)[m HEAD@{47}: clone: from https://github.com/Wonjun7073/ShareSpot.git
