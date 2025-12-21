@@ -1,2 +1,29 @@
+# ===== Maven / Java =====
+target/
+*.class
+
+# ===== Node =====
+**/node_modules/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== H2 / local data =====
+data/
 data/sharespot.trace.db
 data/sharespot.mv.db
+*.mv.db
+*.trace.db
+
+# ===== Logs =====
+*.log
+logs/
