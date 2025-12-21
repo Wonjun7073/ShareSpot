@@ -2,10 +2,13 @@
   const grid = document.getElementById("itemGrid");
   const searchInput = document.getElementById("searchInput");
   const menuItems = document.querySelectorAll(".menu-item");
+  let currentQuery = "";
 
   let chatMenuBtn = null;
   let homeMenuBtn = null;
   let pendingDeleteId = null;
+  let allItems = []; // 전체 목록 저장
+  let currentCategory = "전체"; // 현재 선택된 카테고리
 
   // 로그인 유저
   const me = window.Auth?.getUser?.();
@@ -83,8 +86,17 @@
   function toCardHTML(it) {
     const canDelete = myUserId && it.ownerUserId === myUserId;
 
-    const priceText =
-      it.price === 0 ? "나눔 🎁" : `${it.price.toLocaleString()}원`;
+    const cat = (it.category || "").trim();
+
+    let priceText = "";
+    if (cat === "대여") {
+      priceText = `${Number(it.price || 0).toLocaleString()}원`;
+    } else if (cat === "교환") {
+      priceText = "교환 🔄";
+    } else {
+      // 나눔(기본)
+      priceText = "나눔 🎁";
+    }
 
     const imgSrc = it.imageUrl
       ? it.imageUrl
@@ -113,14 +125,58 @@
           <div class="card-footer">
             <span>${escapeHTML(it.location)}</span>
             ${roomBtn}
-            ${canDelete
-        ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
-        : ""
-      }
+            ${
+              canDelete
+                ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
+                : ""
+            }
           </div>
         </div>
       </div>
     `;
+  }
+  function renderItems() {
+    if (!grid) return;
+
+    const q = (currentQuery || "").trim().toLowerCase();
+
+    // 1) 카테고리 필터
+    let filtered =
+      currentCategory === "전체"
+        ? allItems
+        : allItems.filter(
+            (it) => (it.category || "").trim() === currentCategory
+          );
+
+    // 2) 검색 필터 (제목/지역/카테고리/가격텍스트/내용 등)
+    if (q) {
+      filtered = filtered.filter((it) => {
+        const title = String(it.title || "").toLowerCase();
+        const location = String(it.location || "").toLowerCase();
+        const category = String(it.category || "").toLowerCase();
+        const content = String(
+          it.content || it.description || ""
+        ).toLowerCase(); // 혹시 필드명이 다를 수 있어서 안전하게
+        const price = String(it.price ?? "").toLowerCase();
+
+        return (
+          title.includes(q) ||
+          location.includes(q) ||
+          category.includes(q) ||
+          content.includes(q) ||
+          price.includes(q)
+        );
+      });
+    }
+
+    // 3) 렌더
+    if (!Array.isArray(filtered) || filtered.length === 0) {
+      grid.innerHTML =
+        '<p style="text-align:center;color:#888;padding:40px;">검색 결과가 없습니다.</p>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(toCardHTML).join("");
   }
 
   /* =========================
@@ -131,13 +187,10 @@
       const res = await fetch("/api/items", { credentials: "include" });
       const items = await res.json();
 
-      if (!Array.isArray(items) || items.length === 0) {
-        grid.innerHTML =
-          '<p style="text-align:center;color:#888;padding:40px;">등록된 물품이 없습니다.</p>';
-        return;
-      }
+      allItems = Array.isArray(items) ? items : [];
 
-      grid.innerHTML = items.map(toCardHTML).join("");
+      // ✅ 필터 적용해서 렌더
+      renderItems();
     } catch (e) {
       console.error(e);
       grid.innerHTML =
@@ -146,6 +199,17 @@
 
     menuItems.forEach((el) => el.classList.remove("active"));
     if (homeMenuBtn) homeMenuBtn.classList.add("active");
+  }
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      currentQuery = searchInput.value;
+      renderItems(); // 카테고리 + 검색 동시 적용
+    });
+
+    // 엔터 눌렀을 때 폼 제출 같은 거 막기(혹시 모르니)
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") e.preventDefault();
+    });
   }
 
   /* =========================
@@ -165,7 +229,14 @@
 
     await renderHome();
   }
+  (function applyQueryFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const q = (params.get("q") || "").trim();
+    if (!q) return;
 
+    currentQuery = q;
+    if (searchInput) searchInput.value = q;
+  })();
   /* =========================
    * 삭제 버튼 클릭 -> 모달만 띄우기
    * ========================= */
@@ -199,13 +270,16 @@
     }
 
     const room = await res.json();
-    const me = window.Auth?.getUser?.()?.userId || window.Auth?.getSessionUser?.()?.userId || "";
+    const me =
+      window.Auth?.getUser?.()?.userId ||
+      window.Auth?.getSessionUser?.()?.userId ||
+      "";
     const peer = me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
 
-    window.location.href =
-      `/html/chat_room.html?room=${encodeURIComponent(room.id)}&me=${encodeURIComponent(me)}&peer=${encodeURIComponent(peer)}`;
+    window.location.href = `/html/chat_room.html?room=${encodeURIComponent(
+      room.id
+    )}&me=${encodeURIComponent(me)}&peer=${encodeURIComponent(peer)}`;
   };
-
 
   /* =========================
    * 클릭 이벤트 위임
@@ -236,4 +310,19 @@
   }
 
   renderHome();
+
+  // ✅ 카테고리 필터 버튼
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".filter-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      currentCategory = btn.dataset.category || btn.innerText.trim() || "전체";
+
+      // ✅ 이미 받아온 목록으로 다시 렌더(서버 재요청 X)
+      renderItems();
+    });
+  });
 })();

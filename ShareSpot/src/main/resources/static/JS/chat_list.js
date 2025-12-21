@@ -1,45 +1,60 @@
 (function () {
-    const listEl = document.querySelector(".chat-list");
-    if (!listEl) return;
+  const listEl = document.querySelector(".chat-list");
+  if (!listEl) return;
 
-    const me = window.Auth?.getUser?.()?.userId || window.Auth?.getSessionUser?.()?.userId || null;
+  const me =
+    window.Auth?.getUser?.()?.userId ||
+    window.Auth?.getSessionUser?.()?.userId ||
+    null;
 
-    function esc(s) {
-        return String(s ?? "").replace(/[&<>\"']/g, (c) => ({
-            "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
-        }[c]));
-    }
+  function esc(s) {
+    return String(s ?? "").replace(
+      /[&<>\"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        }[c])
+    );
+  }
 
-    function timeAgo(dt) {
-        if (!dt) return "";
-        const t = new Date(dt).getTime();
-        if (!t) return "";
-        const diff = Math.floor((Date.now() - t) / 1000);
-        if (diff < 60) return "방금 전";
-        if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-        if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-        return `${Math.floor(diff / 86400)}일 전`;
-    }
+  function timeAgo(dt) {
+    if (!dt) return "";
+    const t = new Date(dt).getTime();
+    if (!t) return "";
+    const diff = Math.floor((Date.now() - t) / 1000);
+    if (diff < 60) return "방금 전";
+    if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+    return `${Math.floor(diff / 86400)}일 전`;
+  }
 
-    function peerOf(room) {
-        // ChatRoomResponse: buyerUserId, sellerUserId
-        if (!me) return room.buyerUserId || room.sellerUserId || "";
-        return me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
-    }
+  function peerOf(room) {
+    // ChatRoomResponse: buyerUserId, sellerUserId
+    if (!me) return room.buyerUserId || room.sellerUserId || "";
+    return me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
+  }
 
-    function toRow(room) {
-        const peer = peerOf(room);
-        const title = room.itemTitle || "";
-        const lastMsg = room.lastMessage || "(대화를 시작해보세요)";
-        const t = timeAgo(room.lastMessageAt || room.createdAt);
+  function toRow(room) {
+    const peer = peerOf(room);
+    const title = room.itemTitle || "";
+    const lastMsg = room.lastMessage || "(대화를 시작해보세요)";
+    const t = timeAgo(room.lastMessageAt || room.createdAt);
 
-        const href =
-            `chat_room.html?room=${encodeURIComponent(room.id)}&me=${encodeURIComponent(me || "")}&peer=${encodeURIComponent(peer || "")}`;
+    const href = `chat_room.html?room=${encodeURIComponent(
+      room.id
+    )}&me=${encodeURIComponent(me || "")}&peer=${encodeURIComponent(
+      peer || ""
+    )}`;
 
-        const badge = room.unreadCount > 0
-            ? `<span class="msg-badge">${room.unreadCount}</span>`
-            : "";
-        return `
+    const badge =
+      room.unreadCount > 0
+        ? `<span class="msg-badge">${room.unreadCount}</span>`
+        : "";
+    return `
         <div class="chat-item" data-href="${href}">
         <div class="chat-avatar">
             <img src="https://placehold.co/64x64" alt="프로필" />
@@ -59,38 +74,61 @@
         </div>
         </div>
     `;
+  }
+
+  async function render() {
+    try {
+      const res = await fetch("/api/chat/rooms", { credentials: "include" });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        listEl.innerHTML = `<div style="padding:20px;color:#888;">목록 불러오기 실패: ${esc(
+          txt || res.status
+        )}</div>`;
+        return;
+      }
+
+      const rooms = await res.json();
+
+      if (!Array.isArray(rooms) || rooms.length === 0) {
+        listEl.innerHTML = `<div style="padding:20px;color:#888;">채팅방이 없습니다.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = rooms.map(toRow).join("");
+    } catch (e) {
+      console.error(e);
+      listEl.innerHTML = `<div style="padding:20px;color:#888;">네트워크 오류</div>`;
     }
+  }
 
-    async function render() {
-        try {
-            const res = await fetch("/api/chat/rooms", { credentials: "include" });
-            if (!res.ok) {
-                const txt = await res.text().catch(() => "");
-                listEl.innerHTML = `<div style="padding:20px;color:#888;">목록 불러오기 실패: ${esc(txt || res.status)}</div>`;
-                return;
-            }
+  // 클릭 이동 (하드코딩 onclick 제거용)
+  listEl.addEventListener("click", (e) => {
+    const item = e.target.closest(".chat-item[data-href]");
+    if (!item) return;
+    location.href = item.dataset.href;
+  });
 
-            const rooms = await res.json();
-
-            if (!Array.isArray(rooms) || rooms.length === 0) {
-                listEl.innerHTML = `<div style="padding:20px;color:#888;">채팅방이 없습니다.</div>`;
-                return;
-            }
-
-            listEl.innerHTML = rooms.map(toRow).join("");
-
-        } catch (e) {
-            console.error(e);
-            listEl.innerHTML = `<div style="padding:20px;color:#888;">네트워크 오류</div>`;
-        }
-    }
-
-    // 클릭 이동 (하드코딩 onclick 제거용)
-    listEl.addEventListener("click", (e) => {
-        const item = e.target.closest(".chat-item[data-href]");
-        if (!item) return;
-        location.href = item.dataset.href;
-    });
-
-    render();
+  render();
 })();
+// ✅ 검색하면 main으로 이동해서 검색되게
+const searchInput = document.getElementById("searchInput");
+if (searchInput) {
+  function goMainSearch() {
+    const q = searchInput.value.trim();
+    const url = q ? `./main.html?q=${encodeURIComponent(q)}` : `./main.html`;
+    window.location.href = url;
+  }
+
+  // 엔터로 검색
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      goMainSearch();
+    }
+  });
+
+  // 돋보기 클릭 검색
+  document
+    .querySelector(".search-bar span")
+    ?.addEventListener("click", goMainSearch);
+}

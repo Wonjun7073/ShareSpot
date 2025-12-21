@@ -23,7 +23,9 @@
       const s = window.Auth?.getSessionUser?.();
       const l = window.Auth?.getUser?.();
       return (s?.userId || l?.userId || "").toString().trim();
-    } catch { return ""; }
+    } catch {
+      return "";
+    }
   }
   if (!me) me = tryMeFromAuth();
 
@@ -36,9 +38,17 @@
   let pollTimer = null;
 
   function esc(s) {
-    return String(s ?? "").replace(/[&<>\"']/g, (c) => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
-    }[c]));
+    return String(s ?? "").replace(
+      /[&<>\"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        }[c])
+    );
   }
 
   function toTimeLabel(dateLike) {
@@ -47,10 +57,13 @@
       let h = d.getHours();
       const m = d.getMinutes();
       const ap = h >= 12 ? "오후" : "오전";
-      h = h % 12; if (h === 0) h = 12;
+      h = h % 12;
+      if (h === 0) h = 12;
       const mm = m < 10 ? "0" + m : "" + m;
       return `${ap} ${h}:${mm}`;
-    } catch { return ""; }
+    } catch {
+      return "";
+    }
   }
 
   function appendMsg(m) {
@@ -106,7 +119,9 @@
     // 서버에서 readAt이 채워진 메시지가 오면, 내 메시지의 "1"을 지움
     for (const m of messages) {
       if (m.senderUserId !== me) continue;
-      const el = messageArea.querySelector(`.message-row.sent[data-msg-id="${m.id}"] .read-check`);
+      const el = messageArea.querySelector(
+        `.message-row.sent[data-msg-id="${m.id}"] .read-check`
+      );
       if (el) el.textContent = m.readAt ? "" : "1";
     }
   }
@@ -119,7 +134,9 @@
   }
 
   async function loadAll() {
-    const res = await fetch(`/api/chat/messages?roomId=${roomId}`, { credentials: "include" });
+    const res = await fetch(`/api/chat/messages?roomId=${roomId}`, {
+      credentials: "include",
+    });
     if (!res.ok) return;
 
     const list = await res.json();
@@ -133,7 +150,10 @@
   }
 
   async function poll() {
-    const res = await fetch(`/api/chat/messages?roomId=${roomId}&afterId=${lastId}`, { credentials: "include" });
+    const res = await fetch(
+      `/api/chat/messages?roomId=${roomId}&afterId=${lastId}`,
+      { credentials: "include" }
+    );
     if (!res.ok) return;
 
     const list = await res.json();
@@ -171,7 +191,6 @@
 
       inputEl.value = "";
       inputEl.focus();
-
     } finally {
       sendBtn.disabled = false;
     }
@@ -196,34 +215,36 @@
       if (pollTimer) clearInterval(pollTimer);
     });
     async function renderRoomHeader() {
-  try {
-    const res = await fetch(`/api/chat/rooms/${roomId}`, { credentials: "include" });
-    if (!res.ok) return;
+      try {
+        const res = await fetch(`/api/chat/rooms/${roomId}`, {
+          credentials: "include",
+        });
+        if (!res.ok) return;
 
-    const room = await res.json();
+        const room = await res.json();
 
-    // 상대방 표시: buyer/seller 중에서 나 아닌 쪽
-    const peerId = (me === room.buyerUserId) ? room.sellerUserId : room.buyerUserId;
+        // 상대방 표시: buyer/seller 중에서 나 아닌 쪽
+        const peerId =
+          me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
 
-    // 1) 상단 헤더
-    const nameEl = document.querySelector(".header-name");
-    const subEl = document.querySelector(".header-sub");
-    if (nameEl) nameEl.textContent = peerId || "상대";
-    if (subEl) subEl.textContent = room.itemTitle || "";
+        // 1) 상단 헤더
+        const nameEl = document.querySelector(".header-name");
+        const subEl = document.querySelector(".header-sub");
+        if (nameEl) nameEl.textContent = peerId || "상대";
+        if (subEl) subEl.textContent = room.itemTitle || "";
 
-    // 2) 상품 바
-    const productTitle = document.querySelector(".product-title");
-    const productStatus = document.querySelector(".product-status");
-    if (productTitle) productTitle.textContent = room.itemTitle || "";
+        // 2) 상품 바
+        const productTitle = document.querySelector(".product-title");
+        const productStatus = document.querySelector(".product-status");
+        if (productTitle) productTitle.textContent = room.itemTitle || "";
 
-    // status는 네 Item에서 price=0이면 나눔, 아니면 대여인데
-    // ChatRoomResponse에는 price가 없으니 일단 "채팅중" 같은 표시로 두거나,
-    // item 상세까지 내려받고 싶으면 API 확장해야 함.
-    if (productStatus) productStatus.textContent = "채팅중";
-  } catch (e) {
-    console.warn("renderRoomHeader fail", e);
-  }
-}
-
+        // status는 네 Item에서 price=0이면 나눔, 아니면 대여인데
+        // ChatRoomResponse에는 price가 없으니 일단 "채팅중" 같은 표시로 두거나,
+        // item 상세까지 내려받고 싶으면 API 확장해야 함.
+        if (productStatus) productStatus.textContent = "채팅중";
+      } catch (e) {
+        console.warn("renderRoomHeader fail", e);
+      }
+    }
   })();
 })();
