@@ -4,17 +4,17 @@
  */
 
 const Auth = {
-  STORAGE_KEY: "SS_USER",
-  LOGIN_URL: "/html/login.html",
+  STORAGE_KEY: 'SS_USER',
+  LOGIN_URL: '/html/login.html',
 
   /* =========================
    * 로그인
    * ========================= */
   async login(userId, password) {
     try {
-      const res = await fetch("/api/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, password }),
       });
 
@@ -23,7 +23,7 @@ const Auth = {
       try {
         data = JSON.parse(text);
       } catch {
-        console.error("LOGIN NON-JSON RESPONSE:", text);
+        console.error('LOGIN NON-JSON RESPONSE:', text);
         return false;
       }
 
@@ -41,7 +41,7 @@ const Auth = {
       );
 
       sessionStorage.setItem(
-         this.STORAGE_KEY,
+        this.STORAGE_KEY,
         JSON.stringify({
           userId: data.userId || userId,
           nickname: data.nickname || null,
@@ -52,7 +52,7 @@ const Auth = {
 
       return true;
     } catch (e) {
-      console.error("로그인 네트워크 오류:", e);
+      console.error('로그인 네트워크 오류:', e);
       return false;
     }
   },
@@ -62,9 +62,9 @@ const Auth = {
    * ========================= */
   async register(userId, password, nickname) {
     try {
-      const res = await fetch("/api/user/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
           password,
@@ -77,18 +77,18 @@ const Auth = {
       try {
         data = JSON.parse(text);
       } catch {
-        console.error("REGISTER NON-JSON RESPONSE:", text);
+        console.error('REGISTER NON-JSON RESPONSE:', text);
         return {
           success: false,
-          message: "서버 응답이 올바르지 않습니다.",
+          message: '서버 응답이 올바르지 않습니다.',
         };
       }
 
       if (!res.ok || !data.success) {
-        console.error("REGISTER ERROR:", data);
+        console.error('REGISTER ERROR:', data);
         return {
           success: false,
-          message: data.message || "회원가입 실패",
+          message: data.message || '회원가입 실패',
         };
       }
 
@@ -96,10 +96,10 @@ const Auth = {
         success: true,
       };
     } catch (e) {
-      console.error("회원가입 네트워크 오류:", e);
+      console.error('회원가입 네트워크 오류:', e);
       return {
         success: false,
-        message: "서버 연결 오류",
+        message: '서버 연결 오류',
       };
     }
   },
@@ -120,7 +120,7 @@ const Auth = {
     return raw ? JSON.parse(raw) : null;
   },
 
-    getSessionUser() {
+  getSessionUser() {
     const raw = sessionStorage.getItem(this.STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
   },
@@ -130,10 +130,28 @@ const Auth = {
    * ========================= */
   guard() {
     if (!this.getUser()) {
-      alert("로그인이 필요합니다.");
+      alert('로그인이 필요합니다.');
       location.replace(this.LOGIN_URL);
     }
   },
 };
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // 1. 서버에서 로그인된 내 정보 가져오기 (my.js와 동일한 방식)
+    const res = await fetch('/api/user/me');
+    if (!res.ok) return;
 
+    const me = await res.json();
+
+    // 2. 사이드바의 주소(p 태그) 부분 찾기
+    const sidebarLocation = document.querySelector('.brand-text p');
+
+    // 3. 서버에 저장된 주소(dong)가 있다면 화면의 글자를 바꿈
+    if (sidebarLocation && me.dong) {
+      sidebarLocation.textContent = me.dong;
+    }
+  } catch (e) {
+    console.error('사이드바 주소 업데이트 실패:', e);
+  }
+});
 window.Auth = Auth;
