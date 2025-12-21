@@ -70,7 +70,6 @@ public class User {
     public void setDong(String dong) { this.dong = dong; }
     public void setIntro(String intro) { this.intro = intro; }
     public void setPhone(String phone) { this.phone = phone; }
-    public void setEmail(String email) { this.email = email; }
     public void setSharedCount(int sharedCount) { this.sharedCount = sharedCount; }
     public void setThanksCount(int thanksCount) { this.thanksCount = thanksCount; }
     public void setTrustPercent(int trustPercent) { this.trustPercent = trustPercent; }
