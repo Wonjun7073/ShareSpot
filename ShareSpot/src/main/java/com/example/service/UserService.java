@@ -55,7 +55,7 @@ public class UserService {
     }
 
     // ✅ 현재 로그인 유저 수정
-    public User updateMe(String userId, String nickname, String dong, String intro) {
+    public User updateMe(String userId, String nickname, String dong, String phone) {
         User me = getMe(userId);
 
         if (nickname != null && !nickname.isBlank()) {
@@ -66,9 +66,14 @@ public class UserService {
         if (dong != null && !dong.isBlank()) {
             me.setDong(dong.trim());
         }
-        if (intro != null) {
-            me.setIntro(intro);
+        if (phone != null && !phone.isBlank()) {
+            String p = phone.trim();
+            if (!p.matches("^01[0-9]{8,9}$")) {
+                throw new IllegalArgumentException("전화번호 형식이 올바르지 않습니다.");
+            }
+            me.setPhone(p);
         }
+        
 
         return userRepository.save(me);
     }

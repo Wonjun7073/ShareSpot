@@ -19,7 +19,6 @@ public class MeResponse {
         r.userId = u.getUserId();
         r.nickname = u.getNickname();
         r.dong = u.getDong();
-        r.intro = u.getIntro();
         r.sharedCount = u.getSharedCount();
         r.thanksCount = u.getThanksCount();
         r.trustPercent = u.getTrustPercent();

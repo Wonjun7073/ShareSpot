@@ -6,7 +6,10 @@ import com.example.dto.RegisterRequest;
 import com.example.dto.UpdateProfileRequest;
 import com.example.service.UserService;
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,11 +73,16 @@ public class UserController {
     public MeResponse updateMe(@RequestBody UpdateProfileRequest req, HttpSession session) {
         String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
         if (loginUserId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
-        return MeResponse.from(
-                userService.updateMe(loginUserId, req.getNickname(), req.getDong(), req.getIntro())
-        );
+        try {
+            return MeResponse.from(
+                    userService.updateMe(loginUserId, req.getNickname(), req.getDong(), req.getPhone()));
+        } catch (Exception e) {
+            // ✅ 콘솔 없어도 프론트에서 원인 볼 수 있게 메시지 전달
+            String msg = e.getClass().getSimpleName() + ": " + (e.getMessage() == null ? "" : e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
+        }
     }
 }
