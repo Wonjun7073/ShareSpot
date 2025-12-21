@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.entity.Item;
 
-
 import java.util.Objects;
 
 @Service
@@ -23,8 +22,7 @@ public class UserService {
             ItemRepository itemRepository,
             WishlistRepository wishlistRepository,
             ChatRoomRepository chatRoomRepository,
-            ChatMessageRepository chatMessageRepository
-    ) {
+            ChatMessageRepository chatMessageRepository) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
         this.wishlistRepository = wishlistRepository;
@@ -77,10 +75,8 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("사용자 데이터가 없습니다."));
     }
 
-    // =========================
-    // 내 정보 수정
-    // =========================
-    public User updateMe(String userId, String nickname, String dong, String intro) {
+    public User updateMe(String userId, String nickname, String dong, String phone) {
+
         User me = getMe(userId);
 
         if (nickname != null && !nickname.isBlank()) {
@@ -91,8 +87,12 @@ public class UserService {
         if (dong != null && !dong.isBlank()) {
             me.setDong(dong.trim());
         }
-        if (intro != null) {
-            me.setIntro(intro);
+        if (phone != null && !phone.isBlank()) {
+            String p = phone.trim();
+            if (!p.matches("^01[0-9]{8,9}$")) {
+                throw new IllegalArgumentException("전화번호 형식이 올바르지 않습니다.");
+            }
+            me.setPhone(p);
         }
 
         return userRepository.save(me);
@@ -101,7 +101,7 @@ public class UserService {
     // =========================
     // 🔥 회원 탈퇴 (연관 데이터 전부 삭제)
     // =========================
-     @Transactional
+    @Transactional
     public void withdrawWithRelated(String userId) {
         String uid = (userId == null) ? null : userId.trim();
         if (uid == null || uid.isBlank()) {
