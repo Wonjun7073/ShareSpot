@@ -4,6 +4,8 @@ import com.example.entity.ChatMessage;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 public class ChatMessageResponse {
     public Long id;
     public Long roomId;
@@ -23,5 +25,12 @@ public class ChatMessageResponse {
         r.createdAt = m.getCreatedAt();
         r.readAt = m.getReadAt();
         return r;
+    }
+
+    public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+
+        int countByRoomIdAndReceiverUserIdAndReadAtIsNull(
+                Long roomId,
+                String receiverUserId);
     }
 }
