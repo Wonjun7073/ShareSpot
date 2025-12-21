@@ -1,7 +1,7 @@
 (function () {
-  const grid = document.getElementById("itemGrid");
-  const searchInput = document.getElementById("searchInput");
-  const menuItems = document.querySelectorAll(".menu-item");
+  const grid = document.getElementById('itemGrid');
+  const searchInput = document.getElementById('searchInput');
+  const menuItems = document.querySelectorAll('.menu-item');
 
   let chatMenuBtn = null;
   let homeMenuBtn = null;
@@ -11,41 +11,50 @@
   const myUserId = me?.userId || null;
 
   menuItems.forEach((item) => {
-    if (item.innerText.includes("채팅")) chatMenuBtn = item;
-    if (item.innerText.includes("홈")) homeMenuBtn = item;
+    if (item.innerText.includes('채팅')) chatMenuBtn = item;
+    if (item.innerText.includes('홈')) homeMenuBtn = item;
   });
 
   /* =========================
    * 유틸
    * ========================= */
   function escapeHTML(str) {
+    if (!str) return ''; // 데이터가 없을 경우 빈 문자열 반환
     return String(str)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#39;");
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
   }
 
   function formatTimeAgo(createdAt) {
     const t = new Date(createdAt);
-    if (Number.isNaN(t.getTime())) return "";
+    if (Number.isNaN(t.getTime())) return '';
 
     const diff = Math.floor((Date.now() - t.getTime()) / 1000);
-    if (diff < 60) return "방금 전";
+    if (diff < 60) return '방금 전';
     if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
     return `${Math.floor(diff / 86400)}일 전`;
   }
 
   /* =========================
-   * 카드 렌더링
+   * 카드 렌더링 (여기가 핵심 수정 부분입니다!)
    * ========================= */
   function toCardHTML(it) {
     const canDelete = myUserId && it.ownerUserId === myUserId;
-    const priceText = it.price === 0 ? "0" : `${it.price.toLocaleString()}원`;
 
-    // ✅ id가 없으면 버튼 자체를 비활성화
+    // 가격이 0이면 "나눔", 아니면 금액 표시
+    const priceText =
+      it.price === 0 ? '나눔 🎁' : `${it.price.toLocaleString()}원`;
+
+    // ✅ 이미지 처리: imageUrl이 있으면 그걸 쓰고, 없으면 기본 회색 이미지
+    const imgSrc = it.imageUrl
+      ? it.imageUrl
+      : 'https://placehold.co/413x413?text=No+Image';
+
+    // ✅ 채팅 버튼 활성화 여부
     const roomBtn =
       it.id != null
         ? `<button class="chat-btn" data-item-id="${it.id}">1:1 채팅</button>`
@@ -53,7 +62,9 @@
 
     return `
     <div class="card">
-      <img src="https://placehold.co/413x413" class="card-img" />
+      <img src="${imgSrc}" class="card-img" alt="${escapeHTML(
+      it.title
+    )}" style="object-fit: cover;" />
       <div class="card-body">
         <div class="card-top">
           <span class="badge-tag">${escapeHTML(it.category)}</span>
@@ -71,7 +82,7 @@
           ${
             canDelete
               ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
-              : ""
+              : ''
           }
         </div>
       </div>
@@ -84,7 +95,7 @@
    * ========================= */
   async function renderHome() {
     try {
-      const res = await fetch("/api/items", { credentials: "include" });
+      const res = await fetch('/api/items', { credentials: 'include' });
       const items = await res.json();
 
       if (!Array.isArray(items) || items.length === 0) {
@@ -93,14 +104,15 @@
         return;
       }
 
-      grid.innerHTML = items.map(toCardHTML).join("");
+      grid.innerHTML = items.map(toCardHTML).join('');
     } catch (e) {
       console.error(e);
-      grid.innerHTML = '<p style="text-align:center;color:red;">서버 오류</p>';
+      grid.innerHTML =
+        '<p style="text-align:center;color:red;">목록을 불러오지 못했습니다.</p>';
     }
 
-    menuItems.forEach((el) => el.classList.remove("active"));
-    if (homeMenuBtn) homeMenuBtn.classList.add("active");
+    menuItems.forEach((el) => el.classList.remove('active'));
+    if (homeMenuBtn) homeMenuBtn.classList.add('active');
   }
 
   /* =========================
@@ -109,24 +121,24 @@
   window.openChatList = async function (itemId) {
     const idNum = Number(itemId);
     if (!Number.isFinite(idNum)) {
-      alert("itemId가 올바르지 않습니다. (프론트 렌더링/데이터 확인 필요)");
+      alert('잘못된 상품 정보입니다.');
       return;
     }
 
-    const res = await fetch("/api/chat/rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+    const res = await fetch('/api/chat/rooms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ itemId: idNum }),
     });
 
     if (!res.ok) {
-      const txt = await res.text().catch(() => "");
-      alert("채팅방 생성 실패: " + (txt || res.status));
+      const txt = await res.text().catch(() => '');
+      alert('채팅방 생성 실패: ' + (txt || res.status));
       return;
     }
 
-    window.location.href = "/html/chat.html";
+    window.location.href = '/html/chat.html';
   };
 
   /* =========================
@@ -136,16 +148,16 @@
     const idNum = Number(id);
     if (!Number.isFinite(idNum)) return;
 
-    if (!confirm("삭제하시겠습니까?")) return;
+    if (!confirm('정말 삭제하시겠습니까?')) return;
 
     const res = await fetch(`/api/items/${idNum}`, {
-      method: "DELETE",
-      credentials: "include",
+      method: 'DELETE',
+      credentials: 'include',
     });
 
-    const txt = await res.text().catch(() => "");
     if (!res.ok) {
-      alert("삭제 실패: " + (txt || res.status));
+      const txt = await res.text().catch(() => '');
+      alert('삭제 실패: ' + (txt || res.status));
       return;
     }
 
@@ -153,19 +165,18 @@
   };
 
   /* =========================
-   * 클릭 이벤트 위임 (채팅/삭제)
-   * - renderHome() 재호출돼도 리스너는 1번만 유지됨
+   * 클릭 이벤트 위임
    * ========================= */
   if (grid) {
-    grid.addEventListener("click", (e) => {
-      const delBtn = e.target.closest(".delete-btn[data-del-id]");
+    grid.addEventListener('click', (e) => {
+      const delBtn = e.target.closest('.delete-btn[data-del-id]');
       if (delBtn) {
         const id = Number(delBtn.dataset.delId);
         if (Number.isFinite(id)) window.deleteItem(id);
         return;
       }
 
-      const chatBtn = e.target.closest(".chat-btn[data-item-id]");
+      const chatBtn = e.target.closest('.chat-btn[data-item-id]');
       if (chatBtn) {
         const itemId = Number(chatBtn.dataset.itemId);
         if (Number.isFinite(itemId)) window.openChatList(itemId);
@@ -175,7 +186,7 @@
   }
 
   if (homeMenuBtn) {
-    homeMenuBtn.addEventListener("click", (e) => {
+    homeMenuBtn.addEventListener('click', (e) => {
       e.preventDefault();
       renderHome();
     });
