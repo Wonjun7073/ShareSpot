@@ -5,6 +5,12 @@
     <title>쉐어스팟 - 판매/대여 내역</title>
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/history.css" />
+    <style>
+      /* 탭 전환을 위한 간단한 스타일 추가 */
+      .hidden {
+        display: none !important;
+      }
+    </style>
   </head>
   <body>
     <div class="sidebar">
@@ -40,14 +46,20 @@
       </div>
 
       <div class="tabs">
-        <div class="tab-item active">판매중 (3)</div>
-        <div class="tab-item">거래완료 (5)</div>
+        <div class="tab-item active" onclick="switchTab('selling')">
+          판매중 (3)
+        </div>
+        <div class="tab-item" onclick="switchTab('sold')">거래완료 (5)</div>
       </div>
 
-      <div class="history-list">
+      <div class="history-list" id="selling-list">
         <div class="history-card">
           <div class="card-img-box">
-            <div class="img-placeholder"></div>
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
             <button class="more-btn">⋮</button>
           </div>
           <div class="card-info">
@@ -69,7 +81,11 @@
 
         <div class="history-card">
           <div class="card-img-box">
-            <div class="img-placeholder"></div>
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
             <button class="more-btn">⋮</button>
           </div>
           <div class="card-info">
@@ -91,7 +107,11 @@
 
         <div class="history-card">
           <div class="card-img-box">
-            <div class="img-placeholder"></div>
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
             <button class="more-btn">⋮</button>
           </div>
           <div class="card-info">
@@ -111,6 +131,138 @@
           </div>
         </div>
       </div>
+
+      <div class="history-list hidden" id="sold-list">
+        <div class="history-card">
+          <div class="card-img-box">
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge blue">대여</span>
+              <span class="time-text">1주일 전</span>
+            </div>
+            <h3 class="card-title">캠핑 의자 대여했어요</h3>
+            <p class="card-price">5,000원</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 8</span>
+                <span>❤️ 12</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-card">
+          <div class="card-img-box">
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge green">나눔</span>
+              <span class="time-text">2주일 전</span>
+            </div>
+            <h3 class="card-title">식물 나눔 완료</h3>
+            <p class="card-price">나눔 🎁</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 15</span>
+                <span>❤️ 20</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-card">
+          <div class="card-img-box">
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge purple">교환</span>
+              <span class="time-text">3주일 전</span>
+            </div>
+            <h3 class="card-title">보드게임 교환 완료</h3>
+            <p class="card-price">나눔 🎁</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 6</span>
+                <span>❤️ 8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-card">
+          <div class="card-img-box">
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge blue">대여</span>
+              <span class="time-text">1개월 전</span>
+            </div>
+            <h3 class="card-title">전동 드릴 대여 완료</h3>
+            <p class="card-price">5,000원</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 4</span>
+                <span>❤️ 6</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="history-card">
+          <div class="card-img-box">
+            <img
+              src="https://placehold.co/476x476"
+              alt="상품이미지"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <button class="more-btn">⋮</button>
+          </div>
+          <div class="card-info">
+            <div class="status-row">
+              <span class="status-badge purple">교환</span>
+              <span class="time-text">1개월 전</span>
+            </div>
+            <h3 class="card-title">유아 책 교환 완료</h3>
+            <p class="card-price">나눔 🎁</p>
+            <div class="card-footer">
+              <span class="location">시흥시 정왕동</span>
+              <div class="meta-counts">
+                <span>💬 10</span>
+                <span>❤️ 15</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="logoutModalContainer"></div>
@@ -120,6 +272,26 @@
       Auth.guard();
     </script>
     <script src="../JS/near_me.js"></script>
+    <script>
+      // 탭 전환 기능 스크립트
+      function switchTab(tabName) {
+        const sellingList = document.getElementById('selling-list');
+        const soldList = document.getElementById('sold-list');
+        const tabs = document.querySelectorAll('.tab-item');
+
+        if (tabName === 'selling') {
+          sellingList.classList.remove('hidden');
+          soldList.classList.add('hidden');
+          tabs[0].classList.add('active');
+          tabs[1].classList.remove('active');
+        } else {
+          sellingList.classList.add('hidden');
+          soldList.classList.remove('hidden');
+          tabs[0].classList.remove('active');
+          tabs[1].classList.add('active');
+        }
+      }
+    </script>
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
   </body>
