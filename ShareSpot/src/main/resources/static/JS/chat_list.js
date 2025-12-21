@@ -36,25 +36,28 @@
         const href =
             `chat_room.html?room=${encodeURIComponent(room.id)}&me=${encodeURIComponent(me || "")}&peer=${encodeURIComponent(peer || "")}`;
 
+        const badge = room.unreadCount > 0
+            ? `<span class="msg-badge">${room.unreadCount}</span>`
+            : "";
         return `
-      <div class="chat-item" data-href="${href}">
+        <div class="chat-item" data-href="${href}">
         <div class="chat-avatar">
-          <img src="https://placehold.co/64x64" alt="프로필" />
+            <img src="https://placehold.co/64x64" alt="프로필" />
         </div>
         <div class="chat-info">
-          <div class="chat-header-row">
+            <div class="chat-header-row">
             <div class="user-meta">
-              <span class="username">${esc(peer || "상대")}</span>
-              <span class="location"></span>
+                <span class="username">${esc(peer || "상대")}</span>
+                <span class="location"></span>
             </div>
             <span class="time">${esc(t)}</span>
-          </div>
-          <div class="chat-preview">${esc(title)}</div>
-          <div class="chat-last-msg-row">
+            </div>
+            <div class="chat-preview">${esc(title)}</div>
+            <div class="chat-last-msg-row">
             <span class="last-msg">${esc(lastMsg)}</span>
-          </div>
+            </div>
         </div>
-      </div>
+        </div>
     `;
     }
 
