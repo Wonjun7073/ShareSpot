@@ -248,3 +248,6 @@
     }
   })();
 })();
+document.getElementById("btnLeaveChat")?.addEventListener("click", () => {
+  location.href = "/html/chat.html";
+});
