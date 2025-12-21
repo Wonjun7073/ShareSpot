@@ -28,13 +28,13 @@ const Auth = {
 
       if (!res.ok || !data.success) return false;
 
-      // ✅ 로그인 성공 시 저장 정보 (확장 가능)
+      // 🔥 userId는 서버 응답 없어도 무조건 저장
       localStorage.setItem(
         this.STORAGE_KEY,
         JSON.stringify({
-          userId: data.userId || userId,
-          nickname: data.nickname || null,
-          dong: data.dong || null,
+          userId: data.userId ?? userId,
+          nickname: data.nickname ?? null,
+          dong: data.dong ?? null,
           loginAt: Date.now(),
         })
       );
@@ -98,7 +98,7 @@ const Auth = {
    * ========================= */
   logout() {
     localStorage.removeItem(this.STORAGE_KEY);
-    location.href = "./login.html";
+    location.href = "/html/login.html";
   },
 
   /* =========================
@@ -106,18 +106,61 @@ const Auth = {
    * ========================= */
   getUser() {
     const raw = localStorage.getItem(this.STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      console.error("[Auth] SS_USER parse error:", raw, e);
+      localStorage.removeItem(this.STORAGE_KEY);
+      return null;
+    }
   },
+
 
   /* =========================
    * 로그인 가드
    * ========================= */
-  guard() {
-    if (!this.getUser()) {
+  /* =========================
+ * 로그인 가드 (세션 기반)
+ * ========================= */
+  async guard() {
+    console.log("[GUARD] page =", location.href);
+    console.log("[GUARD] SS_USER raw =", localStorage.getItem(this.STORAGE_KEY));
+    console.log("[GUARD] getUser() =", this.getUser());
+
+    // 1) localStorage 있으면 통과
+    if (this.getUser()) return true;
+
+    // 2) 없으면 서버 세션으로 확인 (/api/user/me)
+    try {
+      const res = await fetch("/api/user/me", {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+      });
+
+      if (!res.ok) throw new Error("not logged in");
+      const me = await res.json();
+
+      // 세션이 살아있으면 로컬에도 심어두기(선택)
+      localStorage.setItem(
+        this.STORAGE_KEY,
+        JSON.stringify({
+          userId: me.userId,
+          nickname: me.nickname ?? null,
+          dong: me.dong ?? null,
+          loginAt: Date.now(),
+        })
+      );
+
+      return true;
+    } catch (e) {
       alert("로그인이 필요합니다.");
-      location.replace("./login.html");
+      location.replace("/html/login.html");
+      return false;
     }
   },
+
 };
 
 window.Auth = Auth;

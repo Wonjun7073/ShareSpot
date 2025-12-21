@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.example.entity.User;
+
 
 @RestController
 @RequestMapping("/api/user")
@@ -27,12 +29,19 @@ public class UserController {
     public Map<String, Object> login(@RequestBody LoginRequest req, HttpSession session) {
         Map<String, Object> res = new HashMap<>();
 
+        String userId = req.getUserId() == null ? null : req.getUserId().trim();
+        String password = req.getPassword() == null ? null : req.getPassword().trim();
+
         boolean success = userService.login(req.getUserId(), req.getPassword());
 
         if (success) {
             session.setAttribute("LOGIN_USER_ID", req.getUserId().trim()); // ✅ 저장
+            User me = userService.getMe(userId);
             res.put("success", true);
             res.put("message", "로그인 성공");
+            res.put("userId", me.getUserId()); // ✅ 추가
+            res.put("nickname", me.getNickname()); // ✅ 추가
+            res.put("dong", me.getDong());
         } else {
             res.put("success", false);
             res.put("message", "아이디 또는 비밀번호가 잘못되었습니다.");
