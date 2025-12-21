@@ -6,7 +6,6 @@
   let chatMenuBtn = null;
   let homeMenuBtn = null;
 
-  // 로그인 유저
   const me = window.Auth?.getUser?.();
   const myUserId = me?.userId || null;
 
@@ -15,11 +14,8 @@
     if (item.innerText.includes('홈')) homeMenuBtn = item;
   });
 
-  /* =========================
-   * 유틸
-   * ========================= */
   function escapeHTML(str) {
-    if (!str) return ''; // 데이터가 없을 경우 빈 문자열 반환
+    if (!str) return '';
     return String(str)
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
@@ -31,7 +27,6 @@
   function formatTimeAgo(createdAt) {
     const t = new Date(createdAt);
     if (Number.isNaN(t.getTime())) return '';
-
     const diff = Math.floor((Date.now() - t.getTime()) / 1000);
     if (diff < 60) return '방금 전';
     if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
@@ -40,28 +35,24 @@
   }
 
   /* =========================
-   * 카드 렌더링 (여기가 핵심 수정 부분입니다!)
+   * 카드 HTML 생성
    * ========================= */
   function toCardHTML(it) {
     const canDelete = myUserId && it.ownerUserId === myUserId;
-
-    // 가격이 0이면 "나눔", 아니면 금액 표시
     const priceText =
-      it.price === 0 ? '나눔 🎁' : `${it.price.toLocaleString()}원`;
+      it.price === 0 ? '나눔 🎁' : `${Number(it.price).toLocaleString()}원`;
 
-    // ✅ 이미지 처리: imageUrl이 있으면 그걸 쓰고, 없으면 기본 회색 이미지
-    const imgSrc = it.imageUrl
-      ? it.imageUrl
-      : 'https://placehold.co/413x413?text=No+Image';
+    // ▼▼▼ [수정] 이미지 경로 절대경로(/)로 변경 ▼▼▼
+    const imgSrc = it.imageUrl ? it.imageUrl : '/Images/logo.png';
 
-    // ✅ 채팅 버튼 활성화 여부
     const roomBtn =
       it.id != null
         ? `<button class="chat-btn" data-item-id="${it.id}">1:1 채팅</button>`
         : `<button class="chat-btn" disabled>1:1 채팅</button>`;
 
+    // ▼▼▼ [중요] data-detail-id 확인 ▼▼▼
     return `
-    <div class="card">
+    <div class="card" data-detail-id="${it.id}" style="cursor: pointer;">
       <img src="${imgSrc}" class="card-img" alt="${escapeHTML(
       it.title
     )}" style="object-fit: cover;" />
@@ -76,9 +67,7 @@
 
         <div class="card-footer">
           <span>${escapeHTML(it.location)}</span>
-
           ${roomBtn}
-
           ${
             canDelete
               ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
@@ -90,9 +79,6 @@
   `;
   }
 
-  /* =========================
-   * 홈 렌더
-   * ========================= */
   async function renderHome() {
     try {
       const res = await fetch('/api/items', { credentials: 'include' });
@@ -100,89 +86,55 @@
 
       if (!Array.isArray(items) || items.length === 0) {
         grid.innerHTML =
-          '<p style="text-align:center;color:#888;padding:40px;">등록된 물품이 없습니다.</p>';
+          '<p style="text-align:center;padding:40px;">등록된 물품이 없습니다.</p>';
         return;
       }
-
       grid.innerHTML = items.map(toCardHTML).join('');
     } catch (e) {
       console.error(e);
       grid.innerHTML =
         '<p style="text-align:center;color:red;">목록을 불러오지 못했습니다.</p>';
     }
-
-    menuItems.forEach((el) => el.classList.remove('active'));
-    if (homeMenuBtn) homeMenuBtn.classList.add('active');
   }
 
   /* =========================
-   * 채팅방 생성 → 목록 이동
-   * ========================= */
-  window.openChatList = async function (itemId) {
-    const idNum = Number(itemId);
-    if (!Number.isFinite(idNum)) {
-      alert('잘못된 상품 정보입니다.');
-      return;
-    }
-
-    const res = await fetch('/api/chat/rooms', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ itemId: idNum }),
-    });
-
-    if (!res.ok) {
-      const txt = await res.text().catch(() => '');
-      alert('채팅방 생성 실패: ' + (txt || res.status));
-      return;
-    }
-
-    window.location.href = '/html/chat.html';
-  };
-
-  /* =========================
-   * 삭제
-   * ========================= */
-  window.deleteItem = async function (id) {
-    const idNum = Number(id);
-    if (!Number.isFinite(idNum)) return;
-
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-    const res = await fetch(`/api/items/${idNum}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-
-    if (!res.ok) {
-      const txt = await res.text().catch(() => '');
-      alert('삭제 실패: ' + (txt || res.status));
-      return;
-    }
-
-    renderHome();
-  };
-
-  /* =========================
-   * 클릭 이벤트 위임
+   * 이벤트 리스너 (클릭 처리)
    * ========================= */
   if (grid) {
     grid.addEventListener('click', (e) => {
+      // 1. 삭제 버튼
       const delBtn = e.target.closest('.delete-btn[data-del-id]');
       if (delBtn) {
-        const id = Number(delBtn.dataset.delId);
-        if (Number.isFinite(id)) window.deleteItem(id);
+        e.stopPropagation();
+        if (confirm('삭제하시겠습니까?')) deleteItem(delBtn.dataset.delId);
         return;
       }
 
+      // 2. 채팅 버튼
       const chatBtn = e.target.closest('.chat-btn[data-item-id]');
       if (chatBtn) {
-        const itemId = Number(chatBtn.dataset.itemId);
-        if (Number.isFinite(itemId)) window.openChatList(itemId);
+        e.stopPropagation();
+        alert('채팅 기능 준비중');
         return;
       }
+
+      // 3. ▼▼▼ [핵심 수정] 상세 페이지 이동 경로 절대경로(/html/...) 사용 ▼▼▼
+      const card = e.target.closest('.card[data-detail-id]');
+      if (card) {
+        const id = card.getAttribute('data-detail-id');
+        // 여기서 /html/detail.html 로 해야 확실하게 찾아갑니다!
+        location.href = `/html/detail.html?id=${id}`;
+      }
     });
+  }
+
+  async function deleteItem(id) {
+    try {
+      await fetch(`/api/items/${id}`, { method: 'DELETE' });
+      renderHome();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   if (homeMenuBtn) {

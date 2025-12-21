@@ -1,181 +1,232 @@
-/* ===========================================
-   detail.html 전용 (style.css 위에 얹는 것만)
-   - 전역(html, body, :root) 건드리지 않음
-=========================================== */
+/* detail.css */
 
-.detail-page {
+/* --- 상단 고정 헤더 --- */
+.detail-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 65px;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+/* 돌아가기 글자 버튼 (아이콘 없음) */
+.nav-back-btn {
+  position: absolute;
+  left: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  /* 사진과 유사한 글자 스타일 */
+  font-size: 16px;
+  font-weight: 500;
+  color: #6a7282;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+}
+
+.nav-back-btn:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+/* 게시글 상세 타이틀 */
+.nav-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0a0a0a;
+  margin: 0;
+}
+
+/* --- 메인 컨텐츠 래퍼 (페이지 스크롤 보장) --- */
+.detail-centering-wrapper {
+  /* 내용이 길어지면 페이지 스크롤이 생기도록 min-height 설정 */
+  min-height: calc(100vh - 65px);
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  background-color: #f8f9fa;
+  padding: 40px 20px;
+  box-sizing: border-box;
 }
 
-/* page는 wrapper 폭을 그대로 쓰게 */
-.detail-page .page {
+/* --- 상세 카드 디자인 (가로 넓이 키움) --- */
+.detail-card {
   width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-/* wishlist card 톤과 맞춤 */
-.detail-page .photo,
-.detail-page .content,
-.detail-page .bottombar {
-  background: #fff;
+  max-width: 1200px;
+  height: auto; /* 내용에 따라 늘어나도록 설정 */
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  margin: 0 auto; /* 중앙 정렬 */
 }
 
-/* ===== 이미지 영역 ===== */
-.detail-page .photo {
-  overflow: hidden;
-  background: #f3f4f6;
-}
-
-.detail-page .photo img {
+/* 이미지 영역 (높이 600px로 확대) */
+.image-area {
   width: 100%;
-  height: 460px; /* ✅ 너무 커 보이면 420~520에서 조절 */
-  display: block;
+  height: 600px;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+.image-area img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-@media (max-width: 1024px) {
-  .detail-page .photo img {
-    height: 320px;
-  }
+/* 작성자 프로필 섹션 */
+.user-profile-section {
+  padding: 24px 30px;
+  display: flex;
+  align-items: center;
+}
+.avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-right: 12px;
+  font-weight: bold;
+  color: #555;
+}
+.user-text .name {
+  font-weight: bold;
+  font-size: 17px;
+  color: #0a0a0a;
+}
+.user-text .loc {
+  font-size: 14px;
+  color: #6a7282;
+  margin-top: 2px;
 }
 
-/* ===== 내용 영역 ===== */
-.detail-page .content {
-  padding: 16px;
+.divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
 }
 
-/* 작성자 */
-.detail-page .author {
+/* 본문 텍스트 영역 */
+.post-text-area {
+  padding: 30px 30px;
+}
+.badge-row {
+  margin-bottom: 12px;
+}
+.category-badge {
+  background-color: #dcfce7;
+  color: #00a63e;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.post-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+.post-time {
+  font-size: 14px;
+  color: #6a7282;
+  margin-bottom: 24px;
+}
+.post-desc {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #364153;
+  white-space: pre-wrap;
+  margin-bottom: 40px;
+}
+.post-stats {
+  font-size: 14px;
+  color: #6a7282;
+  display: flex;
+  gap: 16px;
+}
+
+/* 가격 섹션 */
+.price-section {
+  padding: 20px 30px;
+  background-color: #fff;
+}
+.price-label {
+  font-size: 14px;
+  color: #6a7282;
+  margin-bottom: 6px;
+}
+.price-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
+/* 하단 바 (내용이 길어도 화면 하단에 고정되게 유지) */
+.card-footer {
+  padding: 20px 30px;
+  background-color: #fff;
+  border-top: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   gap: 12px;
-
-  padding: 12px 0 16px;
-  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
 }
-
-.detail-page .avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 999px;
-  background: #e5e7eb;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-}
-
-.detail-page .author-text .name {
-  font-size: 16px;
-  line-height: 24px;
-  color: #0a0a0a;
-}
-
-.detail-page .author-text .location {
-  font-size: 14px;
-  line-height: 20px;
-  color: #6a7282;
-}
-
-/* 본문 */
-.detail-page .post {
-  padding: 16px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.detail-page .badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: #ffedd4;
-  color: #f54900;
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.detail-page .title {
-  margin: 10px 0 6px;
-  font-size: 18px;
-  line-height: 26px;
-  font-weight: 400;
-  color: #0a0a0a;
-}
-
-.detail-page .meta {
-  color: #6a7282;
-  font-size: 14px;
-  line-height: 20px;
-  margin-bottom: 10px;
-}
-
-.detail-page .desc {
-  margin: 0 0 12px;
-  color: #364153;
-  font-size: 16px;
-  line-height: 26px;
-}
-
-.detail-page .stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  color: #6a7282;
-  font-size: 14px;
-  line-height: 20px;
-}
-
-/* 가격 */
-.detail-page .price {
-  padding-top: 16px;
-}
-
-.detail-page .price-label {
-  color: #6a7282;
-  font-size: 14px;
-  line-height: 20px;
-}
-
-.detail-page .price-value {
-  margin-top: 6px;
-  font-size: 24px;
-  line-height: 32px;
-  color: #0a0a0a;
-}
-
-/* ===== 하단 액션바 (fixed X, 카드형) ===== */
-.detail-page .bottombar {
-  padding: 12px 16px;
+.heart-container {
+  width: 54px;
+  height: 54px;
+  border: 1px solid #d1d5dc;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-/* 버튼들 */
-.detail-page .outline-btn {
-  width: 120px;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid #d1d5dc;
+  justify-content: center;
   background: #fff;
-  cursor: pointer;
-  font-size: 14px;
 }
-
-.detail-page .primary-btn {
+.heart-btn {
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #6a7282;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.chat-btn {
   flex: 1;
-  height: 44px;
+  height: 54px;
+  background-color: #2b7fff;
+  color: white;
+  border: none;
   border-radius: 12px;
-  border: 0;
-  background: #ff6900;
-  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
 }
-
-.detail-page .primary-btn:hover {
-  filter: brightness(0.98);
+.chat-btn:hover {
+  background-color: #2563eb;
 }
