@@ -59,6 +59,25 @@ public class UserController {
         }
         return res;
     }
+    @DeleteMapping("/me")
+public Map<String, Object> withdraw(HttpSession session) {
+    String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
+    if (loginUserId == null) {
+        Map<String, Object> res = new HashMap<>();
+        res.put("success", false);
+        res.put("message", "로그인이 필요합니다.");
+        return res;
+    }
+
+    userService.withdrawWithRelated(loginUserId);
+    session.invalidate();
+
+    Map<String, Object> res = new HashMap<>();
+    res.put("success", true);
+    res.put("message", "탈퇴 완료");
+    return res;
+}
+
 
     @GetMapping("/me")
     public MeResponse me(HttpSession session) {

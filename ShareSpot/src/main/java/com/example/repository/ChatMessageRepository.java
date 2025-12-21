@@ -18,5 +18,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     List<ChatMessage> findByRoomIdAndReceiverUserIdAndReadAtIsNull(Long roomId, String receiverUserId);
 
+    void deleteByRoomId(Long roomId);
+
     // 읽음 처리용 (bulk update 대신 간단하게 가져와서 setReadAt 저장)
 }

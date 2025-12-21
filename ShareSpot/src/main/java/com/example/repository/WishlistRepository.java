@@ -16,6 +16,9 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
     long deleteByUserIdAndItem_Id(String userId, Long itemId);
 
-    long countByUserId(String userId);
+    long deleteByUserId(String userId);
 
+    long deleteByItem_IdIn(List<Long> itemIds); // ✅ 추가
+
+    long countByUserId(String userId);
 }

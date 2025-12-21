@@ -26,4 +26,9 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
         order by r.createdAt desc
     """)
     List<ChatRoom> findActiveRoomsByUserId(@Param("userId") String userId);
+
+    void deleteByBuyerUserIdOrSellerUserId(String buyerUserId, String sellerUserId);
+
+    List<ChatRoom> findByBuyerUserIdOrSellerUserId(String buyerUserId, String sellerUserId);
+
 }

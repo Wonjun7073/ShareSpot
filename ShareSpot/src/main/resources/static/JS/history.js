@@ -82,8 +82,6 @@
           <div class="card-footer">
             <span class="location">${escapeHTML(it.location || "")}</span>
             <div class="meta-counts">
-              <span>💬 ${Number(it.chatCount || 0)}</span>
-              <span>❤️ ${Number(it.likeCount || 0)}</span>
               <button class="delete-btn" data-del-id="${it.id}">삭제</button>
             </div>
           </div>
