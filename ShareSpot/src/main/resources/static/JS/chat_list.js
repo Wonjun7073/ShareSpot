@@ -1,6 +1,27 @@
 (function () {
   const listEl = document.querySelector(".chat-list");
   if (!listEl) return;
+  const itemImageCache = new Map();
+
+  async function getItemImage(itemId) {
+    if (!itemId) return "../Images/logo.png";
+    if (itemImageCache.has(itemId)) {
+      return itemImageCache.get(itemId);
+    }
+
+    try {
+      const res = await fetch(`/api/items/${itemId}`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error();
+      const item = await res.json();
+      const img = item.imageUrl || "../Images/logo.png";
+      itemImageCache.set(itemId, img);
+      return img;
+    } catch {
+      return "../Images/logo.png";
+    }
+  }
 
   const me =
     window.Auth?.getUser?.()?.userId ||
@@ -38,7 +59,7 @@
     return me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
   }
 
-  function toRow(room) {
+  async function toRow(room) {
     const peer = peerOf(room);
     const title = room.itemTitle || "";
     const lastMsg = room.lastMessage || "(대화를 시작해보세요)";
@@ -50,30 +71,29 @@
       peer || ""
     )}`;
 
-    const badge =
-      room.unreadCount > 0
-        ? `<span class="msg-badge">${room.unreadCount}</span>`
-        : "";
+    const imgUrl = await getItemImage(room.itemId);
+
     return `
-        <div class="chat-item" data-href="${href}">
-        <div class="chat-avatar">
-            <img src="https://placehold.co/64x64" alt="프로필" />
+    <div class="chat-item" data-href="${href}">
+      <div class="chat-avatar">
+        <img src="${imgUrl}"
+             alt="상품"
+             onerror="this.onerror=null;this.src='../Images/logo.png';" />
+      </div>
+      <div class="chat-info">
+        <div class="chat-header-row">
+          <div class="user-meta">
+            <span class="username">${esc(peer || "상대")}</span>
+          </div>
+          <span class="time">${esc(t)}</span>
         </div>
-        <div class="chat-info">
-            <div class="chat-header-row">
-            <div class="user-meta">
-                <span class="username">${esc(peer || "상대")}</span>
-                <span class="location"></span>
-            </div>
-            <span class="time">${esc(t)}</span>
-            </div>
-            <div class="chat-preview">${esc(title)}</div>
-            <div class="chat-last-msg-row">
-            <span class="last-msg">${esc(lastMsg)}</span>
-            </div>
+        <div class="chat-preview">${esc(title)}</div>
+        <div class="chat-last-msg-row">
+          <span class="last-msg">${esc(lastMsg)}</span>
         </div>
-        </div>
-    `;
+      </div>
+    </div>
+  `;
   }
 
   async function render() {
@@ -94,7 +114,8 @@
         return;
       }
 
-      listEl.innerHTML = rooms.map(toRow).join("");
+      const rows = await Promise.all(rooms.map(toRow));
+      listEl.innerHTML = rows.join("");
     } catch (e) {
       console.error(e);
       listEl.innerHTML = `<div style="padding:20px;color:#888;">네트워크 오류</div>`;

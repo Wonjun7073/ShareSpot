@@ -216,6 +216,7 @@
     });
     async function renderRoomHeader() {
       try {
+        // 1) room 단건 조회
         const res = await fetch(`/api/chat/rooms/${roomId}`, {
           credentials: "include",
         });
@@ -227,21 +228,78 @@
         const peerId =
           me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
 
-        // 1) 상단 헤더
+        // 2) 상단 헤더
         const nameEl = document.querySelector(".header-name");
         const subEl = document.querySelector(".header-sub");
         if (nameEl) nameEl.textContent = peerId || "상대";
         if (subEl) subEl.textContent = room.itemTitle || "";
 
-        // 2) 상품 바
+        // 3) 상품 바 텍스트(기본)
         const productTitle = document.querySelector(".product-title");
         const productStatus = document.querySelector(".product-status");
         if (productTitle) productTitle.textContent = room.itemTitle || "";
-
-        // status는 네 Item에서 price=0이면 나눔, 아니면 대여인데
-        // ChatRoomResponse에는 price가 없으니 일단 "채팅중" 같은 표시로 두거나,
-        // item 상세까지 내려받고 싶으면 API 확장해야 함.
         if (productStatus) productStatus.textContent = "채팅중";
+
+        // ✅ 4) 상품 이미지 + 상태를 item에서 가져와서 적용
+        const imgEl = document.querySelector(".product-img-box img");
+
+        // room에 itemId가 없을 수도 있으니 방어
+        const itemId = Number(room.itemId || room.item?.id || 0);
+        if (!imgEl) return;
+
+        // 기본 이미지 먼저
+        imgEl.src = "../Images/logo.png";
+        imgEl.onerror = () => (imgEl.src = "../Images/logo.png");
+
+        if (!Number.isFinite(itemId) || itemId <= 0) return;
+
+        const itemRes = await fetch(`/api/items/${itemId}`, {
+          credentials: "include",
+        });
+        if (!itemRes.ok) return;
+
+        const item = await itemRes.json();
+
+        // 이미지
+        imgEl.src = item.imageUrl || "../Images/logo.png";
+        imgEl.onerror = () => (imgEl.src = "../Images/logo.png");
+
+        // 타이틀은 item이 더 정확할 수 있음
+        if (productTitle)
+          productTitle.textContent = item.title || room.itemTitle || "";
+
+        // 상태(가격/카테고리/거래완료)
+        const loc = item.location || "";
+        const cat = item.category || "";
+
+        // priceText 만들기
+        let priceText = "";
+        if (!(cat === "나눔" || Number(item.price) === 0)) {
+          priceText = `${Number(item.price || 0).toLocaleString()}원`;
+        }
+
+        // SOLD 표시
+        const soldText = item.status === "SOLD" ? " · 거래완료" : "";
+
+        // 조각 모아서 중복 없이 join
+        const parts = [];
+        if (loc) parts.push(loc);
+        if (cat) parts.push(cat);
+        if (priceText) parts.push(priceText);
+
+        if (productStatus) {
+          productStatus.textContent = parts.join(" · ") + soldText;
+        }
+
+        // ✅ 상품 바 클릭 시 상세로 이동 (나가기 버튼 제외)
+        const bar = document.querySelector(".product-bar");
+        if (bar) {
+          bar.style.cursor = "pointer";
+          bar.onclick = (e) => {
+            if (e.target && e.target.closest("#btnLeave")) return;
+            location.href = `./detail.html?id=${encodeURIComponent(itemId)}`;
+          };
+        }
       } catch (e) {
         console.warn("renderRoomHeader fail", e);
       }
