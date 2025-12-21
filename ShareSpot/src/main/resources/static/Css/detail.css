@@ -230,3 +230,36 @@
 .chat-btn:hover {
   background-color: #2563eb;
 }
+
+#btnHeart {
+  /* 버튼 기본 스타일 제거 */
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+
+  /* 박스 영역 고정 */
+  display: inline-flex;
+  align-items: center; /* 세로 중앙 */
+  justify-content: center; /* 가로 중앙 */
+  width: 35px;
+  height: 35px;
+
+  /* 폰트 설정 (크기를 살짝 줄여서 위로 튀어나오는 느낌을 제거) */
+  font-size: 24px; /* 28px에서 24px로 하향 조정 */
+  line-height: 1;
+  font-family: sans-serif; /* 기호 크기가 가장 일정한 기본 폰트 */
+
+  /* 위치 조정: 하트가 아래로 가 보인다면 마진을 음수로 주어 위로 올립니다 */
+  margin-top: -4px; /* 하트를 위로 4px 끌어올림 */
+
+  /* 색상 및 효과 */
+  color: #6a7282;
+  transition: all 0.1s ease;
+}
+
+/* 클릭 시 띠용 하는 효과 추가 (짜치는 느낌 제거) */
+#btnHeart:active {
+  transform: scale(0.9);
+}
