@@ -5,6 +5,7 @@
 
   let chatMenuBtn = null;
   let homeMenuBtn = null;
+  let pendingDeleteId = null;
 
   // 로그인 유저
   const me = window.Auth?.getUser?.();
@@ -15,11 +16,48 @@
     if (item.innerText.includes("홈")) homeMenuBtn = item;
   });
 
+  async function mountConfirmModal() {
+    if (document.getElementById("confirmOverlay")) return;
+
+    const root = document.getElementById("modal-root");
+    if (!root) return;
+
+    const res = await fetch("../Components/confirm-modal.html");
+    root.insertAdjacentHTML("beforeend", await res.text());
+
+    bindConfirmModal();
+  }
+
+  function bindConfirmModal() {
+    const overlay = document.getElementById("confirmOverlay");
+    const closeBtn = document.getElementById("confirmClose");
+    const cancelBtn = document.getElementById("confirmCancel");
+    const okBtn = document.getElementById("confirmOk");
+
+    function close() {
+      overlay.classList.remove("show");
+      pendingDeleteId = null;
+    }
+
+    cancelBtn.onclick = close;
+
+    // (선택) 바깥 영역 클릭하면 닫기
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close();
+    });
+
+    okBtn.onclick = async () => {
+      if (!pendingDeleteId) return;
+      await deleteItemConfirmed(pendingDeleteId);
+      close();
+    };
+  }
+
   /* =========================
    * 유틸
    * ========================= */
   function escapeHTML(str) {
-    if (!str) return ""; // 데이터가 없을 경우 빈 문자열 반환
+    if (!str) return "";
     return String(str)
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
@@ -40,54 +78,50 @@
   }
 
   /* =========================
-   * 카드 렌더링 (여기가 핵심 수정 부분입니다!)
+   * 카드 렌더링
    * ========================= */
   function toCardHTML(it) {
     const canDelete = myUserId && it.ownerUserId === myUserId;
 
-    // 가격이 0이면 "나눔", 아니면 금액 표시
     const priceText =
       it.price === 0 ? "나눔 🎁" : `${it.price.toLocaleString()}원`;
 
-    // ✅ 이미지 처리: imageUrl이 있으면 그걸 쓰고, 없으면 기본 회색 이미지
     const imgSrc = it.imageUrl
       ? it.imageUrl
       : "https://placehold.co/413x413?text=No+Image";
 
-    // ✅ 채팅 버튼 활성화 여부
     const roomBtn =
       it.id != null
         ? `<button class="chat-btn" data-item-id="${it.id}">1:1 채팅</button>`
         : `<button class="chat-btn" disabled>1:1 채팅</button>`;
 
     return `
-    <div class="card">
-      <div class="card-img-wrap">
-      <img src="${imgSrc}" class="card-img" alt="${escapeHTML(it.title)}" />
-    </div>
-      <div class="card-body">
-        <div class="card-top">
-          <span class="badge-tag">${escapeHTML(it.category)}</span>
-          <span class="time-ago">${formatTimeAgo(it.createdAt)}</span>
+      <div class="card">
+        <div class="card-img-wrap">
+          <img src="${imgSrc}" class="card-img" alt="${escapeHTML(it.title)}" />
         </div>
 
-        <h3 class="card-title">${escapeHTML(it.title)}</h3>
-        <p class="card-price">${priceText}</p>
+        <div class="card-body">
+          <div class="card-top">
+            <span class="badge-tag">${escapeHTML(it.category)}</span>
+            <span class="time-ago">${formatTimeAgo(it.createdAt)}</span>
+          </div>
 
-        <div class="card-footer">
-          <span>${escapeHTML(it.location)}</span>
+          <h3 class="card-title">${escapeHTML(it.title)}</h3>
+          <p class="card-price">${priceText}</p>
 
-          ${roomBtn}
-
-          ${
-            canDelete
-              ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
-              : ""
-          }
+          <div class="card-footer">
+            <span>${escapeHTML(it.location)}</span>
+            ${roomBtn}
+            ${
+              canDelete
+                ? `<button class="delete-btn" data-del-id="${it.id}">삭제</button>`
+                : ""
+            }
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
   }
 
   /* =========================
@@ -116,6 +150,36 @@
   }
 
   /* =========================
+   * 삭제 확정 (모달 OK에서만 실행)
+   * ========================= */
+  async function deleteItemConfirmed(idNum) {
+    const res = await fetch(`/api/items/${idNum}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      alert("삭제 실패: " + (txt || res.status));
+      return;
+    }
+
+    await renderHome();
+  }
+
+  /* =========================
+   * 삭제 버튼 클릭 -> 모달만 띄우기
+   * ========================= */
+  window.deleteItem = async function (id) {
+    const idNum = Number(id);
+    if (!Number.isFinite(idNum)) return;
+
+    pendingDeleteId = idNum;
+    await mountConfirmModal();
+    document.getElementById("confirmOverlay").classList.add("show");
+  };
+
+  /* =========================
    * 채팅방 생성 → 목록 이동
    * ========================= */
   window.openChatList = async function (itemId) {
@@ -139,29 +203,6 @@
     }
 
     window.location.href = "/html/chat.html";
-  };
-
-  /* =========================
-   * 삭제
-   * ========================= */
-  window.deleteItem = async function (id) {
-    const idNum = Number(id);
-    if (!Number.isFinite(idNum)) return;
-
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-
-    const res = await fetch(`/api/items/${idNum}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    if (!res.ok) {
-      const txt = await res.text().catch(() => "");
-      alert("삭제 실패: " + (txt || res.status));
-      return;
-    }
-
-    renderHome();
   };
 
   /* =========================
