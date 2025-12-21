@@ -134,22 +134,61 @@ if (searchInput) {
 
   if (!myUserId) {
     chipHistory.textContent = "0";
+    // 로그인 안 돼있으면 관심도 0 처리
+    const chipWish = document.getElementById("chipWish");
+    if (chipWish) chipWish.textContent = "0";
     return;
   }
 
   try {
+    // ✅ 판매/대여 내역 수
     const res = await fetch("/api/items", { credentials: "include" });
     const items = await res.json();
     const list = Array.isArray(items) ? items : [];
 
-    // ✅ 현재 기준: 내가 등록한 글 전부 = 판매중
-    const sellingCount = list.filter(
-      (it) => it.ownerUserId === myUserId
-    ).length;
-
+    const sellingCount = list.filter((it) => it.ownerUserId === myUserId).length;
     chipHistory.textContent = String(sellingCount);
   } catch (e) {
     console.error("판매/대여 내역 수 로드 실패", e);
     chipHistory.textContent = "0";
+  }
+
+  // ✅ 관심목록 개수는 DOMContentLoaded 기다리지 말고 "바로" 실행
+  await loadWishCount();
+
+  async function loadWishCount() {
+    const chip = document.getElementById("chipWish");
+    if (!chip) return;
+
+    try {
+      // ⭐ count API가 있으면 그게 제일 안전/빠름
+      const countRes = await fetch("/api/wishlist/count", {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+
+      if (countRes.ok) {
+        const data = await countRes.json();
+        chip.textContent = String(data.count ?? 0);
+        return;
+      }
+
+      // (fallback) count API가 없으면 목록 길이로 계산
+      const res = await fetch("/api/wishlist", {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+
+      if (!res.ok) {
+        chip.textContent = "0";
+        return;
+      }
+
+      const wishes = await res.json();
+      chip.textContent = String(Array.isArray(wishes) ? wishes.length : 0);
+    } catch (e) {
+      console.error("관심목록 개수 로드 실패", e);
+      chip.textContent = "0";
+    }
   }
 })();
