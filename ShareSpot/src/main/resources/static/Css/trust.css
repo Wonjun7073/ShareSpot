@@ -69,13 +69,16 @@
   height: 80px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative; /* 기준점 */
 }
 
 .score-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -65%);
   font-size: 40px;
+  line-height: 1;
 }
 
 .score-display {
@@ -202,68 +205,6 @@
   font-size: 16px;
   font-weight: bold;
   color: #155dfc;
-}
-
-/* 3. 후기 리스트 */
-.review-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.review-item {
-  padding: 20px 24px;
-  border-bottom: 1px solid #f3f4f6;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.review-item:last-child {
-  border-bottom: none;
-}
-
-.review-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.reviewer-info {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.reviewer-avatar {
-  width: 40px;
-  height: 40px;
-  background: #e5e7eb;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  color: #374151;
-}
-.reviewer-meta {
-  display: flex;
-  flex-direction: column;
-}
-.reviewer-name {
-  font-size: 15px;
-  font-weight: bold;
-  color: #0a0a0a;
-}
-.stars {
-  font-size: 12px;
-  color: #f59e0b;
-}
-.review-date {
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-.review-content {
-  font-size: 15px;
-  color: #374151;
-  line-height: 1.5;
 }
 
 /* 4. 팁 박스 */
