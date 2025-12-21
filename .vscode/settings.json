@@ -2,6 +2,6 @@
   "liveServer.settings.host": "127.0.0.1",
   "liveServer.settings.port": 5501,
   "liveServer.settings.root": "/",
-  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.configuration.updateBuildConfiguration": "automatic",
   "java.compile.nullAnalysis.mode": "automatic"
 }

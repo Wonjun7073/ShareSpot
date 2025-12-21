@@ -1,25 +1,60 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
 @Table(name = "items")
 public class Item {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;       // 물품 제목
-    private String category;    // 나눔, 대여, 교환
-    private Integer price;      // 가격 (나눔은 0원)
-    private String location;    // 거래 희망 장소
-    @Column(columnDefinition = "TEXT")
-    private String description; // 자세한 설명
-    private String imageUrl;   // 이미지 파일 경로
-    
-    private LocalDateTime createdAt = LocalDateTime.now(); // 등록 시간
-}//헤헤
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
+    private int price; // 가격 필드
+
+    @Column(nullable = false)
+    private String location;
+
+    @Column(nullable = false, length = 2000)
+    private String description;
+
+    @Column(name = "owner_user_id", nullable = false)
+    private String ownerUserId;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    // ★ 이미지 경로 (이게 중요!)
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    public Item() {}
+
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getOwnerUserId() { return ownerUserId; }
+    public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+}

@@ -36,6 +36,5 @@ public class SecurityConfig {
             );
 
         return http.build();
->>>>>>> 8815854ba55f6de97a587f5f620c3ff25a8552fa
     }
 }
