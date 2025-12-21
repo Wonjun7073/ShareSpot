@@ -39,6 +39,16 @@ const Auth = {
         })
       );
 
+      sessionStorage.setItem(
+         this.STORAGE_KEY,
+        JSON.stringify({
+          userId: data.userId || userId,
+          nickname: data.nickname || null,
+          dong: data.dong || null,
+          loginAt: Date.now(),
+        })
+      );
+
       return true;
     } catch (e) {
       console.error("로그인 네트워크 오류:", e);
@@ -106,6 +116,11 @@ const Auth = {
    * ========================= */
   getUser() {
     const raw = localStorage.getItem(this.STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  },
+
+    getSessionUser() {
+    const raw = sessionStorage.getItem(this.STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
   },
 

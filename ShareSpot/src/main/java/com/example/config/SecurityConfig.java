@@ -11,21 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers.frameOptions(f -> f.disable()))
-            .authorizeHttpRequests(auth -> auth
-                // ▼ 여기에 "/error"를 꼭 추가해야 합니다! ▼
-                .requestMatchers("/", "/html/**", "/JS/**", "/Css/**", "/Images/**", "/Components/**", "/error").permitAll()
-                .requestMatchers("/api/items/**", "/api/user/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(login -> login
-                .loginPage("/html/login.html")
-                .permitAll()
-            );
-        return http.build();
+
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable()) // 👈 반드시 비활성화되어 있는지 다시 확인!
