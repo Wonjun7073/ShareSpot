@@ -24,4 +24,4 @@ public class Item {
     private String ownerUserId;
 
     private LocalDateTime createdAt = LocalDateTime.now(); // 등록 시간
-}
+}//헤헤
