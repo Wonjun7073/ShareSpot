@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -131,6 +132,7 @@ public class WishlistController {
     }
 
     /** ✅ 관심 해제 */
+    @Transactional
     @DeleteMapping("/{itemId}")
     public Map<String, Object> remove(@PathVariable Long itemId, HttpSession session) {
         String userId = getLoginUserId(session);
@@ -138,11 +140,12 @@ public class WishlistController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
-        wishlistRepository.deleteByUserIdAndItem_Id(userId, itemId);
+        long deleted = wishlistRepository.deleteByUserIdAndItem_Id(userId, itemId);
 
         Map<String, Object> res = new HashMap<>();
         res.put("success", true);
         res.put("wished", false);
+        res.put("deleted", deleted); // ✅ 몇 건 삭제됐는지 확인용
         return res;
     }
 
