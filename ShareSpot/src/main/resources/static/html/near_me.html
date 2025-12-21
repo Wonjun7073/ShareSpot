@@ -31,7 +31,7 @@
         </a>
         <a href="./chat.html" class="menu-item">
           <span class="menu-icon">💬</span> 채팅
-          <span class="badge">3</span>
+          <span class="badge" id="chatBadge" style="display:none;"></span>
         </a>
         <a href="./my.html" class="menu-item">
           <span class="menu-icon">👤</span> 나의 시흥
@@ -43,7 +43,12 @@
     <div class="main-content">
       <div class="top-header">
         <div class="search-bar">
-          <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
+          <span>🔍</span>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="물품, 동네 이름 등을 검색해보세요"
+          />
         </div>
         <div class="header-actions">
           <button class="write-btn" onclick="location.href='upload.html'">

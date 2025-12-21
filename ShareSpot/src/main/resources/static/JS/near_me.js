@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   // 1. 지도 옵션 설정 (기본 위치: 시흥시 정왕동 근처)
   var mapOptions = {
     center: new naver.maps.LatLng(37.3514, 126.7431), // 기본 좌표
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   // 2. 지도 생성 ('map'은 HTML의 div id와 일치해야 함)
-  var map = new naver.maps.Map('map', mapOptions);
+  var map = new naver.maps.Map("map", mapOptions);
 
   // 3. 위치 정보 옵션 (정확도 향상)
   var locationOptions = {
@@ -32,12 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
         new naver.maps.Marker({
           position: myLocation,
           map: map,
-          title: '내 위치',
+          title: "내 위치",
         });
       },
       // 실패 시 실행할 함수
       function (error) {
-        console.error('위치 정보를 가져올 수 없습니다.', error);
+        console.error("위치 정보를 가져올 수 없습니다.", error);
         // 에러 발생 시 사용자에게 알림 (선택 사항)
         // alert('현재 위치를 가져올 수 없습니다. GPS 설정을 확인해주세요.');
       },
@@ -46,6 +46,28 @@ document.addEventListener('DOMContentLoaded', function () {
     );
   } else {
     // 위치 정보를 지원하지 않거나 차단된 경우
-    console.log('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+    console.log("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
   }
 });
+// ✅ 검색하면 main으로 이동해서 검색되게
+const searchInput = document.getElementById("searchInput");
+if (searchInput) {
+  function goMainSearch() {
+    const q = searchInput.value.trim();
+    const url = q ? `./main.html?q=${encodeURIComponent(q)}` : `./main.html`;
+    window.location.href = url;
+  }
+
+  // 엔터로 검색
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      goMainSearch();
+    }
+  });
+
+  // 돋보기 클릭 검색
+  document
+    .querySelector(".search-bar span")
+    ?.addEventListener("click", goMainSearch);
+}

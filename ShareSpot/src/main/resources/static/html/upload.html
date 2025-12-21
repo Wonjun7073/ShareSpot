@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>물품 등록하기 • 쉐어스팟</title>
+    <title>쉐어스팟 - 물품 등록하기</title>
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/upload.css" />
     <style>
@@ -25,12 +25,8 @@
         <a href="./main.html" class="menu-item active"
           ><span class="menu-icon">🏠</span> 홈</a
         >
-        <a href="./near_me.html" class="menu-item"
-          ><span class="menu-icon">📍</span> 내 근처</a
-        >
         <a href="./chat.html" class="menu-item"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge">3</span></a
-        >
+          ><span class="menu-icon">💬</span> 채팅<span class="badge" id="chatBadge" style="display:none;"></span>
         <a href="./my.html" class="menu-item"
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
@@ -41,7 +37,12 @@
     <div class="main-content">
       <div class="top-header">
         <div class="search-bar">
-          <span>🔍</span> 물품, 동네 이름 등을 검색해보세요
+          <span>🔍</span>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="물품, 동네 이름 등을 검색해보세요"
+          />
         </div>
         <div class="header-actions">
           <a href="./upload.html" class="write-btn"><span>✏️</span> 글쓰기</a>

@@ -69,3 +69,25 @@
 
   loadMe();
 })();
+// ✅ 검색하면 main으로 이동해서 검색되게
+const searchInput = document.getElementById("searchInput");
+if (searchInput) {
+  function goMainSearch() {
+    const q = searchInput.value.trim();
+    const url = q ? `./main.html?q=${encodeURIComponent(q)}` : `./main.html`;
+    window.location.href = url;
+  }
+
+  // 엔터로 검색
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      goMainSearch();
+    }
+  });
+
+  // 돋보기 클릭 검색
+  document
+    .querySelector(".search-bar span")
+    ?.addEventListener("click", goMainSearch);
+}
