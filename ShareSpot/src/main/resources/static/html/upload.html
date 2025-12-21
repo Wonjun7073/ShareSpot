@@ -3,9 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>물품 등록하기 • 쉐어스팟</title>
-
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/upload.css" />
+    <style>
+      /* 가격 입력칸 숨김 처리를 위한 스타일 */
+      .hidden {
+        display: none !important;
+      }
+    </style>
   </head>
 
   <body>
@@ -89,6 +94,15 @@
               </div>
             </div>
 
+            <div class="card hidden" id="price-section">
+              <label>대여 가격 (원) *</label>
+              <input
+                id="price"
+                type="number"
+                placeholder="가격을 입력해주세요 (예: 5000)"
+              />
+            </div>
+
             <div class="card">
               <label>거래 희망 장소</label>
               <select id="location">
@@ -121,7 +135,6 @@
     </div>
 
     <div id="toast" class="toast">물품이 등록되었습니다!</div>
-
     <div id="confirmModal" class="modal">
       <div class="modal-box">
         <h3 id="modalTitle">확인</h3>
@@ -141,7 +154,6 @@
         await Auth.guard();
       })();
     </script>
-
     <script src="../JS/upload.js" defer></script>
   </body>
 </html>

@@ -7,13 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const photoCount = document.getElementById('photoCount');
 
   if (photoBox && fileInput) {
-    photoBox.addEventListener('click', () => {
-      fileInput.click(); // 박스 클릭 시 파일창 열기
-    });
-
+    photoBox.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => {
       if (fileInput.files.length > 0) {
-        photoCount.textContent = '(1/1)'; // 선택됨 표시
+        photoCount.textContent = '(1/1)';
         showToast('사진이 선택되었습니다.');
       } else {
         photoCount.textContent = '(0/1)';
@@ -21,17 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== 2. 카테고리 버튼 토글 =====
+  // ===== 2. 카테고리 버튼 토글 (대여 가격 표시 로직 포함) =====
   const categoryButtons = document.querySelectorAll('.category-buttons button');
+  const priceSection = document.getElementById('price-section');
+  const priceInput = document.getElementById('price');
+
   categoryButtons.forEach((btn) =>
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      // 1) 모든 버튼 비활성화
       categoryButtons.forEach((b) => b.classList.remove('active'));
+      // 2) 클릭한 버튼 활성화
       btn.classList.add('active');
+
+      // 3) '대여'인지 확인하여 가격창 보이기/숨기기
+      if (btn.innerText.trim() === '대여') {
+        priceSection.classList.remove('hidden');
+        priceInput.focus();
+      } else {
+        priceSection.classList.add('hidden');
+        priceInput.value = ''; // 다른거 누르면 가격 초기화
+      }
     })
   );
 
-  // ===== 3. 모달/토스트 헬퍼 함수 =====
+  // ===== 3. 모달/토스트 핸들러 =====
   const $ = (s) => document.querySelector(s);
   const modal = $('#confirmModal');
   const modalTitle = $('#modalTitle');
@@ -54,109 +65,33 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.add('show');
 
     const close = () => modal.classList.remove('show');
-
     const okHandler = () => {
       modalOk.removeEventListener('click', okHandler);
       modalCancel.removeEventListener('click', close);
-      window.removeEventListener('keydown', escHandler);
       close();
       onOk && onOk();
     };
-
-    const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        close();
-        window.removeEventListener('keydown', escHandler);
-      }
-    };
-
     modalOk.addEventListener('click', okHandler);
     modalCancel.addEventListener('click', close);
-    window.addEventListener('keydown', escHandler);
-
-    modal.addEventListener(
-      'click',
-      (e) => {
-        if (e.target === modal) close();
-      },
-      { once: true }
-    );
   }
 
-  function showToast(text = '완료되었습니다!') {
+  function showToast(text) {
     if (!toast) return;
     toast.textContent = text;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 1600);
   }
 
-  // ===== 4. 폼 데이터 읽기 및 검증 =====
-  function readForm() {
-    const title = document.querySelector('#title')?.value.trim() ?? '';
-    const description =
-      document.querySelector('#description')?.value.trim() ?? '';
-    const location = document.querySelector('#location')?.value.trim() ?? '';
-
-    const active = document.querySelector('.category-buttons button.active');
-    const category = active ? active.textContent.trim() : '';
-    const price = category === '나눔' ? 0 : 0;
-
-    return { title, category, price, location, description };
-  }
-
-  function validateForm(d) {
-    if (!d.title) return '제목을 입력하세요.';
-    if (!d.category) return '카테고리를 선택하세요.';
-    if (!d.location) return '거래 희망 장소를 선택하세요.';
-    if (!d.description) return '설명을 입력하세요.';
-    return null;
-  }
-
-  // ===== 5. 서버 전송 (FormData 사용 - 핵심!) =====
-  async function saveItem(data) {
-    const formData = new FormData();
-
-    // 텍스트 데이터 추가
-    formData.append('title', data.title);
-    formData.append('category', data.category);
-    formData.append('price', data.price);
-    formData.append('location', data.location);
-    formData.append('description', data.description);
-
-    // 파일 데이터 추가
-    const fileInput = document.getElementById('fileInput');
-    if (fileInput && fileInput.files.length > 0) {
-      formData.append('imageFile', fileInput.files[0]);
-    }
-
-    // fetch 요청 (Content-Type 헤더 생략 -> 브라우저가 자동 설정)
-    const res = await fetch('/api/items', {
-      method: 'POST',
-      credentials: 'same-origin',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      const txt = await res.text().catch(() => '');
-      throw new Error('등록 실패: ' + txt);
-    }
-    return await res.json();
-  }
-
-  // ===== 6. 버튼 이벤트 연결 =====
+  // ===== 4. 폼 데이터 읽기 & 전송 =====
   const cancelBtn = document.querySelector('.btn-cancel');
   const submitBtn = document.querySelector('.btn-submit');
 
   if (cancelBtn) {
-    cancelBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+    cancelBtn.addEventListener('click', () => {
       openConfirm({
         title: '작성 취소',
         message: '작성을 취소하시겠습니까?',
-        okText: '확인',
-        onOk: () => {
-          window.location.href = '/html/main.html';
-        },
+        onOk: () => (location.href = '/html/main.html'),
       });
     });
   }
@@ -167,29 +102,67 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       if (locking) return;
 
-      const data = readForm();
-      const err = validateForm(data);
-      if (err) return showToast(err);
+      // -- 데이터 읽기 --
+      const title = document.querySelector('#title').value.trim();
+      const desc = document.querySelector('#description').value.trim();
+      const loc = document.querySelector('#location').value;
 
+      // 활성화된 카테고리 찾기
+      const activeBtn = document.querySelector(
+        '.category-buttons button.active'
+      );
+      const category = activeBtn ? activeBtn.innerText.trim() : '나눔';
+
+      // 가격 처리: 대여일 때만 값 읽음 (나머지는 0)
+      let price = 0;
+      if (category === '대여') {
+        const val = document.querySelector('#price').value.trim();
+        price = val ? parseInt(val, 10) : 0;
+      }
+
+      // -- 유효성 검사 --
+      if (!title) return showToast('제목을 입력하세요.');
+      if (category === '대여' && price <= 0)
+        return showToast('대여 가격을 올바르게 입력하세요.');
+      if (!desc) return showToast('설명을 입력하세요.');
+
+      // -- 전송 확인 --
       openConfirm({
         title: '등록 확인',
         message: '입력한 내용으로 물품을 등록하시겠습니까?',
-        okText: '확인',
         onOk: async () => {
           locking = true;
           submitBtn.disabled = true;
 
           try {
-            console.log('[upload] sending data...');
-            const saved = await saveItem(data);
-            console.log('[upload] done', saved);
-            showToast('물품이 등록되었습니다!');
-            setTimeout(() => {
-              window.location.href = '/html/main.html';
-            }, 900);
-          } catch (e) {
-            console.error(e);
-            showToast('오류 발생: ' + e.message);
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('category', category);
+            formData.append('price', price);
+            formData.append('location', loc);
+            formData.append('description', desc);
+
+            if (fileInput.files.length > 0) {
+              formData.append('imageFile', fileInput.files[0]);
+            }
+
+            const res = await fetch('/api/items', {
+              method: 'POST',
+              body: formData, // Content-Type은 브라우저가 자동 설정
+            });
+
+            if (res.ok) {
+              showToast('물품이 등록되었습니다!');
+              setTimeout(() => {
+                window.location.href = '/html/main.html';
+              }, 900);
+            } else {
+              const errTxt = await res.text();
+              throw new Error(errTxt || '등록 실패');
+            }
+          } catch (err) {
+            console.error(err);
+            showToast('오류가 발생했습니다: ' + err.message);
             locking = false;
             submitBtn.disabled = false;
           }
