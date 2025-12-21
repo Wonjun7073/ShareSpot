@@ -25,7 +25,7 @@
         </a>
         <a href="chat.html" class="menu-item active">
           <span class="menu-icon">💬</span> 채팅
-          <span class="badge">3</span>
+          <span class="badge" id="chatBadge" style="display:none;"></span>
         </a>
         <a href="my.html" class="menu-item">
           <span class="menu-icon">👤</span> 나의 시흥
@@ -65,89 +65,7 @@
           채팅
         </div>
 
-        <div class="chat-list">
-          <div
-            class="chat-item"
-            onclick="location.href='chat_room.html?room=chat1'"
-          >
-            <div class="chat-avatar">
-              <img src="https://placehold.co/64x64" alt="프로필" />
-            </div>
-            <div class="chat-info">
-              <div class="chat-header-row">
-                <div class="user-meta">
-                  <span class="username">따뜻한이웃</span
-                  ><span class="location">정왕동</span>
-                </div>
-                <span class="time">5분 전</span>
-              </div>
-              <div class="chat-preview">에어프라이어 나눔합니다</div>
-              <div class="chat-last-msg-row">
-                <span class="last-msg">네, 내일 오후 2시에 만나요!</span>
-                <span class="msg-badge">2</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="chat-item">
-            <div class="chat-avatar">
-              <img src="https://placehold.co/64x64" alt="프로필" />
-            </div>
-            <div class="chat-info">
-              <div class="chat-header-row">
-                <div class="user-meta">
-                  <span class="username">캠핑러버</span
-                  ><span class="location">배곧동</span>
-                </div>
-                <span class="time">1시간 전</span>
-              </div>
-              <div class="chat-preview">캠핑 텐트 빌려드립니다</div>
-              <div class="chat-last-msg-row">
-                <span class="last-msg">이번 주말에 사용 가능한가요?</span>
-                <span class="msg-badge">1</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="chat-item">
-            <div class="chat-avatar">
-              <img src="https://placehold.co/64x64" alt="프로필" />
-            </div>
-            <div class="chat-info">
-              <div class="chat-header-row">
-                <div class="user-meta">
-                  <span class="username">DIY마스터</span
-                  ><span class="location">은행동</span>
-                </div>
-                <span class="time">3시간 전</span>
-              </div>
-              <div class="chat-preview">전동 드릴 공유해요</div>
-              <div class="chat-last-msg-row">
-                <span class="last-msg">보증금은 얼마인가요?</span>
-                <span class="msg-badge">1</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="chat-item">
-            <div class="chat-avatar">
-              <img src="https://placehold.co/64x64" alt="프로필" />
-            </div>
-            <div class="chat-info">
-              <div class="chat-header-row">
-                <div class="user-meta">
-                  <span class="username">육아맘</span
-                  ><span class="location">목감동</span>
-                </div>
-                <span class="time">1일 전</span>
-              </div>
-              <div class="chat-preview">유아 책 교환해요</div>
-              <div class="chat-last-msg-row">
-                <span class="last-msg">감사합니다! 아이가 정말 좋아해요</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="chat-list"></div>
       </div>
     </div>
     <script src="../JS/auth.js"></script>
