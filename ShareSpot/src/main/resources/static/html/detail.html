@@ -2,22 +2,18 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>게시글 상세 • 쉐어스팟</title>
-
-    <!-- 공통 + 페이지 전용 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시글 상세 - ShareSpot</title>
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/detail.css" />
   </head>
-
   <body>
-    <!-- 사이드바 (my.html / wishlist.html과 동일) -->
     <div class="sidebar">
       <div class="brand">
         <img src="../Images/logo.png" alt="로고" class="brand-logo" />
         <div class="brand-text">
           <h1>쉐어스팟</h1>
-          <p id="dongTextSide">시흥시 정왕동</p>
+          <p>시흥시 정왕동</p>
         </div>
       </div>
 
@@ -25,114 +21,87 @@
         <a href="./main.html" class="menu-item">
           <span class="menu-icon">🏠</span> 홈
         </a>
-
+        <a href="./near_me.html" class="menu-item">
+          <span class="menu-icon">📍</span> 내 근처
+        </a>
         <a href="./chat.html" class="menu-item">
           <span class="menu-icon">💬</span> 채팅
           <span class="badge" id="chatBadge" style="display: none"></span>
         </a>
-
-        <!-- ✅ detail이 '나의 시흥' 흐름에서 들어오는 페이지면 active 유지 -->
-        <a href="./my.html" class="menu-item active">
+        <a href="./my.html" class="menu-item">
           <span class="menu-icon">👤</span> 나의 시흥
         </a>
       </div>
 
-      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
+      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
-    <!-- 메인 -->
-    <div class="main-content">
-      <!-- 상단 헤더 (wishlist와 동일 톤) -->
-      <div class="top-header">
-        <div class="edit-header">
-          <button class="cancel-btn" id="btnBack" type="button">
-            돌아가기
-          </button>
-          <div class="header-title">게시글 상세</div>
-          <!-- 오른쪽 더미(중앙정렬용) -->
-          <div></div>
+    <main class="main-content">
+      <div class="detail-header">
+        <button id="btnBack" class="nav-back-btn">돌아가기</button>
+        <h2 class="nav-title">게시글 상세</h2>
+      </div>
+
+      <div class="detail-centering-wrapper">
+        <div class="detail-card">
+          <div class="image-area">
+            <img id="postImage" src="../Images/logo.png" alt="상품 이미지" />
+          </div>
+
+          <div class="user-profile-section">
+            <div class="avatar" id="postAuthorAvatar">?</div>
+            <div class="user-text">
+              <div class="name" id="postAuthorName">로딩중...</div>
+              <div class="loc" id="postLocation">위치 정보</div>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="post-text-area">
+            <div class="badge-row">
+              <span class="category-badge" id="postCategory">카테고리</span>
+            </div>
+            <h1 class="post-title" id="postTitle">제목 로딩중...</h1>
+            <div class="post-time" id="postTime">시간</div>
+            <p class="post-desc" id="postDesc">내용을 불러오는 중입니다...</p>
+            <div class="post-stats">조회 0 · 채팅 0 · 관심 0</div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="price-section">
+            <div class="price-label">가격</div>
+            <div class="price-value" id="postPrice">--원</div>
+          </div>
+
+          <div class="card-footer">
+            <div class="heart-container">
+              <button id="btnHeart" class="heart-btn">♡</button>
+            </div>
+            <button id="btnChat" class="chat-btn">채팅하기</button>
+          </div>
         </div>
       </div>
+    </main>
 
-      <!-- ✅ wishlist처럼 content-wrapper 안에 페이지를 넣어서 폭/여백 통일 -->
-      <div class="content-wrapper detail-page">
-        <main class="page">
-          <!-- 이미지 -->
-          <section class="photo">
-            <img
-              id="postImage"
-              src="../Images/sample.jpg"
-              alt="게시글 이미지"
-            />
-          </section>
-
-          <!-- 내용 -->
-          <section class="content">
-            <!-- 작성자 -->
-            <div class="author">
-              <div class="avatar" aria-hidden="true"><span>알</span></div>
-
-              <div class="author-text">
-                <div class="name">알뜰맘</div>
-                <div class="location">시흥시 배곧동</div>
-              </div>
-            </div>
-
-            <!-- 게시글 본문 -->
-            <div class="post">
-              <span class="badge">교환</span>
-              <h1 class="title">아이 옷 교환해요</h1>
-              <div class="meta">3일 전</div>
-
-              <p class="desc">
-                100-110 사이즈 아이 옷 교환해요. 깨끗하게 입었습니다.
-              </p>
-
-              <div class="stats">
-                <div class="stat">조회 93</div>
-                <div class="stat">채팅 10</div>
-                <div class="stat">관심 14</div>
-              </div>
-            </div>
-
-            <!-- 가격 -->
-            <div class="price">
-              <div class="price-label">가격</div>
-              <div class="price-value">나눔 🎁</div>
-            </div>
-          </section>
-
-          <!-- 하단 액션바 (wishlist 톤: 카드형, fixed 없음) -->
-          <footer class="bottombar">
-            <button
-              class="outline-btn"
-              id="btnHeart"
-              type="button"
-              aria-label="관심"
-            >
-              ♡
-            </button>
-            <button class="primary-btn" id="btnChat" type="button">
-              채팅하기
-            </button>
-          </footer>
-        </main>
-      </div>
-    </div>
-
-    <!-- 스크립트 -->
     <script src="../JS/auth.js"></script>
-    <script src="../Js/detail.js"></script>
-
-    <div id="modal-root"></div>
-    <script src="../Components/sidebar-auth.js"></script>
-
-    <!-- ✅ 나가기 버튼 동작(혹시 detail.js에 없으면 동작 안 하니까 안전장치) -->
+    <script src="../JS/detail.js"></script>
     <script>
-      (function () {
-        const btn = document.getElementById("btnBack");
-        if (btn) btn.addEventListener("click", () => history.back());
-      })();
+      // 로그아웃 로직
+      document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('로그아웃 하시겠습니까?')) {
+          fetch('/api/users/logout', { method: 'POST' }).finally(
+            () => (location.href = './login.html')
+          );
+        }
+      });
+
+      // 돌아가기 버튼 로직
+      document.getElementById('btnBack')?.addEventListener('click', () => {
+        history.back();
+      });
     </script>
   </body>
 </html>

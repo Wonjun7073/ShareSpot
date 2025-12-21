@@ -23,12 +23,13 @@ public class ItemController {
         this.itemRepository = itemRepository;
     }
 
+    // 1. 게시글 등록
     @PostMapping
     public Item createItem(
-            @ModelAttribute Item item, // JSON 아님!
+            @ModelAttribute Item item,
             @RequestParam(value = "imageFile", required = false) MultipartFile file,
             HttpSession session) throws IOException {
-
+        
         String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
         if (loginUserId == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
@@ -36,8 +37,8 @@ public class ItemController {
 
         item.setOwnerUserId(loginUserId);
 
-        // 파일 저장 로직
         if (file != null && !file.isEmpty()) {
+            // 경로 주의: 실제 존재하는 폴더로 잡아주세요 (C:/uploads/ 등)
             String uploadDir = "C:/uploads/";
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
@@ -46,17 +47,28 @@ public class ItemController {
             String savedFilename = UUID.randomUUID() + "_" + originalFilename;
             
             file.transferTo(new File(uploadDir + savedFilename));
+            // 웹에서 접근 가능한 경로로 설정
             item.setImageUrl("/uploads/" + savedFilename);
         }
 
         return itemRepository.save(item);
     }
 
+    // 2. 전체 목록 조회
     @GetMapping
     public List<Item> getAllItems() {
         return itemRepository.findAllByOrderByCreatedAtDesc();
     }
 
+    // ▼▼▼▼▼ [여기가 범인입니다!] 이 코드가 없으면 405 에러가 뜹니다 ▼▼▼▼▼
+    @GetMapping("/{id}")
+    public Item getItem(@PathVariable Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+    }
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+    // 3. 게시글 삭제
     @DeleteMapping("/{id}")
     public void deleteItem(@PathVariable Long id, HttpSession session) {
         String loginUserId = (String) session.getAttribute("LOGIN_USER_ID");
