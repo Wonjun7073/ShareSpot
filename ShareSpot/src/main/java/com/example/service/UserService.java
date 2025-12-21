@@ -135,4 +135,21 @@ public class UserService {
         // 6) 마지막으로 유저 삭제
         userRepository.delete(me);
     }
+    @Transactional
+public void changePassword(String userId, String currentPw, String newPw) {
+    User user = userRepository.findByUserId(userId)
+            .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+    if (!Objects.equals(user.getPassword(), currentPw)) {
+        throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
+    }
+
+    if (newPw == null || newPw.isBlank()) {
+        throw new IllegalArgumentException("새 비밀번호를 입력하세요.");
+    }
+
+    user.setPassword(newPw);
+    userRepository.save(user);
+}
+
 }

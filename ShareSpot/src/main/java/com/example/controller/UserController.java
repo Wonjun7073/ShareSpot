@@ -104,4 +104,35 @@ public Map<String, Object> withdraw(HttpSession session) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
         }
     }
+    @PutMapping("/password")
+public Map<String, Object> changePassword(
+        @RequestBody Map<String, String> req,
+        HttpSession session
+) {
+    String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
+    if (loginUserId == null) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+    }
+
+    try {
+        userService.changePassword(
+                loginUserId,
+                req.get("currentPassword"),
+                req.get("newPassword")
+        );
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("success", true);
+        res.put("message", "비밀번호 변경 완료");
+        return res;
+
+    } catch (IllegalArgumentException e) {
+        // 현재 비번 불일치 같은 케이스
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    } catch (Exception e) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+}
+
+
 }

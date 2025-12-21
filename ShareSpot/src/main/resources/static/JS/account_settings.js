@@ -210,6 +210,108 @@ function initDongModal() {
 document.addEventListener("DOMContentLoaded", async () => {
   // 0) confirm 모달 로드
   await mountConfirmModal();
+  const passwordRow = document.getElementById("passwordRow");
+  const pwModal = document.getElementById("passwordModal");
+
+  passwordRow?.addEventListener("click", () => {
+    pwModal?.classList.add("show");
+    pwModal?.setAttribute("aria-hidden", "false");
+  });
+
+  // 버튼이 submit 되지 않게 강제
+  document.getElementById("pwCancel")?.setAttribute("type", "button");
+  document.getElementById("pwSave")?.setAttribute("type", "button");
+
+  document.getElementById("pwCancel")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    pwModal?.classList.remove("show");
+    pwModal?.setAttribute("aria-hidden", "true");
+  });
+
+  document.getElementById("pwSave")?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const currentPw = document.getElementById("currentPw")?.value.trim() || "";
+    const newPw = document.getElementById("newPw")?.value.trim() || "";
+    const confirmPw =
+      document.getElementById("newPwConfirm")?.value.trim() || "";
+
+    if (!currentPw || !newPw || !confirmPw) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+    if (newPw !== confirmPw) {
+      alert("새 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/user/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          currentPassword: currentPw,
+          newPassword: newPw,
+        }),
+      });
+
+      const ct = res.headers.get("content-type") || "";
+      const data = ct.includes("application/json")
+        ? await res.json()
+        : await res.text();
+
+      if (!res.ok) {
+        const msg =
+          typeof data === "string"
+            ? data
+            : data?.message || "비밀번호 변경 실패";
+        alert(msg);
+        return;
+      }
+
+      // success 필드가 없을 수도 있으니 안전하게 처리
+      if (typeof data === "object" && data?.success === false) {
+        alert(data.message || "비밀번호 변경 실패");
+        return;
+      }
+      await mountConfirmModal();
+
+      // ✅ 성공 처리
+      openConfirmModal({
+        title: "변경 완료",
+        message: "비밀번호가 변경되었습니다.",
+        hideCancel: true,
+        okText: "확인",
+        onOk: () => {
+          // 입력 초기화
+          const a = document.getElementById("currentPw");
+          const b = document.getElementById("newPw");
+          const c = document.getElementById("newPwConfirm");
+          if (a) a.value = "";
+          if (b) b.value = "";
+          if (c) c.value = "";
+
+          // 비밀번호 변경 모달 닫기
+          pwModal?.classList.remove("show");
+          pwModal?.setAttribute("aria-hidden", "true");
+        },
+      });
+
+      // 입력 초기화 + 모달 닫기
+      document.getElementById("currentPw").value = "";
+      document.getElementById("newPw").value = "";
+      document.getElementById("newPwConfirm").value = "";
+
+      pwModal?.classList.remove("show");
+      pwModal?.setAttribute("aria-hidden", "true");
+    } catch (err) {
+      console.error(err);
+      alert("네트워크 오류가 발생했습니다.");
+    }
+  });
 
   // 1) 로그인 가드 (기존 Auth 사용)
   if (window.Auth && typeof Auth.guard === "function") {
