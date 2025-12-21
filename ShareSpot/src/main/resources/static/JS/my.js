@@ -91,3 +91,65 @@ if (searchInput) {
     .querySelector(".search-bar span")
     ?.addEventListener("click", goMainSearch);
 }
+(async function () {
+  // 로그인 유저 정보 가져오기
+  const me =
+    window.Auth?.getUser?.() || window.Auth?.getSessionUser?.() || null;
+
+  const myUserId = me?.userId ?? null;
+
+  const sharedEl = document.getElementById("statShared");
+  if (!sharedEl) return;
+
+  // 로그인 안 되어 있으면 0
+  if (!myUserId) {
+    sharedEl.textContent = "0";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/items", { credentials: "include" });
+    const items = await res.json();
+
+    const list = Array.isArray(items) ? items : [];
+
+    // ✅ 내가 등록한 물품 수
+    const myItemCount = list.filter((it) => it.ownerUserId === myUserId).length;
+
+    sharedEl.textContent = String(myItemCount);
+  } catch (e) {
+    console.error("공유한 물품 수 로드 실패", e);
+    sharedEl.textContent = "0";
+  }
+})();
+(async function () {
+  // 로그인 유저 정보
+  const me =
+    window.Auth?.getUser?.() || window.Auth?.getSessionUser?.() || null;
+
+  const myUserId = me?.userId ?? null;
+
+  const chipHistory = document.getElementById("chipHistory");
+  if (!chipHistory) return;
+
+  if (!myUserId) {
+    chipHistory.textContent = "0";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/items", { credentials: "include" });
+    const items = await res.json();
+    const list = Array.isArray(items) ? items : [];
+
+    // ✅ 현재 기준: 내가 등록한 글 전부 = 판매중
+    const sellingCount = list.filter(
+      (it) => it.ownerUserId === myUserId
+    ).length;
+
+    chipHistory.textContent = String(sellingCount);
+  } catch (e) {
+    console.error("판매/대여 내역 수 로드 실패", e);
+    chipHistory.textContent = "0";
+  }
+})();

@@ -42,224 +42,16 @@
       </div>
 
       <div class="tabs">
-        <div class="tab-item active" onclick="switchTab('selling')">
-          판매중 (3)
+        <div class="tab-item active" id="tabSelling" onclick="switchTab('selling')">
+          판매중 (<span id="sellingCount">0</span>)
         </div>
-        <div class="tab-item" onclick="switchTab('sold')">거래완료 (5)</div>
-      </div>
-
-      <div class="history-list" id="selling-list">
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge green">나눔</span>
-              <span class="time-text">2일 전</span>
-            </div>
-            <h3 class="card-title">공기청정기 나눔합니다</h3>
-            <p class="card-price">나눔 🎁</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 8</span>
-                <span>❤️ 15</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge blue">대여</span>
-              <span class="time-text">5일 전</span>
-            </div>
-            <h3 class="card-title">전기자전거 대여해요</h3>
-            <p class="card-price">15,000원</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 12</span>
-                <span>❤️ 23</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge purple">교환</span>
-              <span class="time-text">1주일 전</span>
-            </div>
-            <h3 class="card-title">키보드 교환해요</h3>
-            <p class="card-price">나눔 🎁</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 5</span>
-                <span>❤️ 9</span>
-              </div>
-            </div>
-          </div>
+        <div class="tab-item" id="tabSold" onclick="switchTab('sold')">
+          거래완료 (<span id="soldCount">0</span>)
         </div>
       </div>
 
-      <div class="history-list hidden" id="sold-list">
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge blue">대여</span>
-              <span class="time-text">1주일 전</span>
-            </div>
-            <h3 class="card-title">캠핑 의자 대여했어요</h3>
-            <p class="card-price">5,000원</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 8</span>
-                <span>❤️ 12</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge green">나눔</span>
-              <span class="time-text">2주일 전</span>
-            </div>
-            <h3 class="card-title">식물 나눔 완료</h3>
-            <p class="card-price">나눔 🎁</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 15</span>
-                <span>❤️ 20</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge purple">교환</span>
-              <span class="time-text">3주일 전</span>
-            </div>
-            <h3 class="card-title">보드게임 교환 완료</h3>
-            <p class="card-price">나눔 🎁</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 6</span>
-                <span>❤️ 8</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge blue">대여</span>
-              <span class="time-text">1개월 전</span>
-            </div>
-            <h3 class="card-title">전동 드릴 대여 완료</h3>
-            <p class="card-price">5,000원</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 4</span>
-                <span>❤️ 6</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="history-card">
-          <div class="card-img-box">
-            <img
-              src="https://placehold.co/476x476"
-              alt="상품이미지"
-              style="width: 100%; height: 100%; object-fit: cover"
-            />
-            <button class="more-btn">⋮</button>
-          </div>
-          <div class="card-info">
-            <div class="status-row">
-              <span class="status-badge purple">교환</span>
-              <span class="time-text">1개월 전</span>
-            </div>
-            <h3 class="card-title">유아 책 교환 완료</h3>
-            <p class="card-price">나눔 🎁</p>
-            <div class="card-footer">
-              <span class="location">시흥시 정왕동</span>
-              <div class="meta-counts">
-                <span>💬 10</span>
-                <span>❤️ 15</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="history-list" id="selling-list"></div>
+      <div class="history-list hidden" id="sold-list"></div>
 
     <div id="logoutModalContainer"></div>
 
@@ -267,7 +59,6 @@
     <script>
       Auth.guard();
     </script>
-    <script src="../JS/near_me.js"></script>
     <script>
       // 탭 전환 기능 스크립트
       function switchTab(tabName) {
@@ -288,6 +79,139 @@
         }
       }
     </script>
+
+    <script>
+  // 시간 표시 (app.js에서 쓰던 거랑 동일)
+  function formatTimeAgo(createdAt) {
+    const t = new Date(createdAt);
+    if (Number.isNaN(t.getTime())) return "";
+    const diff = Math.floor((Date.now() - t.getTime()) / 1000);
+    if (diff < 60) return "방금 전";
+    if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+    return `${Math.floor(diff / 86400)}일 전`;
+  }
+
+  function escapeHTML(str) {
+    if (!str) return "";
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function badgeClassByCategory(cat) {
+    const c = (cat || "").trim();
+    if (c === "나눔") return "green";
+    if (c === "대여") return "blue";
+    if (c === "교환") return "purple";
+    return "green";
+  }
+
+  function priceTextByItem(it) {
+    const cat = (it.category || "").trim();
+    if (cat === "대여") return `${Number(it.price || 0).toLocaleString()}원`;
+    if (cat === "교환") return "교환 🔄";
+    return "나눔 🎁";
+  }
+
+  function toHistoryCardHTML(it) {
+    const imgSrc = it.imageUrl
+      ? it.imageUrl
+      : "https://placehold.co/476x476?text=No+Image";
+
+    const cat = (it.category || "").trim();
+
+    return `
+      <div class="history-card">
+        <div class="card-img-box">
+          <img
+            src="${imgSrc}"
+            alt="상품이미지"
+            style="width: 100%; height: 100%; object-fit: cover"
+          />
+          <button class="more-btn" data-item-id="${it.id}">⋮</button>
+        </div>
+        <div class="card-info">
+          <div class="status-row">
+            <span class="status-badge ${badgeClassByCategory(cat)}">${escapeHTML(cat)}</span>
+            <span class="time-text">${formatTimeAgo(it.createdAt)}</span>
+          </div>
+          <h3 class="card-title">${escapeHTML(it.title)}</h3>
+          <p class="card-price">${priceTextByItem(it)}</p>
+          <div class="card-footer">
+            <span class="location">${escapeHTML(it.location || "")}</span>
+            <div class="meta-counts">
+              <span>💬 ${Number(it.chatCount || 0)}</span>
+              <span>❤️ ${Number(it.likeCount || 0)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadMyHistory() {
+    const sellingList = document.getElementById("selling-list");
+    const soldList = document.getElementById("sold-list");
+
+    const sellingCountEl = document.getElementById("sellingCount");
+    const soldCountEl = document.getElementById("soldCount");
+
+    // 로그인 유저
+    const me =
+      window.Auth?.getUser?.() ||
+      window.Auth?.getSessionUser?.() ||
+      null;
+    const myUserId = me?.userId ?? null;
+
+    if (!myUserId) {
+      sellingList.innerHTML =
+        '<p style="text-align:center;color:#888;padding:40px;">로그인이 필요합니다.</p>';
+      soldList.innerHTML = "";
+      sellingCountEl && (sellingCountEl.textContent = "0");
+      soldCountEl && (soldCountEl.textContent = "0");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/items", { credentials: "include" });
+      const items = await res.json();
+      const list = Array.isArray(items) ? items : [];
+
+      // ✅ 내가 등록한 글만
+      const mine = list.filter((it) => it.ownerUserId === myUserId);
+
+      // ✅ 일단 전부 판매중에만 넣기 (요구사항)
+      const selling = mine;
+      const sold = []; // 나중에 거래완료 필드 생기면 분리
+
+      sellingCountEl && (sellingCountEl.textContent = String(selling.length));
+      soldCountEl && (soldCountEl.textContent = String(sold.length));
+
+      if (selling.length === 0) {
+        sellingList.innerHTML =
+          '<p style="text-align:center;color:#888;padding:40px;">판매/대여 중인 물품이 없습니다.</p>';
+      } else {
+        sellingList.innerHTML = selling.map(toHistoryCardHTML).join("");
+      }
+
+      soldList.innerHTML =
+        sold.length === 0
+          ? '<p style="text-align:center;color:#888;padding:40px;">거래완료 내역이 없습니다.</p>'
+          : sold.map(toHistoryCardHTML).join("");
+    } catch (e) {
+      console.error(e);
+      sellingList.innerHTML =
+        '<p style="text-align:center;color:red;padding:40px;">내역을 불러오지 못했습니다.</p>';
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", loadMyHistory);
+</script>
+
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
   </body>
