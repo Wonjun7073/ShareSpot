@@ -18,15 +18,17 @@
         <img src="../Images/logo.png" alt="로고" class="brand-logo" />
         <div class="brand-text">
           <h1>쉐어스팟</h1>
-          <p>시흥시 정왕동</p>
+          <p id="sidebarDongText">시흥시 정왕동</p>
         </div>
       </div>
       <div class="menu">
-        <a href="./main.html" class="menu-item active"
-          ><span class="menu-icon">🏠</span> 홈</a
+        <a href="./main.html" class="menu-item active">
+          <span class="menu-icon">🏠</span> 홈</a
         >
-        <a href="./chat.html" class="menu-item"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge" id="chatBadge" style="display:none;"></span>
+        <a href="./chat.html" class="menu-item">
+          <span class="menu-icon">💬</span> 채팅
+          <span class="badge" id="chatBadge" style="display: none"></span>
+        </a>
         <a href="./my.html" class="menu-item"
           ><span class="menu-icon">👤</span> 나의 시흥</a
         >
@@ -152,5 +154,7 @@
       })();
     </script>
     <script src="../JS/upload.js" defer></script>
+
+    <script src="../Components/sidebar-auth.js"></script>
   </body>
 </html>
