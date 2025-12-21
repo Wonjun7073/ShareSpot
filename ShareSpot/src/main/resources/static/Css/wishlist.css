@@ -80,7 +80,7 @@
 /* 카드 그리드 */
 .wl-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
 
@@ -130,20 +130,6 @@
 
 .wl-heart-btn.is-on {
   color: var(--wl-heart);
-}
-
-/* 썸네일 */
-.wl-thumb {
-  height: 260px;
-  background: #f3f4f6;
-  overflow: hidden;
-}
-
-.wl-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .wl-thumb-empty {
