@@ -173,7 +173,7 @@ body {
 /* 1:1 채팅 버튼 스타일 */
 .chat-btn {
   margin-left: auto; /* ★ 핵심: 버튼을 오른쪽 끝으로 밀어버림 */
-  background: #ff6900; /* 당근마켓 색상 (주황) */
+  background: #85b3f8; /* 당근마켓 색상 (주황) */
   color: white;
   padding: 6px 12px;
   border-radius: 6px;
@@ -185,7 +185,7 @@ body {
 }
 
 .chat-btn:hover {
-  background-color: #e55d00;
+  background-color: #85b3f89d;
 }
 
 /* 채팅 목록 화면 스타일 (사이드바 채팅 메뉴 눌렀을 때 나올 화면) */

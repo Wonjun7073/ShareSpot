@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/history.css" />
     <style>
-      /* 탭 전환을 위한 간단한 스타일 추가 */
+      /* 탭 전환을 위한 간단한 스타일 */
       .hidden {
         display: none !important;
       }
     </style>
   </head>
+
   <body>
     <div class="sidebar">
       <div class="brand">
@@ -21,16 +22,22 @@
           <p>시흥시 정왕동</p>
         </div>
       </div>
+
       <div class="menu">
-        <a href="main.html" class="menu-item"
-          ><span class="menu-icon">🏠</span> 홈</a
-        >
-        <a href="chat.html" class="menu-item"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge" id="chatBadge" style="display:none;"></span>
-        <a href="my.html" class="menu-item active"
-          ><span class="menu-icon">👤</span> 나의 시흥</a
-        >
+        <a href="main.html" class="menu-item">
+          <span class="menu-icon">🏠</span> 홈
+        </a>
+
+        <a href="chat.html" class="menu-item">
+          <span class="menu-icon">💬</span> 채팅
+          <span class="badge" id="chatBadge" style="display: none"></span>
+        </a>
+
+        <a href="my.html" class="menu-item active">
+          <span class="menu-icon">👤</span> 나의 시흥
+        </a>
       </div>
+
       <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
     </div>
 
@@ -42,9 +49,14 @@
       </div>
 
       <div class="tabs">
-        <div class="tab-item active" id="tabSelling" onclick="switchTab('selling')">
+        <div
+          class="tab-item active"
+          id="tabSelling"
+          onclick="switchTab('selling')"
+        >
           판매중 (<span id="sellingCount">0</span>)
         </div>
+
         <div class="tab-item" id="tabSold" onclick="switchTab('sold')">
           거래완료 (<span id="soldCount">0</span>)
         </div>
@@ -52,167 +64,24 @@
 
       <div class="history-list" id="selling-list"></div>
       <div class="history-list hidden" id="sold-list"></div>
+    </div>
 
+    <!-- 로그아웃 모달(기존 컴포넌트용) -->
     <div id="logoutModalContainer"></div>
 
+    <!-- confirm-modal.html이 들어갈 루트 -->
+    <div id="modal-root"></div>
+
+    <!-- 로그인 가드 -->
     <script src="../JS/auth.js"></script>
     <script>
       Auth.guard();
     </script>
-    <script>
-      // 탭 전환 기능 스크립트
-      function switchTab(tabName) {
-        const sellingList = document.getElementById('selling-list');
-        const soldList = document.getElementById('sold-list');
-        const tabs = document.querySelectorAll('.tab-item');
 
-        if (tabName === 'selling') {
-          sellingList.classList.remove('hidden');
-          soldList.classList.add('hidden');
-          tabs[0].classList.add('active');
-          tabs[1].classList.remove('active');
-        } else {
-          sellingList.classList.add('hidden');
-          soldList.classList.remove('hidden');
-          tabs[0].classList.remove('active');
-          tabs[1].classList.add('active');
-        }
-      }
-    </script>
-
-    <script>
-  // 시간 표시 (app.js에서 쓰던 거랑 동일)
-  function formatTimeAgo(createdAt) {
-    const t = new Date(createdAt);
-    if (Number.isNaN(t.getTime())) return "";
-    const diff = Math.floor((Date.now() - t.getTime()) / 1000);
-    if (diff < 60) return "방금 전";
-    if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-    return `${Math.floor(diff / 86400)}일 전`;
-  }
-
-  function escapeHTML(str) {
-    if (!str) return "";
-    return String(str)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#39;");
-  }
-
-  function badgeClassByCategory(cat) {
-    const c = (cat || "").trim();
-    if (c === "나눔") return "green";
-    if (c === "대여") return "blue";
-    if (c === "교환") return "purple";
-    return "green";
-  }
-
-  function priceTextByItem(it) {
-    const cat = (it.category || "").trim();
-    if (cat === "대여") return `${Number(it.price || 0).toLocaleString()}원`;
-    if (cat === "교환") return "교환 🔄";
-    return "나눔 🎁";
-  }
-
-  function toHistoryCardHTML(it) {
-    const imgSrc = it.imageUrl
-      ? it.imageUrl
-      : "https://placehold.co/476x476?text=No+Image";
-
-    const cat = (it.category || "").trim();
-
-    return `
-      <div class="history-card">
-        <div class="card-img-box">
-          <img
-            src="${imgSrc}"
-            alt="상품이미지"
-            style="width: 100%; height: 100%; object-fit: cover"
-          />
-          <button class="more-btn" data-item-id="${it.id}">⋮</button>
-        </div>
-        <div class="card-info">
-          <div class="status-row">
-            <span class="status-badge ${badgeClassByCategory(cat)}">${escapeHTML(cat)}</span>
-            <span class="time-text">${formatTimeAgo(it.createdAt)}</span>
-          </div>
-          <h3 class="card-title">${escapeHTML(it.title)}</h3>
-          <p class="card-price">${priceTextByItem(it)}</p>
-          <div class="card-footer">
-            <span class="location">${escapeHTML(it.location || "")}</span>
-            <div class="meta-counts">
-              <span>💬 ${Number(it.chatCount || 0)}</span>
-              <span>❤️ ${Number(it.likeCount || 0)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  async function loadMyHistory() {
-    const sellingList = document.getElementById("selling-list");
-    const soldList = document.getElementById("sold-list");
-
-    const sellingCountEl = document.getElementById("sellingCount");
-    const soldCountEl = document.getElementById("soldCount");
-
-    // 로그인 유저
-    const me =
-      window.Auth?.getUser?.() ||
-      window.Auth?.getSessionUser?.() ||
-      null;
-    const myUserId = me?.userId ?? null;
-
-    if (!myUserId) {
-      sellingList.innerHTML =
-        '<p style="text-align:center;color:#888;padding:40px;">로그인이 필요합니다.</p>';
-      soldList.innerHTML = "";
-      sellingCountEl && (sellingCountEl.textContent = "0");
-      soldCountEl && (soldCountEl.textContent = "0");
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/items", { credentials: "include" });
-      const items = await res.json();
-      const list = Array.isArray(items) ? items : [];
-
-      // ✅ 내가 등록한 글만
-      const mine = list.filter((it) => it.ownerUserId === myUserId);
-
-      // ✅ 일단 전부 판매중에만 넣기 (요구사항)
-      const selling = mine;
-      const sold = []; // 나중에 거래완료 필드 생기면 분리
-
-      sellingCountEl && (sellingCountEl.textContent = String(selling.length));
-      soldCountEl && (soldCountEl.textContent = String(sold.length));
-
-      if (selling.length === 0) {
-        sellingList.innerHTML =
-          '<p style="text-align:center;color:#888;padding:40px;">판매/대여 중인 물품이 없습니다.</p>';
-      } else {
-        sellingList.innerHTML = selling.map(toHistoryCardHTML).join("");
-      }
-
-      soldList.innerHTML =
-        sold.length === 0
-          ? '<p style="text-align:center;color:#888;padding:40px;">거래완료 내역이 없습니다.</p>'
-          : sold.map(toHistoryCardHTML).join("");
-    } catch (e) {
-      console.error(e);
-      sellingList.innerHTML =
-        '<p style="text-align:center;color:red;padding:40px;">내역을 불러오지 못했습니다.</p>';
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", loadMyHistory);
-</script>
-
-    <div id="modal-root"></div>
+    <!-- 사이드바 로그인/로그아웃 UI -->
     <script src="../Components/sidebar-auth.js"></script>
+
+    <!-- ✅ history 전용 로직(목록 로딩 + 삭제 버튼 + confirm 모달 재사용) -->
+    <script src="../JS/history.js"></script>
   </body>
 </html>
