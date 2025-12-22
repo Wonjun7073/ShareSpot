@@ -494,3 +494,31 @@ body {
 .delete-btn {
   white-space: nowrap;
 }
+
+.sort-dropdown {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sort-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: none;
+  z-index: 20;
+  overflow: hidden;
+}
+
+.sort-option {
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.sort-option:hover {
+  background: #f3f4f6;
+}

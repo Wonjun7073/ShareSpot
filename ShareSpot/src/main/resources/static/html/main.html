@@ -22,7 +22,8 @@
         >
         <a href="./chat.html" class="menu-item"
           ><span class="menu-icon">💬</span> 채팅
-          <span class="badge" id="chatBadge" style="display:none;"></span>
+          <span class="badge" id="chatBadge" style="display: none"></span>
+        </a>
 
         <a href="./my.html" class="menu-item"
           ><span class="menu-icon">👤</span> 나의 시흥</a
@@ -59,7 +60,17 @@
             <button class="filter-btn" data-category="교환">교환</button>
           </div>
 
-          <div class="sort-dropdown">정렬: 최신순 ▼</div>
+          <div
+            class="sort-dropdown"
+            id="sortDropdown"
+            onclick="toggleSortMenu()"
+          >
+            <span id="sortLabel">정렬: 최신순</span> ▼
+            <div id="sortMenu" class="sort-menu" style="display: none">
+              <div onclick="sortItems('latest')">최신순</div>
+              <div onclick="sortItems('oldest')">오래된 순</div>
+            </div>
+          </div>
         </div>
 
         <div id="itemGrid" class="item-grid"></div>
@@ -79,16 +90,20 @@
     <div id="modal-root"></div>
 
     <div class="modal" id="chatFailModal" aria-hidden="true">
-  <div class="modal-box" role="dialog" aria-modal="true">
-    <h3>채팅방 생성 실패</h3>
-    <p id="chatFailMsg">채팅방을 생성할 수 없습니다.</p>
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <h3>채팅방 생성 실패</h3>
+        <p id="chatFailMsg">채팅방을 생성할 수 없습니다.</p>
 
-    <div class="modal-actions">
-      <button type="button" class="btn-outline" id="chatFailClose">닫기</button>
-      <button type="button" class="btn-primary" id="chatFailRetry">다시 시도</button>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="chatFailClose">
+            닫기
+          </button>
+          <button type="button" class="btn-primary" id="chatFailRetry">
+            다시 시도
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
     <script src="../Components/sidebar-auth.js"></script>
   </body>

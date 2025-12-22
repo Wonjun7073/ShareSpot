@@ -10,6 +10,7 @@
   let confirmOkAction = null;
   let allItems = [];
   let currentCategory = "전체";
+  let currentSort = "latest"; // 기본 최신순
 
   // ✅ itemId -> "IN_PROGRESS" | "COMPLETED"
   let tradeStatusByItemId = new Map();
@@ -53,7 +54,8 @@
     const cat = (it.category || "").trim();
 
     let priceText = "";
-    if (cat === "대여") priceText = `${Number(it.price || 0).toLocaleString()}원`;
+    if (cat === "대여")
+      priceText = `${Number(it.price || 0).toLocaleString()}원`;
     else if (cat === "교환") priceText = "교환 🔄";
     else priceText = "나눔 🎁";
 
@@ -76,7 +78,9 @@
       : it.category;
 
     return `
-      <div class="card" data-detail-id="${it.id}">
+      <div class="card" data-detail-id="${it.id}" data-created-at="${
+      it.createdAt
+    }">
         <div class="card-img-wrap">
           <img src="${imgSrc}" class="card-img" />
         </div>
@@ -131,6 +135,12 @@
         );
       });
     }
+
+    filtered.sort((a, b) => {
+      const ta = new Date(a.createdAt).getTime();
+      const tb = new Date(b.createdAt).getTime();
+      return currentSort === "oldest" ? ta - tb : tb - ta;
+    });
 
     if (filtered.length === 0) {
       grid.innerHTML =
@@ -197,7 +207,7 @@
             const t = await res.text();
             if (t) msg = t;
           }
-        } catch (_) { }
+        } catch (_) {}
         alert(msg);
         return;
       }
@@ -232,7 +242,6 @@
     }
   }
 
-
   /* =========================
    * 이벤트
    * ========================= */
@@ -243,18 +252,54 @@
     });
   }
 
+  function toggleSortMenu() {
+    const sortMenu = document.getElementById("sortMenu");
+    // 메뉴 토글 (보이기/숨기기)
+    if (!sortMenu) return;
+
+    // 메뉴 토글 (보이기/숨기기)
+    if (sortMenu.style.display === "block") {
+      sortMenu.style.display = "none"; // 닫기
+    } else {
+      sortMenu.style.display = "block"; // 열기
+    }
+  }
+
+  function sortItems(sortBy) {
+    const sortMenu = document.getElementById("sortMenu");
+    const sortLabel = document.getElementById("sortLabel");
+
+    currentSort = sortBy;
+
+    // 2) 라벨 변경
+    if (sortLabel) {
+      sortLabel.textContent =
+        sortBy === "oldest" ? "정렬: 오래된 순" : "정렬: 최신순";
+    }
+
+    // 3) ✅ 옵션 클릭하면 자동으로 닫기
+    if (sortMenu) sortMenu.style.display = "none";
+
+    // 4) 렌더링
+    renderItems();
+  }
+
   if (grid) {
     grid.addEventListener("click", (e) => {
+      // 1) 채팅 버튼
       const chatBtn = e.target.closest(".chat-btn");
       if (chatBtn) {
+        e.stopPropagation();
         const id = Number(chatBtn.dataset.itemId);
         if (Number.isFinite(id)) openChatList(id);
         return;
       }
 
+      // 2) 카드 클릭 → 상세 이동
       const card = e.target.closest(".card[data-detail-id]");
       if (card) {
-        location.href = `/html/detail.html?id=${card.dataset.detailId}`;
+        const id = card.dataset.detailId;
+        location.href = `/html/detail.html?id=${encodeURIComponent(id)}`;
       }
     });
   }
@@ -270,6 +315,9 @@
       renderItems();
     });
   });
+
+  window.toggleSortMenu = toggleSortMenu;
+  window.sortItems = sortItems;
 
   renderHome();
 })();
