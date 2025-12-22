@@ -1,3 +1,4 @@
+<!-- src/main/resources/static/html/trust.html (전체 교체) -->
 <!DOCTYPE html>
 <html lang="ko">
   <head>
@@ -6,6 +7,7 @@
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/trust.css" />
   </head>
+
   <body>
     <div class="sidebar">
       <div class="brand">
@@ -15,16 +17,23 @@
           <p id="sidebarDongText">시흥시 정왕동</p>
         </div>
       </div>
+
       <div class="menu">
-        <a href="main.html" class="menu-item"
-          ><span class="menu-icon">🏠</span> 홈</a
-        >
-        <a href="chat.html" class="menu-item"
-          ><span class="menu-icon">💬</span> 채팅<span class="badge" id="chatBadge" style="display:none;"></span>
-        <a href="my.html" class="menu-item active"
-          ><span class="menu-icon">👤</span> 나의 시흥</a
-        >
+        <a href="main.html" class="menu-item">
+          <span class="menu-icon">🏠</span> 홈
+        </a>
+
+        <!-- ✅ 닫는 태그 누락 있었음: 반드시 </a>로 닫아야 레이아웃 안 망가짐 -->
+        <a href="chat.html" class="menu-item">
+          <span class="menu-icon">💬</span> 채팅
+          <span class="badge" id="chatBadge" style="display: none;"></span>
+        </a>
+
+        <a href="my.html" class="menu-item active">
+          <span class="menu-icon">👤</span> 나의 시흥
+        </a>
       </div>
+
       <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
@@ -40,14 +49,17 @@
           <div class="score-circle-bg">
             <div class="score-icon">👑</div>
           </div>
+
           <div class="score-display">
-            <span class="score-percent">81%</span>
-            <span class="score-grade">신뢰 지수 - 우수</span>
+            <span class="score-percent" id="trustPercent">0%</span>
+            <span class="score-grade" id="trustGrade">신뢰 지수</span>
           </div>
+
           <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width: 81%"></div>
+            <div class="progress-bar-fill" id="trustBarFill" style="width: 0%"></div>
           </div>
-          <div class="score-text">총 405점 / 500점</div>
+
+          <div class="score-text" id="trustScoreText">총 0점 / 500점</div>
         </div>
 
         <div class="section-card">
@@ -55,21 +67,21 @@
             <h3>신뢰 활동</h3>
             <p>거래 완료로 신뢰 지수를 높여보세요</p>
           </div>
+
           <div class="activity-list">
             <div class="activity-item">
               <div class="activity-left">
                 <div class="icon-circle bg-green">✅</div>
                 <div class="activity-info">
                   <span class="activity-name">거래 완료</span>
-                  <span class="activity-count">15회</span>
+                  <span class="activity-count" id="completeCount">0회</span>
                 </div>
               </div>
-              <span class="activity-point">+150점</span>
+              <span class="activity-point" id="completePoint">+0점</span>
             </div>
           </div>
         </div>
 
-        
         <div class="tip-box">
           <div class="tip-title">💡 신뢰 지수를 올리는 방법</div>
           <ul class="tip-list">
@@ -87,5 +99,6 @@
     </script>
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
+    <script src="../JS/trust.js"></script>
   </body>
 </html>

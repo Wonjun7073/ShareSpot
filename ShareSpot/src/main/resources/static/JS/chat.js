@@ -341,6 +341,7 @@
             alert("거래 시작 실패: " + (body?.message || body || res.status));
             return;
           }
+          alert("거래가 시작됩니다.");
 
           // 성공 → 상태 갱신
           await updateTradeStatusLabel();

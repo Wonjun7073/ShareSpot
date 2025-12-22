@@ -17,9 +17,12 @@ public class TradeResponse {
     private LocalDateTime createdAt;
     private LocalDateTime completedAt;
 
-    private String myRole; // SELLER / BUYER
     private boolean canComplete; // buyer && IN_PROGRESS
 
+    // ✅ 통일: myRole 필드 추가 (기존 getter/setter가 myRole을 쓰고 있어서 컴파일 에러 원인)
+    private String myRole; // "SELLER" | "BUYER"
+
+    // ===== getters / setters =====
     public Long getTradeId() { return tradeId; }
     public void setTradeId(Long tradeId) { this.tradeId = tradeId; }
 

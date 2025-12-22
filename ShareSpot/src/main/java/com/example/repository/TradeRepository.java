@@ -13,4 +13,9 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     List<Trade> findBySellerUserIdOrderByCreatedAtDesc(String sellerUserId);
 
     List<Trade> findByBuyerUserIdOrderByCreatedAtDesc(String buyerUserId);
+
+    List<Trade> findByBuyerUserIdOrSellerUserIdOrderByIdDesc(
+            String buyerUserId,
+            String sellerUserId
+    );
 }

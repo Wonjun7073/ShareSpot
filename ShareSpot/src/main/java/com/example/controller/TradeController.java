@@ -1,12 +1,15 @@
+// src/main/java/com/example/controller/TradeController.java
 package com.example.controller;
 
 import com.example.dto.TradeResponse;
 import com.example.entity.ChatRoom;
 import com.example.entity.Item;
 import com.example.entity.Trade;
+import com.example.entity.User;
 import com.example.repository.ChatRoomRepository;
 import com.example.repository.ItemRepository;
 import com.example.repository.TradeRepository;
+import com.example.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +30,18 @@ public class TradeController {
     private final TradeRepository tradeRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     public TradeController(
             TradeRepository tradeRepository,
             ChatRoomRepository chatRoomRepository,
-            ItemRepository itemRepository) {
+            ItemRepository itemRepository,
+            UserRepository userRepository
+    ) {
         this.tradeRepository = tradeRepository;
         this.chatRoomRepository = chatRoomRepository;
         this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/from-room/{roomId}")
@@ -47,74 +54,45 @@ public class TradeController {
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."));
 
-        // 방 참여자만 가능
         if (!me.equals(room.getBuyerUserId()) && !me.equals(room.getSellerUserId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "채팅방 참여자가 아닙니다.");
         }
 
-        // 이미 거래가 있으면 그대로 반환
-        Trade trade = tradeRepository.findByChatRoomId(roomId).orElse(null);
-        if (trade != null) {
-            return toResponse(trade, me);
+        Trade exists = tradeRepository.findByChatRoomId(roomId).orElse(null);
+        if (exists != null) {
+            return toResponse(exists, me);
         }
 
         Item item = itemRepository.findById(room.getItemId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "물품을 찾을 수 없습니다."));
-
-        // ✅ 판매자는 아이템 owner로 확정
-        String seller = item.getOwnerUserId();      // 너희 Item 엔티티에 맞춰둠 (ownerUserId)
-        String buyer = room.getBuyerUserId();
-
-        // ✅ 잘못된 방 방어 (구매자=판매자 또는 구매자 없음)
-        if (buyer == null || buyer.isBlank() || buyer.equals(seller)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "구매자 정보가 올바르지 않은 채팅방입니다. (구매자=판매자)"
-            );
-        }
-
-        // ✅ room에 저장된 seller가 owner와 다르면 owner 기준으로 교정(선택)
-        if (room.getSellerUserId() == null || !room.getSellerUserId().equals(seller)) {
-            room.setSellerUserId(seller);
-            chatRoomRepository.save(room);
-        }
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "아이템을 찾을 수 없습니다."));
 
         Trade t = new Trade();
-        t.setChatRoomId(room.getId());
+        t.setChatRoomId(roomId);
         t.setItemId(item.getId());
         t.setItemTitle(item.getTitle());
         t.setItemPrice(item.getPrice());
-        t.setSellerUserId(seller);
-        t.setBuyerUserId(buyer);
+
+        t.setSellerUserId(room.getSellerUserId());
+        t.setBuyerUserId(room.getBuyerUserId());
+
         t.setStatus(Trade.Status.IN_PROGRESS);
+        t.setCreatedAt(LocalDateTime.now());
 
         Trade saved = tradeRepository.save(t);
         return toResponse(saved, me);
     }
 
     @GetMapping("/my")
-    public List<TradeResponse> myTrades(HttpSession session) {
+    public List<TradeResponse> my(HttpSession session) {
         String me = (String) session.getAttribute(LOGIN_USER_ID);
         if (me == null || me.isBlank()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
-        List<Trade> asSeller = tradeRepository.findBySellerUserIdOrderByCreatedAtDesc(me);
-        List<Trade> asBuyer = tradeRepository.findByBuyerUserIdOrderByCreatedAtDesc(me);
-
-        // ✅ tradeId 기준 중복 제거
-        Map<Long, Trade> uniq = new LinkedHashMap<>();
-        for (Trade t : asSeller) {
-            uniq.put(t.getId(), t);
-        }
-        for (Trade t : asBuyer) {
-            uniq.put(t.getId(), t);
-        }
+        List<Trade> trades = tradeRepository.findByBuyerUserIdOrSellerUserIdOrderByIdDesc(me, me);
 
         List<TradeResponse> out = new ArrayList<>();
-        for (Trade t : uniq.values()) {
-            out.add(toResponse(t, me));
-        }
+        for (Trade t : trades) out.add(toResponse(t, me));
         return out;
     }
 
@@ -139,6 +117,13 @@ public class TradeController {
         t.setStatus(Trade.Status.COMPLETED);
         t.setCompletedAt(LocalDateTime.now());
         Trade saved = tradeRepository.save(t);
+
+        // ✅ 거래 완료 시 글 등록자(판매자) 신뢰 점수 +10 (최대 500)
+        User seller = userRepository.findByUserId(saved.getSellerUserId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "판매자를 찾을 수 없습니다."));
+        seller.setTrustScore(seller.getTrustScore() + 10);
+        userRepository.save(seller);
+
         return toResponse(saved, me);
     }
 
@@ -149,31 +134,38 @@ public class TradeController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
-        Trade t = tradeRepository.findByChatRoomId(roomId).orElse(null);
-        if (t == null) return null;
+        Trade t = tradeRepository.findByChatRoomId(roomId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "거래가 없습니다."));
 
         if (!me.equals(t.getBuyerUserId()) && !me.equals(t.getSellerUserId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "거래 참여자가 아닙니다.");
         }
+
         return toResponse(t, me);
     }
 
-    private TradeResponse toResponse(Trade t, String me) {
-        TradeResponse r = new TradeResponse();
-        r.setTradeId(t.getId());
-        r.setChatRoomId(t.getChatRoomId());
-        r.setItemId(t.getItemId());
-        r.setItemTitle(t.getItemTitle());
-        r.setItemPrice(t.getItemPrice());
-        r.setSellerUserId(t.getSellerUserId());
-        r.setBuyerUserId(t.getBuyerUserId());
-        r.setStatus(t.getStatus().name());
-        r.setCreatedAt(t.getCreatedAt());
-        r.setCompletedAt(t.getCompletedAt());
+    // TradeController.java 안의 toResponse(...)도 이 DTO에 맞춰서 이렇게 써야 함
+private TradeResponse toResponse(Trade t, String me) {
+    TradeResponse r = new TradeResponse();
 
-        String role = me.equals(t.getSellerUserId()) ? "SELLER" : "BUYER";
-        r.setMyRole(role);
-        r.setCanComplete("BUYER".equals(role) && "IN_PROGRESS".equals(r.getStatus()));
-        return r;
-    }
+    r.setTradeId(t.getId());
+    r.setChatRoomId(t.getChatRoomId());
+    r.setItemId(t.getItemId());
+    r.setItemTitle(t.getItemTitle());
+    r.setItemPrice(t.getItemPrice());
+
+    r.setSellerUserId(t.getSellerUserId());
+    r.setBuyerUserId(t.getBuyerUserId());
+
+    r.setStatus(t.getStatus().name());
+    r.setCreatedAt(t.getCreatedAt());
+    r.setCompletedAt(t.getCompletedAt());
+
+    boolean isBuyer = me != null && me.equals(t.getBuyerUserId());
+    r.setMyRole(me != null && me.equals(t.getSellerUserId()) ? "SELLER" : "BUYER");
+    r.setCanComplete(isBuyer && t.getStatus() == Trade.Status.IN_PROGRESS);
+
+    return r;
+}
+
 }
