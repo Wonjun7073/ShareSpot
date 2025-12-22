@@ -235,3 +235,29 @@
   // ✅ 페이지 시작
   loadAll();
 })();
+async function loadSuccessTradeCount() {
+  const el = document.getElementById('successTradeCount');
+  if (!el) return;
+
+  try {
+    // ✅ 내 거래 목록을 가져온다 (너 app.js에서도 쓰는 API)
+    const res = await fetch('/api/trades/my', { credentials: 'include' });
+    if (!res.ok) return;
+
+    const trades = await res.json();
+
+    // ✅ status가 COMPLETED인 것만 카운트
+    const completedCount = trades.filter(
+      (t) => String(t.status) === 'COMPLETED'
+    ).length;
+
+    el.textContent = String(completedCount);
+  } catch (e) {
+    console.error('loadSuccessTradeCount error:', e);
+  }
+}
+
+// ✅ my.html 로드 시 실행
+document.addEventListener('DOMContentLoaded', () => {
+  loadSuccessTradeCount();
+});

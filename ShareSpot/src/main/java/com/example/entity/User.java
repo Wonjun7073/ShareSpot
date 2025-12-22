@@ -1,3 +1,4 @@
+// src/main/java/com/example/entity/User.java
 package com.example.entity;
 
 import jakarta.persistence.*;
@@ -31,6 +32,11 @@ public class User {
     @Column(nullable = false)
     private int thanksCount = 0;
 
+    // ✅ 신뢰 점수 (0~500)
+    @Column(nullable = false)
+    private int trustScore = 0;
+
+    // (기존 유지) 신뢰도 퍼센트 (0~100) - trustScore 기반으로 맞춰서 반환/설정
     @Column(nullable = false)
     private int trustPercent = 0;     // 0~100
 
@@ -48,12 +54,21 @@ public class User {
     public Long getId() { return id; }
     public String getUserId() { return userId; }
     public String getPassword() { return password; }
+
     public String getNickname() { return nickname; }
     public String getDong() { return dong; }
     public String getPhone() { return phone; }
     public int getSharedCount() { return sharedCount; }
     public int getThanksCount() { return thanksCount; }
-    public int getTrustPercent() { return trustPercent; }
+
+    public int getTrustScore() { return trustScore; }
+
+    public int getTrustPercent() {
+        int pct = (int) Math.round((Math.max(0, Math.min(500, trustScore)) / 500.0) * 100.0);
+        this.trustPercent = Math.max(0, Math.min(100, pct));
+        return this.trustPercent;
+    }
+
     public String getProfileInitial() { return profileInitial; }
 
     // ===== setters =====
@@ -66,7 +81,22 @@ public class User {
     public void setPhone(String phone) { this.phone = phone; }
     public void setSharedCount(int sharedCount) { this.sharedCount = sharedCount; }
     public void setThanksCount(int thanksCount) { this.thanksCount = thanksCount; }
-    public void setTrustPercent(int trustPercent) { this.trustPercent = trustPercent; }
+
+    public void setTrustScore(int trustScore) {
+        int clamped = Math.max(0, Math.min(500, trustScore));
+        this.trustScore = clamped;
+
+        this.trustPercent = (int) Math.round((clamped / 500.0) * 100.0);
+        this.trustPercent = Math.max(0, Math.min(100, this.trustPercent));
+    }
+
+    public void setTrustPercent(int trustPercent) {
+        int pct = Math.max(0, Math.min(100, trustPercent));
+        this.trustPercent = pct;
+
+        this.trustScore = (int) Math.round((pct / 100.0) * 500.0);
+        this.trustScore = Math.max(0, Math.min(500, this.trustScore));
+    }
+
     public void setProfileInitial(String profileInitial) { this.profileInitial = profileInitial; }
 }
-//헤헤
