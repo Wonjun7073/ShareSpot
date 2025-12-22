@@ -83,7 +83,8 @@ public class UserService {
     }
 
     @Transactional
-    public User updateMe(String userId, String nickname, String dong, String phone, MultipartFile file) throws IOException {
+    // [변경] phone 대신 introduction 파라미터 추가
+    public User updateMe(String userId, String nickname, String dong, String introduction, MultipartFile file) throws IOException {
         User me = getMe(userId);
 
         if (nickname != null && !nickname.isBlank()) {
@@ -91,9 +92,16 @@ public class UserService {
             me.setProfileInitial(nickname.trim().substring(0, 1));
         }
         if (dong != null && !dong.isBlank()) me.setDong(dong.trim());
-        if (phone != null && !phone.isBlank()) me.setPhone(phone.trim());
+        
+        // [삭제] phone 관련 로직 제거
+        // if (phone != null && !phone.isBlank()) me.setPhone(phone.trim());
 
-        // [핵심 수정] 무조건 C:/uploads/profile/ 에 저장합니다.
+        // [추가] 자기소개 저장 로직
+        if (introduction != null) {
+            me.setIntroduction(introduction);
+        }
+
+        // 프로필 이미지 로직 (기존 유지)
         if (file != null && !file.isEmpty()) {
             String uploadPath = "C:/uploads/profile/";
             
@@ -104,7 +112,6 @@ public class UserService {
             File dest = new File(uploadPath + fileName);
             file.transferTo(dest);
 
-            // DB에는 웹 경로 저장
             me.setProfileImageUrl("/uploads/profile/" + fileName);
         }
         

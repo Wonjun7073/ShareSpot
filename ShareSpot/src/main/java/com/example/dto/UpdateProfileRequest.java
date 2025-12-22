@@ -5,11 +5,12 @@ public class UpdateProfileRequest {
     private String dong;
     private String intro;
     private String phone;
-
+    private String introduction;
+    
     public String getNickname() { return nickname; }
     public String getDong() { return dong; }
     public String getPhone() { return phone; }
-
+    
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setDong(String dong) { this.dong = dong; }
     public void setPhone(String phone) { this.phone = phone; }

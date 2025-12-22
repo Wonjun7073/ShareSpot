@@ -36,6 +36,8 @@ public class User {
     @Column(nullable = false)
     private int trustScore = 0;
 
+    private String profileImageUrl;
+
     // (기존 유지) 신뢰도 퍼센트 (0~100) - trustScore 기반으로 맞춰서 반환/설정
     @Column(nullable = false)
     private int trustPercent = 0;     // 0~100
@@ -48,6 +50,18 @@ public class User {
     public User(String userId, String password) {
         this.userId = userId;
         this.password = password;
+    }
+
+    @Column(length = 500) // 길이를 넉넉하게 500자 정도로 설정
+    private String introduction;
+
+    // Getter, Setter 추가 (Lombok @Data를 쓴다면 생략 가능)
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     // ===== getters =====
@@ -68,6 +82,8 @@ public class User {
         this.trustPercent = Math.max(0, Math.min(100, pct));
         return this.trustPercent;
     }
+
+    public String getProfileImageUrl() { return profileImageUrl; }
 
     public String getProfileInitial() { return profileInitial; }
 
@@ -99,4 +115,6 @@ public class User {
     }
 
     public void setProfileInitial(String profileInitial) { this.profileInitial = profileInitial; }
+
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
 }

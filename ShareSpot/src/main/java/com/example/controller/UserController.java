@@ -92,7 +92,8 @@ public Map<String, Object> withdraw(HttpSession session) {
     public MeResponse updateMe(
             @RequestParam("nickname") String nickname,
             @RequestParam("dong") String dong,
-            @RequestParam("phone") String phone,
+            // [변경] phone 삭제, introduction 추가 (필수 아님: required = false)
+            @RequestParam(value = "introduction", required = false) String introduction,
             @RequestParam(value = "profileImage", required = false) org.springframework.web.multipart.MultipartFile file,
             HttpSession session) {
 
@@ -102,10 +103,10 @@ public Map<String, Object> withdraw(HttpSession session) {
         }
 
         try {
-            // userService.updateMe 호출 (nickname, dong, phone, file을 모두 전달)
-            return MeResponse.from(userService.updateMe(loginUserId, nickname, dong, phone, file));
+            // [변경] 서비스 호출 시 phone 대신 introduction 전달
+            return MeResponse.from(userService.updateMe(loginUserId, nickname, dong, introduction, file));
         } catch (Exception e) {
-            e.printStackTrace(); // 에러 로그 확인용
+            e.printStackTrace();
             throw new org.springframework.web.server.ResponseStatusException(
                 org.springframework.http.HttpStatus.BAD_REQUEST, "수정 중 오류 발생: " + e.getMessage());
         }

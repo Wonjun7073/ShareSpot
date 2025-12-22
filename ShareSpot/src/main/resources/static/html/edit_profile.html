@@ -3,13 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>쉐어스팟 - 프로필 수정</title>
-
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/edit_profile.css" />
   </head>
 
   <body>
-    <!-- 사이드바 -->
     <div class="sidebar">
       <div class="brand">
         <img src="../Images/logo.png" alt="로고" class="brand-logo" />
@@ -20,9 +18,9 @@
       </div>
 
       <div class="menu">
-        <a href="main.html" class="menu-item"
-          ><span class="menu-icon">🏠</span> 홈</a
-        >
+        <a href="main.html" class="menu-item">
+          <span class="menu-icon">🏠</span> 홈
+        </a>
         <a href="chat.html" class="menu-item">
           <span class="menu-icon">💬</span> 채팅
           <span class="badge" id="chatBadge" style="display: none"></span>
@@ -32,10 +30,9 @@
         </a>
       </div>
 
-      <a href="#" class="login" id="logoutBtn"> <span>📕</span> 로그아웃 </a>
+      <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
-    <!-- 메인 -->
     <div class="main-content edit-profile-layout">
       <div class="edit-header">
         <button class="cancel-btn" type="button" onclick="history.back()">
@@ -46,7 +43,6 @@
       </div>
 
       <div class="edit-form-container">
-        <!-- 프로필 이미지 -->
         <div class="section-card profile-img-section">
           <div class="profile-img-wrapper">
             <div class="img-placeholder" id="avatarPlaceholder">?</div>
@@ -61,7 +57,6 @@
                 object-fit: cover;
               "
             />
-
             <button class="camera-btn" type="button" id="cameraBtn">📷</button>
           </div>
           <div class="change-photo-text">프로필 사진 변경</div>
@@ -74,42 +69,48 @@
           />
         </div>
 
-        <!-- 기본 정보 -->
         <div class="section-card">
           <div class="input-group">
-            <label>이름</label>
-            <input id="nicknameInput" type="text" class="input-box" />
+            <label for="nicknameInput">이름</label>
+            <input
+              id="nicknameInput"
+              type="text"
+              class="input-box"
+              placeholder="닉네임을 입력하세요"
+            />
           </div>
 
           <div class="input-group">
-            <label>내 동네</label>
+            <label for="dongSelect">내 동네</label>
             <select id="dongSelect" class="input-box">
+              <option value="" disabled>동네를 선택해주세요</option>
               <option value="시흥시 정왕동">시흥시 정왕동</option>
               <option value="시흥시 배곧동">시흥시 배곧동</option>
               <option value="시흥시 은행동">시흥시 은행동</option>
               <option value="시흥시 목감동">시흥시 목감동</option>
+              <option value="시흥시 신천동">시흥시 신천동</option>
+              <option value="시흥시 대야동">시흥시 대야동</option>
+              <option value="시흥시 능곡동">시흥시 능곡동</option>
             </select>
           </div>
-        </div>
 
-        <!-- 읽기 전용 -->
-        <div class="section-card">
           <div class="input-group">
-            <label>전화번호</label>
-            <input id="phoneInput" class="input-box" />
+            <label for="introduction">자기소개</label>
+            <textarea
+              id="introduction"
+              class="input-box textarea-box"
+              placeholder="이웃에게 나를 소개해보세요 (취미, 관심사 등)"
+            ></textarea>
           </div>
         </div>
 
         <div class="info-box">
-          📌 전화번호와 이메일은 다른 사용자에게 공개되지 않으며, 거래 시 안전한
-          연락을 위해 사용됩니다.
+          📌 자기만의 프로필과 자기소개를 통해 자신을 표현해 보세요!!
         </div>
       </div>
     </div>
 
-    <!-- 공통 -->
     <div id="modal-root"></div>
-
     <script src="../JS/auth.js"></script>
     <script src="../JS/edit_profile.js"></script>
     <script src="../Components/sidebar-auth.js"></script>

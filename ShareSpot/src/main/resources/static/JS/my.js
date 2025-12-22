@@ -45,11 +45,16 @@
     // HTML ID 매칭: nicknameText, dongText
     safeText('nicknameText', nickname);
     safeText('dongText', dong);
-
+    // 자기소개 렌더링
+    const introEl = document.getElementById('introText');
+    if (introEl) {
+      // 자기소개가 없으면 빈 문자열 혹은 안내 문구
+      introEl.textContent = me?.introduction || '자기소개를 입력해보세요!';
+    }
     const avatarText = document.getElementById('avatarText');
     const avatarImg = document.getElementById('avatarImg');
 
-    // [핵심 해결] 사진 데이터가 있을 때와 없을 때를 명확히 나눕니다
+    // 프로필 이미지 처리
     if (me?.profileImageUrl) {
       if (avatarImg) {
         // 서버에서 준 경로(/uploads/profile/...)에 타임스탬프를 붙여 갱신

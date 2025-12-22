@@ -1,8 +1,11 @@
+/* edit_profile.css */
+
 /* 전체 레이아웃 */
 .edit-profile-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* height: 100vh;  <-- 이거 삭제하고 아래처럼 변경 */
+  min-height: 100vh;
   background-color: #f9fafb;
 }
 
@@ -46,14 +49,16 @@
 /* 2. 폼 컨테이너 (스크롤 영역) */
 .edit-form-container {
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; <-- 이거 삭제 (내부 스크롤 끄기) */
+  /* padding, gap 등 기존 스타일 유지 */
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 800px; /* 너무 넓어지지 않게 제한 */
-  margin: 0 auto; /* 중앙 정렬 */
+  max-width: 800px;
+  margin: 0 auto;
   width: 100%;
+  height: auto; /* 높이가 내용만큼 늘어나도록 설정 */
 }
 
 /* 공통 카드 스타일 */
@@ -138,15 +143,18 @@
   font-size: 16px;
   color: #0a0a0a;
   outline: none;
+  font-family: inherit; /* [핵심] 폰트 상속: 다른 글씨와 똑같이 맞춤 */
 }
 
 .input-box:focus {
   border-color: #2b7fff;
 }
 
+/* 자기소개 입력칸 높이 조절 */
 .textarea-box {
-  height: 120px;
-  resize: none;
+  height: 260px; /* [핵심] 높이 대폭 증가 (기존 120px -> 260px) */
+  resize: none; /* 사용자 임의 크기 조절 방지 */
+  line-height: 1.5; /* 줄간격도 살짝 여유있게 */
 }
 
 /* 안내 박스 */

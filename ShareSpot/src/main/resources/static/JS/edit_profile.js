@@ -14,22 +14,22 @@ async function loadMeForEdit() {
     document.getElementById('nicknameInput').value =
       me.nickname || me.userId || '';
     document.getElementById('dongSelect').value = me.dong || '시흥시 정왕동';
-    document.getElementById('phoneInput').value = me.phone || '';
+
+    // [변경] phoneInput 삭제, introduction 값 불러오기
+    document.getElementById('introduction').value = me.introduction || '';
 
     // 이미지 관련 요소
     const avatarPlaceholder = document.getElementById('avatarPlaceholder');
     const profilePreview = document.getElementById('profilePreview');
 
-    // [핵심] 이미 저장된 사진이 있으면 보여주기 (캐시 방지용 시간값 추가)
     if (me.profileImageUrl) {
       avatarPlaceholder.style.display = 'none';
       profilePreview.src = me.profileImageUrl + '?t=' + new Date().getTime();
       profilePreview.style.display = 'block';
     } else {
-      // 사진 없으면 이니셜 보여주기
       const initial = me.profileInitial || (me.nickname ? me.nickname[0] : '?');
       avatarPlaceholder.textContent = initial;
-      avatarPlaceholder.style.display = 'flex'; // CSS에 맞게 조정
+      avatarPlaceholder.style.display = 'flex';
       profilePreview.style.display = 'none';
     }
   } catch (e) {
@@ -42,8 +42,11 @@ async function saveProfile() {
   try {
     const nickname = document.getElementById('nicknameInput').value.trim();
     const dong = document.getElementById('dongSelect').value;
-    const phone = document.getElementById('phoneInput').value.trim();
-    // 파일 입력창에서 파일 가져오기
+    // [변경] phone 가져오기 삭제
+
+    // [추가] 자기소개 가져오기
+    const introduction = document.getElementById('introduction').value;
+
     const profileFile = document.getElementById('profileInput').files[0];
 
     if (!nickname) {
@@ -51,13 +54,13 @@ async function saveProfile() {
       return;
     }
 
-    // [중요] JSON이 아니라 FormData로 보내야 파일이 날아갑니다.
     const formData = new FormData();
     formData.append('nickname', nickname);
     formData.append('dong', dong);
-    formData.append('phone', phone);
 
-    // 사진을 선택했을 때만 추가
+    // [변경] phone append 삭제, introduction append 추가
+    formData.append('introduction', introduction);
+
     if (profileFile) {
       formData.append('profileImage', profileFile);
     }
@@ -65,7 +68,6 @@ async function saveProfile() {
     const res = await fetch('/api/user/me', {
       method: 'PUT',
       credentials: 'include',
-      // 주의: Content-Type 헤더를 직접 적으면 안 됩니다! (브라우저가 자동 설정)
       body: formData,
     });
 
@@ -82,7 +84,6 @@ async function saveProfile() {
     alert('서버 오류');
   }
 }
-
 // 3. 이벤트 연결
 document.addEventListener('DOMContentLoaded', () => {
   loadMeForEdit();
