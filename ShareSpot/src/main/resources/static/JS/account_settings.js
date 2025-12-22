@@ -90,7 +90,10 @@ function openConfirmModal({
    confirm-modal.html 마운트
 ========================= */
 async function mountConfirmModal() {
-  if (document.getElementById("confirmOverlay")) return;
+  if (document.getElementById("confirmOverlay")) {
+    // 이미 confirmOverlay가 로드된 경우에는 더 이상 로드하지 않음
+    return;
+  }
 
   const root = document.getElementById("modal-root");
   if (!root) {
@@ -100,9 +103,13 @@ async function mountConfirmModal() {
 
   try {
     const res = await fetch("../Components/confirm-modal.html");
+    if (!res.ok) {
+      console.error("confirm-modal.html 로드 실패", res);
+      return;
+    }
     root.insertAdjacentHTML("beforeend", await res.text());
   } catch (e) {
-    console.warn("confirm-modal.html 로드 실패", e);
+    console.error("confirm-modal.html 로드 중 에러 발생", e);
   }
 }
 
