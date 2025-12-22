@@ -317,6 +317,6 @@
 
   window.toggleSortMenu = toggleSortMenu;
   window.sortItems = sortItems;
-
+  window.openChatList = openChatList;
   renderHome();
 })();
