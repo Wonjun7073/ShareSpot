@@ -51,16 +51,12 @@
 
     safeText("avatarText", avatar);
 
-    // ✅ 숫자들은 아래에서 "계산값"으로 다시 덮어쓸 거라
-    // 여기서는 일단 fallback(있으면 표시)만 해둠
+    // fallback 표시
     if (me?.sharedCount != null) safeText("statShared", String(me.sharedCount));
     if (me?.thanksCount != null) safeText("statThanks", String(me.thanksCount));
     if (me?.trustPercent != null)
       safeText("statTrust", String(me.trustPercent) + "%");
 
-    // trust-banner는 기존 코드가 thanksCount를 넣고 있었는데
-    // 실제 의도가 "성공 거래 횟수"면 별도 계산/필드가 필요함.
-    // 일단 값이 있으면 보여주고, 없으면 0 유지.
     if (me?.trustCount != null) safeText("trustCount", String(me.trustCount));
   }
 
@@ -88,6 +84,104 @@
       .querySelector(".search-bar span")
       ?.addEventListener("click", goMainSearch);
   }
+
+  /* =====================
+   * 관심목록 카운트
+   * ===================== */
+  async function loadWishCount() {
+    const chip = document.getElementById("chipWish");
+    const thanksEl = document.getElementById("statThanks");
+    const trustEl = document.getElementById("trustCount");
+    if (!chip) return;
+
+    try {
+      // ⭐ count API 우선
+      const countRes = await fetch("/api/wishlist/count", {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+
+      if (countRes.ok) {
+        const data = await countRes.json();
+        const c = Number(data.count ?? 0);
+
+        chip.textContent = String(c);
+
+        // ✅ 받은 감사 = 관심목록과 동일(현재 프로젝트 정책)
+        if (thanksEl) thanksEl.textContent = String(c);
+        if (trustEl) trustEl.textContent = String(c);
+        return;
+      }
+
+      // fallback: 목록 길이
+      const res = await fetch("/api/wishlist", {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+
+      if (!res.ok) return;
+
+      const wishes = await res.json();
+      const c = Array.isArray(wishes) ? wishes.length : 0;
+
+      chip.textContent = String(c);
+      if (thanksEl) thanksEl.textContent = String(c);
+      if (trustEl) trustEl.textContent = String(c);
+    } catch (e) {
+      console.error("관심목록 개수 로드 실패", e);
+    }
+  }
+
+  /* =====================
+   * ✅ 거래중 카운트(판매/대여 내역 칩)
+   * - 구매자/판매자 모두 보이게
+   * - tradeId 중복 제거
+   * - 거래중(IN_PROGRESS)만 표시
+   * ===================== */
+  async function updateTradeCountChipSafe() {
+    try {
+      const res = await fetch("/api/trades/my", { credentials: "include" });
+      if (!res.ok) return;
+
+      const list = await res.json();
+      if (!Array.isArray(list)) return;
+
+      // tradeId 기준 중복 제거
+      const uniq = new Map();
+      for (const t of list) {
+        if (!t || t.tradeId == null) continue;
+        uniq.set(String(t.tradeId), t);
+      }
+
+      // ✅ 거래중 + 거래완료 전부 포함
+      const totalCount = uniq.size;
+
+      // 1) id로 우선 업데이트
+      const byId = document.getElementById("chipHistory");
+      if (byId) {
+        byId.textContent = String(totalCount);
+        return;
+      }
+
+      // 2) fallback: 텍스트 기반 탐색
+      const rows = document.querySelectorAll(
+        ".panel-item, .panel-link, li, a, div"
+      );
+      for (const r of rows) {
+        const text = (r.innerText || "").replace(/\s+/g, " ").trim();
+        if (!text.includes("판매/대여") && !text.includes("거래목록")) continue;
+
+        const chip = r.querySelector(".chip");
+        if (chip) {
+          chip.textContent = String(totalCount);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("updateTradeCountChipSafe fail", e);
+    }
+  }
+
 
   /* =====================
    * 한 번에 로드/계산
@@ -122,7 +216,7 @@
       return;
     }
 
-    // 2) items는 딱 1번만 가져와서 shared/history/thanks 계산
+    // 2) items는 1번만 가져와서 shared 계산
     let items = [];
     try {
       const { ok, data } = await fetchJSON("/api/items", {
@@ -138,60 +232,18 @@
     // ✅ 공유한 물품 수
     safeText("statShared", String(myItems.length));
 
-    // ✅ 판매/대여 내역 칩(내 글 수)
+    // ⚠️ 기존 정책: chipHistory를 "내 글 수"로 쓰던 코드
+    // 구매자도 거래중이 보이게 하려면 아래 줄은 유지하더라도
+    // 맨 마지막에 updateTradeCountChipSafe()로 덮어쓴다.
     safeText("chipHistory", String(myItems.length));
 
-    // 3) wishlist count는 count API 우선
+    // 3) wishlist count
     await loadWishCount();
+
+    // ✅ 마지막에 거래중 카운트로 덮어쓰기(구매자/판매자 모두)
+    await updateTradeCountChipSafe();
   }
 
-  async function loadWishCount() {
-    const chip = document.getElementById("chipWish");
-    const thanksEl = document.getElementById("statThanks");
-    const trustEl = document.getElementById("trustCount");
-    if (!chip) return;
-
-    try {
-      // ⭐ count API 우선
-      const countRes = await fetch("/api/wishlist/count", {
-        credentials: "include",
-        headers: { Accept: "application/json" },
-      });
-
-      if (countRes.ok) {
-        const data = await countRes.json();
-        const c = Number(data.count ?? 0);
-
-        chip.textContent = String(c);
-
-        // ✅ 받은 감사 = 관심목록과 동일
-        if (thanksEl) thanksEl.textContent = String(c);
-        if (trustEl) trustEl.textContent = String(c);
-
-        return;
-      }
-
-      // fallback: 목록 길이
-      const res = await fetch("/api/wishlist", {
-        credentials: "include",
-        headers: { Accept: "application/json" },
-      });
-
-      if (!res.ok) return;
-
-      const wishes = await res.json();
-      const c = Array.isArray(wishes) ? wishes.length : 0;
-
-      chip.textContent = String(c);
-      if (thanksEl) thanksEl.textContent = String(c);
-      if (trustEl) trustEl.textContent = String(c);
-    } catch (e) {
-      console.error("관심목록 개수 로드 실패", e);
-    }
-  }
-
-  /* =====================
-   * 시작
-   * ===================== */
-  document.addEventListener("DOMContentLoaded", loadAll);
+  // ✅ 페이지 시작
+  loadAll();
 })();

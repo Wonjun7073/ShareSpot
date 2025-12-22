@@ -27,7 +27,7 @@ public class SecurityConfig {
                     "/uploads/**",
                     "/error"
                 ).permitAll()
-                .requestMatchers("/api/items/**", "/api/user/**", "/api/chat/**",  "/api/wishlist/**").permitAll()
+                .requestMatchers("/api/items/**", "/api/user/**", "/api/chat/**",  "/api/wishlist/**", "/api/trades/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login

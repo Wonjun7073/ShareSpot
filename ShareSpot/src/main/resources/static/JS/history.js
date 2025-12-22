@@ -1,287 +1,246 @@
-(function () {
-  // ====== 탭 전환(HTML에서 onclick 쓰고 있으니 전역으로 노출) ======
-  window.switchTab = function (tabName) {
-    const sellingList = document.getElementById("selling-list");
-    const soldList = document.getElementById("sold-list");
-    const tabs = document.querySelectorAll(".tab-item");
+// history.js - 거래목록을 메인 앱카드(.card)와 동일한 UI로 렌더링
 
-    if (!sellingList || !soldList || tabs.length < 2) return;
+(function () {
+  const inProgressRoot = document.getElementById("selling-list"); // 기존 id 유지(탭 js 때문)
+  const completedRoot = document.getElementById("sold-list");
+  const tabs = document.querySelectorAll(".tab-item");
+
+  // ===== 탭 전환(HTML onclick에서 호출) =====
+  window.switchTab = function (tabName) {
+    if (!inProgressRoot || !completedRoot || !tabs || tabs.length < 2) return;
 
     if (tabName === "selling") {
-      sellingList.classList.remove("hidden");
-      soldList.classList.add("hidden");
+      inProgressRoot.classList.remove("hidden");
+      completedRoot.classList.add("hidden");
       tabs[0].classList.add("active");
       tabs[1].classList.remove("active");
     } else {
-      sellingList.classList.add("hidden");
-      soldList.classList.remove("hidden");
+      inProgressRoot.classList.add("hidden");
+      completedRoot.classList.remove("hidden");
       tabs[0].classList.remove("active");
       tabs[1].classList.add("active");
     }
   };
 
-  // ====== 유틸 ======
-  function formatTimeAgo(createdAt) {
-    const t = new Date(createdAt);
-    if (Number.isNaN(t.getTime())) return "";
-    const diff = Math.floor((Date.now() - t.getTime()) / 1000);
+  // ===== 유틸 =====
+  function escapeHTML(s) {
+    return String(s ?? "").replace(/[&<>\"']/g, (c) => {
+      return (
+        {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        }[c] || c
+      );
+    });
+  }
+
+  function formatTimeAgo(dateLike) {
+    if (!dateLike) return "";
+    const d = new Date(dateLike);
+    if (Number.isNaN(d.getTime())) return "";
+
+    const diff = Math.floor((Date.now() - d.getTime()) / 1000);
     if (diff < 60) return "방금 전";
     if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
     return `${Math.floor(diff / 86400)}일 전`;
   }
 
-  function escapeHTML(str) {
-    if (!str) return "";
-    return String(str)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#39;");
+  function setTabCounts(inProgressCount, completedCount) {
+    if (!tabs || tabs.length < 2) return;
+    tabs[0].textContent = `거래중 (${inProgressCount})`;
+    tabs[1].textContent = `거래완료 (${completedCount})`;
   }
 
-  function badgeClassByCategory(cat) {
-    const c = (cat || "").trim();
-    if (c === "나눔") return "green";
-    if (c === "대여") return "blue";
-    if (c === "교환") return "purple";
-    return "green";
+  async function fetchJSON(url, options) {
+    const res = await fetch(url, options);
+    const ct = res.headers.get("content-type") || "";
+    const data = ct.includes("application/json") ? await res.json() : await res.text();
+    return { ok: res.ok, status: res.status, data };
   }
 
-  function priceTextByItem(it) {
-    const cat = (it.category || "").trim();
-    if (cat === "대여") return `${Number(it.price || 0).toLocaleString()}원`;
+  function priceTextByCategory(category, price) {
+    const cat = (category || "").trim();
+    if (cat === "대여") return `${Number(price || 0).toLocaleString("ko-KR")}원`;
     if (cat === "교환") return "교환 🔄";
     return "나눔 🎁";
   }
 
-  // ====== 카드 렌더 (✅ 삭제 버튼 포함) ======
-  function toHistoryCardHTML(it) {
-    const imgSrc = it.imageUrl
-      ? it.imageUrl
-      : "https://placehold.co/476x476?text=No+Image";
+  // ===== 메인과 동일한 카드 HTML(.card) 생성 =====
+  function toMainCardHTML({ item, trade }) {
+    // item은 /api/items에서 가져온 원본(가능하면)
+    // trade는 /api/trades/my에서 가져온 원본
 
-    const cat = (it.category || "").trim();
+    const id = item?.id ?? trade?.itemId ?? "";
+    const title = item?.title ?? trade?.itemTitle ?? "";
+    const category = item?.category ?? ""; // 없으면 빈값
+    const location = item?.location ?? ""; // 없으면 빈값
+
+    const imgSrc = item?.imageUrl
+      ? item.imageUrl
+      : "https://placehold.co/413x413?text=No+Image";
+
+    const statusLabel = trade?.status === "COMPLETED" ? "거래완료" : "거래중";
+    const timeAgo = formatTimeAgo(trade?.createdAt || item?.createdAt);
+
+    // 가격 표기는 메인 규칙에 맞추되, item.category가 없으면 trade.itemPrice로 그냥 원 표기
+    let priceText = "";
+    if (category) {
+      priceText = priceTextByCategory(category, item?.price ?? trade?.itemPrice);
+    } else {
+      // category를 못 구하면 최소한 숫자 원으로 표기
+      const p = Number(trade?.itemPrice ?? 0);
+      priceText = `${p.toLocaleString("ko-KR")}원`;
+    }
+
+    // 구매자면 거래완료 버튼 노출(메인 카드의 chat-btn 스타일 재사용)
+    const completeBtn =
+      trade?.canComplete
+        ? `<button class="chat-btn trade-complete-btn" data-trade-id="${trade.tradeId}">거래 완료</button>`
+        : "";
+
+    // footer 왼쪽 텍스트는 location이 있으면 location, 없으면 역할 표시
+    const footerLeft =
+      location ||
+      (trade?.myRole === "SELLER" ? "판매자" : trade?.myRole === "BUYER" ? "구매자" : "");
 
     return `
-      <div class="history-card" data-item-id="${it.id}">
-        <div class="card-img-box">
-          <img src="${imgSrc}" alt="상품이미지" style="width: 100%; height: 100%; object-fit: cover" />
-          
+      <div class="card" data-detail-id="${escapeHTML(id)}" style="cursor:pointer;">
+        <div class="card-img-wrap">
+          <img src="${escapeHTML(imgSrc)}" class="card-img" alt="${escapeHTML(title)}" />
         </div>
-        <div class="card-info">
-          <div class="status-row">
-            <span class="status-badge ${badgeClassByCategory(
-              cat
-            )}">${escapeHTML(cat)}</span>
-            <span class="time-text">${formatTimeAgo(it.createdAt)}</span>
+
+        <div class="card-body">
+          <div class="card-top">
+            <span class="badge-tag">${escapeHTML(statusLabel)}</span>
+            <span class="time-ago">${escapeHTML(timeAgo)}</span>
           </div>
-          <h3 class="card-title">${escapeHTML(it.title)}</h3>
-          <p class="card-price">${priceTextByItem(it)}</p>
+
+          <h3 class="card-title">${escapeHTML(title)}</h3>
+          <p class="card-price">${escapeHTML(priceText)}</p>
+
           <div class="card-footer">
-            <span class="location">${escapeHTML(it.location || "")}</span>
-            <div class="meta-counts">
-              <button class="delete-btn" data-del-id="${it.id}">삭제</button>
-            </div>
+            <span>${escapeHTML(footerLeft)}</span>
+            ${completeBtn}
           </div>
         </div>
       </div>
     `;
   }
 
-  // ====== confirm-modal 재사용(삭제 확인) ======
-  let pendingDeleteId = null;
-  let confirmOkAction = null;
+  // ===== 이벤트 바인딩 =====
+  function bindCardClick(rootEl) {
+    rootEl.addEventListener("click", (e) => {
+      // 버튼 클릭은 카드 이동 막기
+      const btn = e.target.closest("button");
+      if (btn) return;
 
-  async function mountConfirmModal() {
-    if (document.getElementById("confirmOverlay")) return;
+      const card = e.target.closest(".card[data-detail-id]");
+      if (!card) return;
 
-    const root = document.getElementById("modal-root");
-    if (!root) return;
-
-    const res = await fetch("../Components/confirm-modal.html");
-    root.insertAdjacentHTML("beforeend", await res.text());
-
-    bindConfirmModal();
-  }
-
-  function bindConfirmModal() {
-    const overlay = document.getElementById("confirmOverlay");
-    const cancelBtn = document.getElementById("confirmCancel");
-    const okBtn = document.getElementById("confirmOk");
-
-    function close() {
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden", "true");
-      pendingDeleteId = null;
-      confirmOkAction = null;
-
-      // 다음에 쓸 수 있게 cancel 숨김만 원복
-      if (cancelBtn) cancelBtn.style.display = "";
-    }
-
-    cancelBtn.onclick = close;
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) close();
-    });
-
-    okBtn.onclick = async () => {
-      if (typeof confirmOkAction === "function") await confirmOkAction();
-      close();
-    };
-  }
-
-  async function openConfirm({
-    title,
-    message,
-    cancelText,
-    okText,
-    showCancel,
-    onOk,
-  }) {
-    await mountConfirmModal();
-
-    const overlay = document.getElementById("confirmOverlay");
-    const titleEl = document.getElementById("confirmTitle");
-    const msgEl = document.getElementById("confirmMessage");
-    const cancelBtn = document.getElementById("confirmCancel");
-    const okBtn = document.getElementById("confirmOk");
-
-    if (titleEl) titleEl.textContent = title ?? "확인";
-    if (msgEl) msgEl.innerHTML = message ?? "";
-
-    if (cancelBtn) {
-      cancelBtn.textContent = cancelText ?? "취소";
-      cancelBtn.style.display = showCancel === false ? "none" : "";
-    }
-    if (okBtn) okBtn.textContent = okText ?? "확인";
-
-    confirmOkAction = typeof onOk === "function" ? onOk : null;
-
-    overlay.classList.add("show");
-    overlay.setAttribute("aria-hidden", "false");
-  }
-
-  async function deleteItemConfirmed(idNum) {
-    const res = await fetch(`/api/items/${idNum}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    if (!res.ok) {
-      const txt = await res.text().catch(() => "");
-      return openConfirm({
-        title: "삭제 실패",
-        message: `삭제에 실패했습니다.<br/><small>${txt || res.status}</small>`,
-        showCancel: false,
-        okText: "닫기",
-      });
-    }
-
-    await loadMyHistory(); // ✅ 삭제 후 목록 갱신
-  }
-
-  function askDelete(id) {
-    const idNum = Number(id);
-    if (!Number.isFinite(idNum)) return;
-
-    pendingDeleteId = idNum;
-
-    openConfirm({
-      title: "삭제 확인",
-      message: "정말 삭제하시겠습니까?",
-      showCancel: true,
-      cancelText: "취소",
-      okText: "삭제",
-      onOk: async () => {
-        await deleteItemConfirmed(pendingDeleteId);
-      },
+      const id = card.getAttribute("data-detail-id");
+      if (id) location.href = `/html/detail.html?id=${id}`;
     });
   }
 
-  // ====== 내 글 로딩 ======
-  async function loadMyHistory() {
-    const sellingList = document.getElementById("selling-list");
-    const soldList = document.getElementById("sold-list");
+  function bindCompleteButton(rootEl, reloadFn) {
+    rootEl.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".trade-complete-btn[data-trade-id]");
+      if (!btn) return;
 
-    const sellingCountEl = document.getElementById("sellingCount");
-    const soldCountEl = document.getElementById("soldCount");
+      e.preventDefault();
+      e.stopPropagation();
 
-    // 로그인 유저
-    const me =
-      window.Auth?.getUser?.() || window.Auth?.getSessionUser?.() || null;
-    const myUserId = me?.userId ?? null;
+      const tradeId = btn.getAttribute("data-trade-id");
+      if (!tradeId) return;
 
-    if (!myUserId) {
-      sellingList.innerHTML =
-        '<p style="text-align:center;color:#888;padding:40px;">로그인이 필요합니다.</p>';
-      soldList.innerHTML = "";
-      sellingCountEl && (sellingCountEl.textContent = "0");
-      soldCountEl && (soldCountEl.textContent = "0");
+      btn.disabled = true;
+
+      try {
+        const { ok, data } = await fetchJSON(`/api/trades/${tradeId}/complete`, {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (!ok) {
+          alert(data?.message || data || "거래 완료 처리 실패");
+          return;
+        }
+
+        // 완료 처리 후 재로딩
+        await reloadFn();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // ===== 로드 =====
+  async function load() {
+    if (!inProgressRoot || !completedRoot) return;
+
+    inProgressRoot.innerHTML = "";
+    completedRoot.innerHTML = "";
+
+    // 1) trades
+    const tradesRes = await fetchJSON("/api/trades/my", { credentials: "include" });
+    if (!tradesRes.ok) {
+      setTabCounts(0, 0);
+      inProgressRoot.innerHTML = `<div class="empty">거래 내역이 없습니다.</div>`;
+      completedRoot.innerHTML = `<div class="empty">거래 내역이 없습니다.</div>`;
       return;
     }
 
-    try {
-      const res = await fetch("/api/items", { credentials: "include" });
-      const items = await res.json();
-      const list = Array.isArray(items) ? items : [];
+    const trades = Array.isArray(tradesRes.data) ? tradesRes.data : [];
 
-      // ✅ 내가 등록한 글만
-      const mine = list.filter((it) => it.ownerUserId === myUserId);
+    // 2) items (메인 카드와 동일한 정보 채우기 위해)
+    const itemsRes = await fetchJSON("/api/items", { credentials: "include" });
+    const items = itemsRes.ok && Array.isArray(itemsRes.data) ? itemsRes.data : [];
+    const itemMap = new Map(items.map((it) => [String(it.id), it]));
 
-      // ✅ 요구사항: 일단 전부 판매중
-      const selling = mine;
-      const sold = [];
+    // 3) status 분리
+    const inProgress = trades.filter((t) => t.status !== "COMPLETED");
+    const completed = trades.filter((t) => t.status === "COMPLETED");
+    setTabCounts(inProgress.length, completed.length);
 
-      sellingCountEl && (sellingCountEl.textContent = String(selling.length));
-      soldCountEl && (soldCountEl.textContent = String(sold.length));
+    // 4) 렌더
+    if (inProgress.length === 0) {
+      inProgressRoot.innerHTML = `<div class="empty">거래중인 내역이 없습니다.</div>`;
+    } else {
+      inProgressRoot.innerHTML = inProgress
+        .map((t) => {
+          const item = itemMap.get(String(t.itemId)) || null;
+          return toMainCardHTML({ item, trade: t });
+        })
+        .join("");
+    }
 
-      sellingList.innerHTML =
-        selling.length === 0
-          ? '<p style="text-align:center;color:#888;padding:40px;">판매/대여 중인 물품이 없습니다.</p>'
-          : selling.map(toHistoryCardHTML).join("");
-
-      soldList.innerHTML =
-        sold.length === 0
-          ? '<p style="text-align:center;color:#888;padding:40px;">거래완료 내역이 없습니다.</p>'
-          : sold.map(toHistoryCardHTML).join("");
-    } catch (e) {
-      console.error(e);
-      sellingList.innerHTML =
-        '<p style="text-align:center;color:red;padding:40px;">내역을 불러오지 못했습니다.</p>';
+    if (completed.length === 0) {
+      completedRoot.innerHTML = `<div class="empty">거래완료 내역이 없습니다.</div>`;
+    } else {
+      completedRoot.innerHTML = completed
+        .map((t) => {
+          const item = itemMap.get(String(t.itemId)) || null;
+          return toMainCardHTML({ item, trade: t });
+        })
+        .join("");
     }
   }
 
-  // ✅ 외부에서 호출할 수도 있게
-  window.loadMyHistory = loadMyHistory;
+  // ===== 초기 바인딩 + 시작 =====
+  if (inProgressRoot) {
+    bindCardClick(inProgressRoot);
+    bindCompleteButton(inProgressRoot, load);
+  }
+  if (completedRoot) {
+    bindCardClick(completedRoot);
+    bindCompleteButton(completedRoot, load);
+  }
 
-  // ====== 이벤트 위임(삭제 버튼) ======
-  document.addEventListener("click", (e) => {
-    const delBtn = e.target.closest(".delete-btn[data-del-id]");
-    if (!delBtn) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const id = delBtn.dataset.delId;
-    askDelete(id);
-  });
-  // ====== 이벤트 위임(카드 클릭 -> detail 이동) ======
-  document.addEventListener("click", (e) => {
-    // ❌ 삭제 버튼 클릭이면 상세 이동 막기
-    if (e.target.closest(".delete-btn")) return;
-
-    // ✅ 카드 클릭이면 detail로 이동
-    const card = e.target.closest(".history-card[data-item-id]");
-    if (!card) return;
-
-    const id = card.dataset.itemId;
-    if (!id) return;
-
-    window.location.href = `/html/detail.html?id=${encodeURIComponent(id)}`;
-  });
-
-  // ====== 시작 ======
-  document.addEventListener("DOMContentLoaded", loadMyHistory);
+  // 기본 탭: 거래중
+  window.switchTab("selling");
+  load();
 })();

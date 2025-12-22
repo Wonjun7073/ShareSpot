@@ -67,7 +67,6 @@
   }
 
   function appendMsg(m) {
-    // m: ChatMessageResponse
     const isMe = m.senderUserId === me;
 
     const row = document.createElement("div");
@@ -80,7 +79,6 @@
 
       const read = document.createElement("span");
       read.className = "read-check";
-      // ✅ 카톡처럼: 상대가 안 읽었으면 "1", 읽었으면 빈값(또는 "읽음")
       read.textContent = m.readAt ? "" : "1";
 
       const time = document.createElement("span");
@@ -116,7 +114,6 @@
   }
 
   function updateMyReadBadges(messages) {
-    // 서버에서 readAt이 채워진 메시지가 오면, 내 메시지의 "1"을 지움
     for (const m of messages) {
       if (m.senderUserId !== me) continue;
       const el = messageArea.querySelector(
@@ -145,7 +142,6 @@
 
     for (const m of list) appendMsg(m);
 
-    // 방 열었으니 읽음 처리
     await markRead();
   }
 
@@ -161,8 +157,6 @@
 
     for (const m of list) appendMsg(m);
 
-    // 내가 방을 보고 있으니까 상대가 보낸 건 즉시 읽음 처리
-    // (서버에서 readAt 업데이트 → 다음 폴링 때 내 메시지의 readAt도 갱신되어 "1"이 사라짐)
     await markRead();
   }
 
@@ -201,70 +195,125 @@
     if (e.key === "Enter") send();
   });
 
+  // =========================
+  // ✅ 거래 상태 표시/생성
+  // =========================
+  async function updateTradeStatusLabel() {
+    const productStatus = document.querySelector(".product-status");
+    if (!productStatus) return;
+
+    try {
+      const res = await fetch(`/api/trades/room/${roomId}`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        productStatus.textContent = "판매중";
+        return;
+      }
+
+      const trade = await res.json();
+      if (!trade) {
+        productStatus.textContent = "판매중";
+      } else if (trade.status === "COMPLETED") {
+        productStatus.textContent = "거래완료";
+      } else {
+        productStatus.textContent = "거래중";
+      }
+    } catch {
+      productStatus.textContent = "판매중";
+    }
+  }
+
+  async function renderRoomHeader() {
+    try {
+      const res = await fetch(`/api/chat/rooms/${roomId}`, {
+        credentials: "include",
+      });
+      if (!res.ok) return;
+
+      const room = await res.json();
+
+      const peerId =
+        me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
+
+      const nameEl = document.querySelector(".header-name");
+      const subEl = document.querySelector(".header-sub");
+      if (nameEl) nameEl.textContent = peerId || "상대";
+      if (subEl) subEl.textContent = room.itemTitle || "";
+
+      const productTitle = document.querySelector(".product-title");
+      if (productTitle) productTitle.textContent = room.itemTitle || "";
+
+      // ✅ 들어오자마자 거래상태 반영
+      await updateTradeStatusLabel();
+    } catch (e) {
+      console.warn("renderRoomHeader fail", e);
+    }
+  }
+
   (async function start() {
     sendBtn.disabled = true;
     await renderRoomHeader();
     await loadAll();
     sendBtn.disabled = false;
 
-    // 2초 폴링
     pollTimer = setInterval(poll, 2000);
 
-    // 탭 닫힐 때 정리
     window.addEventListener("beforeunload", () => {
       if (pollTimer) clearInterval(pollTimer);
     });
-    async function renderRoomHeader() {
-      try {
-        const res = await fetch(`/api/chat/rooms/${roomId}`, {
-          credentials: "include",
-        });
-        if (!res.ok) return;
-
-        const room = await res.json();
-
-        // 상대방 표시: buyer/seller 중에서 나 아닌 쪽
-        const peerId =
-          me === room.buyerUserId ? room.sellerUserId : room.buyerUserId;
-
-        // 1) 상단 헤더
-        const nameEl = document.querySelector(".header-name");
-        const subEl = document.querySelector(".header-sub");
-        if (nameEl) nameEl.textContent = peerId || "상대";
-        if (subEl) subEl.textContent = room.itemTitle || "";
-
-        // 2) 상품 바
-        const productTitle = document.querySelector(".product-title");
-        const productStatus = document.querySelector(".product-status");
-        if (productTitle) productTitle.textContent = room.itemTitle || "";
-
-        // status는 네 Item에서 price=0이면 나눔, 아니면 대여인데
-        // ChatRoomResponse에는 price가 없으니 일단 "채팅중" 같은 표시로 두거나,
-        // item 상세까지 내려받고 싶으면 API 확장해야 함.
-        if (productStatus) productStatus.textContent = "채팅중";
-      } catch (e) {
-        console.warn("renderRoomHeader fail", e);
-      }
-    }
   })();
 })();
-document.addEventListener("DOMContentLoaded", () => {
-  const leaveBtn = document.getElementById("btnLeave");
-  if (!leaveBtn) return;
 
+document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(location.search);
   const roomId = Number(params.get("room"));
 
-  // room이 없으면 버튼 비활성화
+  const leaveBtn = document.getElementById("btnLeave");
+  const tradeBtn = document.getElementById("btnTrade");
+
   if (!Number.isFinite(roomId)) {
-    leaveBtn.disabled = true;
+    if (leaveBtn) leaveBtn.disabled = true;
+    if (tradeBtn) tradeBtn.disabled = true;
     return;
   }
 
-  leaveBtn.addEventListener("click", async () => {
-    // (선택) 확인창
-    // if (!confirm("채팅방에서 나가시겠습니까?")) return;
+  // ✅ 거래 버튼 클릭: 거래 생성(이미 있으면 그대로 반환)
+  if (tradeBtn) {
+  tradeBtn.addEventListener("click", async () => {
+    tradeBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/trades/from-room/${roomId}`, {
+        method: "POST",
+        credentials: "include",
+      });
 
+      const ct = res.headers.get("content-type") || "";
+      const body = ct.includes("application/json")
+        ? await res.json()
+        : await res.text();
+
+      if (!res.ok) {
+        alert("거래 시작 실패: " + (body?.message || body || res.status));
+        return;
+      }
+
+      alert("거래 시작 성공!");
+      const statusEl = document.querySelector(".product-status");
+      if (statusEl) statusEl.textContent = "거래중";
+    } catch (e) {
+      console.error(e);
+      alert("네트워크 오류로 거래 시작 실패");
+    } finally {
+      tradeBtn.disabled = false;
+    }
+  });
+}
+
+  if (!leaveBtn) return;
+
+  leaveBtn.addEventListener("click", async () => {
     try {
       const res = await fetch(`/api/chat/rooms/${roomId}/leave`, {
         method: "POST",
@@ -277,7 +326,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ 성공하면 목록으로 이동
       location.href = "/html/chat.html";
     } catch (e) {
       console.error(e);

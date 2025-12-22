@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../Css/style.css" />
     <link rel="stylesheet" href="../Css/chat_room.css" />
   </head>
+
   <body>
     <div class="sidebar">
       <div class="brand">
@@ -15,17 +16,19 @@
           <p>시흥시 정왕동</p>
         </div>
       </div>
+
       <div class="menu">
-        <a href="main.html" class="menu-item"
-          ><span class="menu-icon">🏠</span> 홈</a
-        >
-        <a href="chat.html" class="menu-item active"
-          ><span class="menu-icon">💬</span> 채팅</a
-        >
-        <a href="my.html" class="menu-item"
-          ><span class="menu-icon">👤</span> 나의 시흥</a
-        >
+        <a href="main.html" class="menu-item">
+          <span class="menu-icon">🏠</span> 홈
+        </a>
+        <a href="chat.html" class="menu-item active">
+          <span class="menu-icon">💬</span> 채팅
+        </a>
+        <a href="my.html" class="menu-item">
+          <span class="menu-icon">👤</span> 나의 시흥
+        </a>
       </div>
+
       <a href="#" class="login" id="logoutBtn"><span>📕</span> 로그아웃</a>
     </div>
 
@@ -42,17 +45,20 @@
         <div class="product-img-box">
           <img src="https://placehold.co/64x64" alt="물품" />
         </div>
+
         <div class="product-info">
           <div class="product-title"></div>
           <div class="product-status"></div>
         </div>
+
+        <!-- ✅ 거래 버튼 (반드시 id=btnTrade) -->
+        <button id="btnTrade" class="view-btn">거래</button>
+
         <button id="btnLeave" class="view-btn">나가기</button>
       </div>
 
-      <!-- ✅ 더미 제거: 대화 영역은 비워둠 -->
       <div class="message-area"></div>
 
-      <!-- ✅ 입력창은 message-area 밖에 있어야 함 -->
       <div class="chat-input-bar">
         <button class="icon-btn">+</button>
         <div class="input-wrapper">
@@ -69,11 +75,6 @@
 
     <div id="modal-root"></div>
     <script src="../Components/sidebar-auth.js"></script>
-
-    <!-- ✅ DB+폴링 방식이면 아래 3개는 필요 없음(지워도 됨) -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script> -->
 
     <script src="../JS/chat.js"></script>
   </body>
