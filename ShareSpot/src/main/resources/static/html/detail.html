@@ -62,7 +62,6 @@
             <h1 class="post-title" id="postTitle">제목 로딩중...</h1>
             <div class="post-time" id="postTime">시간</div>
             <p class="post-desc" id="postDesc">내용을 불러오는 중입니다...</p>
-            <div class="post-stats">조회 0 · 채팅 0 · 관심 0</div>
           </div>
 
           <hr class="divider" />
@@ -87,17 +86,17 @@
     <script src="../JS/detail.js"></script>
     <script>
       // 로그아웃 로직
-      document.getElementById("logoutBtn")?.addEventListener("click", (e) => {
+      document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
-        if (confirm("로그아웃 하시겠습니까?")) {
-          fetch("/api/users/logout", { method: "POST" }).finally(
-            () => (location.href = "./login.html")
+        if (confirm('로그아웃 하시겠습니까?')) {
+          fetch('/api/users/logout', { method: 'POST' }).finally(
+            () => (location.href = './login.html')
           );
         }
       });
 
       // 돌아가기 버튼 로직
-      document.getElementById("btnBack")?.addEventListener("click", () => {
+      document.getElementById('btnBack')?.addEventListener('click', () => {
         history.back();
       });
     </script>
