@@ -9,8 +9,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 브라우저에서 "/uploads/**" 로 요청이 오면
-        // 로컬 PC의 "C:/uploads/" 폴더로 연결해준다.
+        // [수정] file:///C:/uploads/ (슬래시 3개)로 설정해야 윈도우에서 가장 정확합니다.
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:///C:/uploads/");
     }

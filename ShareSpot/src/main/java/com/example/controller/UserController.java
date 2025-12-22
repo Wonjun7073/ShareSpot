@@ -88,20 +88,26 @@ public Map<String, Object> withdraw(HttpSession session) {
         return MeResponse.from(userService.getMe(loginUserId));
     }
 
-    @PutMapping("/me")
-    public MeResponse updateMe(@RequestBody UpdateProfileRequest req, HttpSession session) {
+    @PutMapping(value = "/me", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public MeResponse updateMe(
+            @RequestParam("nickname") String nickname,
+            @RequestParam("dong") String dong,
+            @RequestParam("phone") String phone,
+            @RequestParam(value = "profileImage", required = false) org.springframework.web.multipart.MultipartFile file,
+            HttpSession session) {
+
         String loginUserId = (String) session.getAttribute(LOGIN_USER_ID);
         if (loginUserId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
         try {
-            return MeResponse.from(
-                    userService.updateMe(loginUserId, req.getNickname(), req.getDong(), req.getPhone()));
+            // userService.updateMe 호출 (nickname, dong, phone, file을 모두 전달)
+            return MeResponse.from(userService.updateMe(loginUserId, nickname, dong, phone, file));
         } catch (Exception e) {
-            // ✅ 콘솔 없어도 프론트에서 원인 볼 수 있게 메시지 전달
-            String msg = e.getClass().getSimpleName() + ": " + (e.getMessage() == null ? "" : e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
+            e.printStackTrace(); // 에러 로그 확인용
+            throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.BAD_REQUEST, "수정 중 오류 발생: " + e.getMessage());
         }
     }
     @PutMapping("/password")

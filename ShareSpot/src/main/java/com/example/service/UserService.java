@@ -5,8 +5,13 @@ import com.example.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.entity.Item;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.beans.factory.annotation.Value;
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -23,13 +28,15 @@ public class UserService {
             WishlistRepository wishlistRepository,
             ChatRoomRepository chatRoomRepository,
             ChatMessageRepository chatMessageRepository) {
-        this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
-        this.wishlistRepository = wishlistRepository;
-        this.chatRoomRepository = chatRoomRepository;
-        this.chatMessageRepository = chatMessageRepository;
-    }
-
+                this.userRepository = userRepository;
+                this.itemRepository = itemRepository;
+                this.wishlistRepository = wishlistRepository;
+                this.chatRoomRepository = chatRoomRepository;
+                this.chatMessageRepository = chatMessageRepository;
+            }      
+        @Value("${file.upload-dir}")
+        private String uploadDir; // properties의 경로 주입
+      
     // =========================
     // 로그인
     // =========================
@@ -75,29 +82,52 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("사용자 데이터가 없습니다."));
     }
 
-    public User updateMe(String userId, String nickname, String dong, String phone) {
-
+    @Transactional
+    public User updateMe(String userId, String nickname, String dong, String phone, MultipartFile file) throws IOException {
         User me = getMe(userId);
 
         if (nickname != null && !nickname.isBlank()) {
-            String nn = nickname.trim();
-            me.setNickname(nn);
-            me.setProfileInitial(nn.substring(0, 1));
+            me.setNickname(nickname.trim());
+            me.setProfileInitial(nickname.trim().substring(0, 1));
         }
-        if (dong != null && !dong.isBlank()) {
-            me.setDong(dong.trim());
-        }
-        if (phone != null && !phone.isBlank()) {
-            String p = phone.trim();
-            if (!p.matches("^01[0-9]{8,9}$")) {
-                throw new IllegalArgumentException("전화번호 형식이 올바르지 않습니다.");
-            }
-            me.setPhone(p);
-        }
+        if (dong != null && !dong.isBlank()) me.setDong(dong.trim());
+        if (phone != null && !phone.isBlank()) me.setPhone(phone.trim());
 
+        // [핵심 수정] 무조건 C:/uploads/profile/ 에 저장합니다.
+        if (file != null && !file.isEmpty()) {
+            String uploadPath = "C:/uploads/profile/";
+            
+            File dir = new File(uploadPath);
+            if (!dir.exists()) dir.mkdirs();
+
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            File dest = new File(uploadPath + fileName);
+            file.transferTo(dest);
+
+            // DB에는 웹 경로 저장
+            me.setProfileImageUrl("/uploads/profile/" + fileName);
+        }
+        
         return userRepository.save(me);
     }
+    
 
+    @Transactional
+    public void changePassword(String userId, String currentPw, String newPw) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        if (!Objects.equals(user.getPassword(), currentPw)) {
+            throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
+        }
+
+        if (newPw == null || newPw.isBlank()) {
+            throw new IllegalArgumentException("새 비밀번호를 입력하세요.");
+        }
+
+        user.setPassword(newPw);
+        userRepository.save(user);
+    }   
     // =========================
     // 🔥 회원 탈퇴 (연관 데이터 전부 삭제)
     // =========================
@@ -135,21 +165,4 @@ public class UserService {
         // 6) 마지막으로 유저 삭제
         userRepository.delete(me);
     }
-    @Transactional
-public void changePassword(String userId, String currentPw, String newPw) {
-    User user = userRepository.findByUserId(userId)
-            .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
-
-    if (!Objects.equals(user.getPassword(), currentPw)) {
-        throw new IllegalArgumentException("현재 비밀번호가 올바르지 않습니다.");
-    }
-
-    if (newPw == null || newPw.isBlank()) {
-        throw new IllegalArgumentException("새 비밀번호를 입력하세요.");
-    }
-
-    user.setPassword(newPw);
-    userRepository.save(user);
-}
-
 }

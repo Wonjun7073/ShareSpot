@@ -12,6 +12,7 @@ public class MeResponse {
     public int thanksCount;
     public int trustPercent;
     public String profileInitial;
+    public String profileImageUrl;
 
     public static MeResponse from(User u) {
         MeResponse r = new MeResponse();
@@ -23,6 +24,7 @@ public class MeResponse {
         r.thanksCount = u.getThanksCount();
         r.trustPercent = u.getTrustPercent();
         r.profileInitial = u.getProfileInitial();
+        r.profileImageUrl = u.getProfileImageUrl();
         return r;
     }
 }
