@@ -16,7 +16,7 @@
         <img src="../Images/logo.png" alt="로고" class="brand-logo" />
         <div class="brand-text">
           <h1>쉐어스팟</h1>
-          <p>시흥시 정왕동</p>
+          <p id="sidebarDongText">시흥시 정왕동</p>
         </div>
       </div>
 
@@ -59,18 +59,10 @@
               <span class="as-chevron">›</span>
             </button>
 
-            <button class="as-row" type="button">
+            <button class="as-row" type="button" id="passwordRow">
               <div class="as-row-text">
                 <div class="as-label">비밀번호</div>
                 <div class="as-value">••••••••</div>
-              </div>
-              <span class="as-chevron">›</span>
-            </button>
-
-            <button class="as-row" type="button">
-              <div class="as-row-text">
-                <div class="as-label">전화번호</div>
-                <div class="as-value" id="phoneText">010-1234-5678</div>
               </div>
               <span class="as-chevron">›</span>
             </button>
@@ -84,7 +76,7 @@
           </div>
 
           <div class="as-list">
-            <button class="as-row" type="button">
+            <button class="as-row" type="button" id="locationRow">
               <div class="as-row-text">
                 <div class="as-label">내 동네</div>
                 <div class="as-value" id="locationText">시흥시 정왕동</div>
@@ -114,6 +106,60 @@
         </section>
       </div>
     </div>
+    <div id="dongOverlay" class="dong-overlay" aria-hidden="true">
+      <div class="dong-modal">
+        <div class="dong-header">
+          <div class="dong-title">내 동네 선택</div>
+          <button type="button" class="dong-close" id="dongCloseBtn">
+            닫기
+          </button>
+        </div>
+
+        <div class="dong-body">
+          <select id="dongSelect" class="dong-select">
+            <option value="">선택하세요</option>
+            <option>시흥시 정왕동</option>
+            <option>시흥시 배곧동</option>
+            <option>시흥시 은행동</option>
+            <option>시흥시 목감동</option>
+            <option>시흥시 신천동</option>
+            <option>시흥시 대야동</option>
+            <option>시흥시 능곡동</option>
+          </select>
+
+          <button type="button" class="dong-save" id="dongSaveBtn" disabled>
+            저장
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- 비밀번호 변경 모달 -->
+    <div id="passwordModal" class="modal" aria-hidden="true">
+      <div class="modal-box">
+        <h3>비밀번호 변경</h3>
+
+        <div class="form-group">
+          <label>현재 비밀번호</label>
+          <input type="password" id="currentPw" />
+        </div>
+
+        <div class="form-group">
+          <label>새 비밀번호</label>
+          <input type="password" id="newPw" />
+        </div>
+
+        <div class="form-group">
+          <label>새 비밀번호 확인</label>
+          <input type="password" id="newPwConfirm" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="pwCancel">취소</button>
+          <button type="button" class="btn-primary" id="pwSave">변경</button>
+        </div>
+      </div>
+    </div>
+
     <script src="../JS/auth.js"></script>
     <script src="../JS/account_settings.js"></script>
     <div id="modal-root"></div>
