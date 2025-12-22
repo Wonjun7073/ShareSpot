@@ -26,7 +26,7 @@
         <!-- ✅ 닫는 태그 누락 있었음: 반드시 </a>로 닫아야 레이아웃 안 망가짐 -->
         <a href="chat.html" class="menu-item">
           <span class="menu-icon">💬</span> 채팅
-          <span class="badge" id="chatBadge" style="display: none;"></span>
+          <span class="badge" id="chatBadge" style="display: none"></span>
         </a>
 
         <a href="my.html" class="menu-item active">
@@ -56,10 +56,14 @@
           </div>
 
           <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="trustBarFill" style="width: 0%"></div>
+            <div
+              class="progress-bar-fill"
+              id="trustBarFill"
+              style="width: 0%"
+            ></div>
           </div>
 
-          <div class="score-text" id="trustScoreText">총 0점 / 500점</div>
+          <div class="score-text" id="trustScoreText">총 0점 / 100점</div>
         </div>
 
         <div class="section-card">

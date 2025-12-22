@@ -54,9 +54,14 @@
     // fallback 표시
     if (me?.sharedCount != null) safeText("statShared", String(me.sharedCount));
     if (me?.thanksCount != null) safeText("statThanks", String(me.thanksCount));
-    if (me?.trustPercent != null)
+    const trustScore = Number(me?.trustScore);
+    if (Number.isFinite(trustScore)) {
+      const p = Math.max(0, Math.min(100, Math.round(trustScore)));
+      safeText("statTrust", `${p}%`);
+    } else if (me?.trustPercent != null) {
+      // fallback: 서버가 trustPercent 주는 경우
       safeText("statTrust", String(me.trustPercent) + "%");
-
+    }
     if (me?.trustCount != null) safeText("trustCount", String(me.trustCount));
   }
 
