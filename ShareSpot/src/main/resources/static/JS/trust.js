@@ -8,44 +8,45 @@
   }
 
   function gradeByPercent(p) {
-    if (p >= 80) return "우수";
-    if (p >= 60) return "양호";
-    if (p >= 40) return "보통";
-    return "주의";
+    if (p >= 80) return '우수';
+    if (p >= 60) return '양호';
+    if (p >= 40) return '보통';
+    return '주의';
   }
 
   async function fetchMe() {
-    const res = await fetch("/api/user/me", { credentials: "include" });
-    if (!res.ok) throw new Error("GET /api/user/me failed: " + res.status);
+    const res = await fetch('/api/user/me', { credentials: 'include' });
+    if (!res.ok) throw new Error('GET /api/user/me failed: ' + res.status);
     return await res.json();
   }
 
   async function fetchMyTrades() {
-    const res = await fetch("/api/trades/my", { credentials: "include" });
+    const res = await fetch('/api/trades/my', { credentials: 'include' });
     if (!res.ok) return [];
     const data = await res.json().catch(() => []);
     return Array.isArray(data) ? data : [];
   }
 
   async function main() {
-    const percentEl = document.getElementById("trustPercent");
-    const gradeEl = document.getElementById("trustGrade");
-    const barEl = document.getElementById("trustBarFill");
-    const scoreEl = document.getElementById("trustScoreText");
+    const percentEl = document.getElementById('trustPercent');
+    const gradeEl = document.getElementById('trustGrade');
+    const barEl = document.getElementById('trustBarFill');
+    const scoreEl = document.getElementById('trustScoreText');
 
-    const cntEl = document.getElementById("completeCount");
-    const ptEl = document.getElementById("completePoint");
+    const cntEl = document.getElementById('completeCount');
+    const ptEl = document.getElementById('completePoint');
 
     if (!percentEl || !gradeEl || !barEl || !scoreEl) return;
 
     const me = await fetchMe();
 
     // ===== 상단 점수/퍼센트/게이지 =====
-    const score = clamp(me?.trustScore ?? 0, 0, 100);
+    const score = clamp(me?.trustPercent ?? 0, 0, 100);
     const percent = Math.round((score / 100) * 100);
 
     percentEl.textContent = `${percent}%`;
     gradeEl.textContent = `신뢰 지수 - ${gradeByPercent(percent)}`;
+    XMLDocument;
     barEl.style.width = `${percent}%`;
     scoreEl.textContent = `총 ${score}점 / 100점`;
 
@@ -55,16 +56,16 @@
 
       // ✅ 등록자(판매자)로서 COMPLETED 된 것만 카운트
       const completedAsSeller = trades.filter((t) => {
-        const st = String(t?.status || "");
-        const role = String(t?.myRole || t?.role || ""); // 프로젝트에 따라 myRole/role 둘 다 대응
-        return st === "COMPLETED" && role === "SELLER";
+        const st = String(t?.status || '');
+        const role = String(t?.myRole || t?.role || ''); // 프로젝트에 따라 myRole/role 둘 다 대응
+        return st === 'COMPLETED' && role === 'SELLER';
       }).length;
 
       if (completedAsSeller <= 0) {
         // ✅ 구매자는 여기서 0이므로 아예 숨김
         const row =
-          cntEl.closest(".activity-item") || cntEl.closest(".activity-row");
-        if (row) row.style.display = "none";
+          cntEl.closest('.activity-item') || cntEl.closest('.activity-row');
+        if (row) row.style.display = 'none';
       } else {
         const MAX_TRADES_FOR_SCORE = 10;
         const effectiveTrades = Math.min(

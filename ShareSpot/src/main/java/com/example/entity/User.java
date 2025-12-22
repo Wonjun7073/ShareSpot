@@ -78,7 +78,7 @@ public class User {
     public int getTrustScore() { return trustScore; }
 
     public int getTrustPercent() {
-        int pct = (int) Math.round((Math.max(0, Math.min(500, trustScore)) / 500.0) * 100.0);
+        int pct = (int) Math.round((Math.max(0, Math.min(100, trustScore)) / 100.0) * 100.0);
         this.trustPercent = Math.max(0, Math.min(100, pct));
         return this.trustPercent;
     }
@@ -99,10 +99,10 @@ public class User {
     public void setThanksCount(int thanksCount) { this.thanksCount = thanksCount; }
 
     public void setTrustScore(int trustScore) {
-        int clamped = Math.max(0, Math.min(500, trustScore));
+        int clamped = Math.max(0, Math.min(100, trustScore));
         this.trustScore = clamped;
 
-        this.trustPercent = (int) Math.round((clamped / 500.0) * 100.0);
+        this.trustPercent = (int) Math.round((clamped / 100.0) * 100.0);
         this.trustPercent = Math.max(0, Math.min(100, this.trustPercent));
     }
 
@@ -110,8 +110,8 @@ public class User {
         int pct = Math.max(0, Math.min(100, trustPercent));
         this.trustPercent = pct;
 
-        this.trustScore = (int) Math.round((pct / 100.0) * 500.0);
-        this.trustScore = Math.max(0, Math.min(500, this.trustScore));
+        this.trustScore = (int) Math.round((pct / 100.0) * 100.0);
+        this.trustScore = Math.max(0, Math.min(100, this.trustScore));
     }
 
     public void setProfileInitial(String profileInitial) { this.profileInitial = profileInitial; }
